@@ -48,11 +48,14 @@ export default function Navbar() {
     { href: "/", label: "Home" },
     { href: "/courses", label: "Courses" },
     { href: "/exam-prep", label: "Exam Prep" },
-    { href: "/about", label: "About" },
+    { href: "/notes", label: "Notes" },
+       { href: "/test-series", label: "Test Series" },
     { href: "/reviews", label: "Reviews" },
     { href: "/videos", label: "Videos" },
-    { href: "/test-series", label: "Test Series" },
+ 
     { href: "/contact", label: "Contact" },
+
+    { href: "/about", label: "About" },
   ];
 
 

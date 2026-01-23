@@ -7,6 +7,7 @@ import { exams } from "../data/exams";
 import { reviews } from "../data/reviews";
 import { testSeries } from "../data/testSeries";
 import { videos } from "../data/videos";
+import { notes } from "../data/notes";
 
 // Load environment variables from .env
 config({ path: ".env" });
@@ -42,6 +43,11 @@ async function main() {
         console.log("🎥 Seeding videos...");
         await db.insert(schema.video).values(videos);
         console.log("✅ Videos seeded successfully!");
+
+        // Seed notes
+        console.log("📖 Seeding notes...");
+        await db.insert(schema.note).values(notes);
+        console.log("✅ Notes seeded successfully!");
 
         console.log("🎉 All seeding completed successfully!");
     } catch (error) {

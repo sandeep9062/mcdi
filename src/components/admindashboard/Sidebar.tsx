@@ -52,6 +52,12 @@ const Sidebar = () => {
       url: "/admin-dashboard/exams",
       icon: GraduationCap,
     },
+
+     {
+      title: "Notes",
+      url: "/admin-dashboard/notes",
+      icon: FileQuestion,
+    },
     {
       title: "Test Series",
       url: "/admin-dashboard/test-series",

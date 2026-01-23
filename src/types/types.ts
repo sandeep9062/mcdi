@@ -111,3 +111,21 @@ export interface Video {
   views: number;
   date: string;
 }
+
+export interface Note {
+  id: string;
+  slug: string;
+  title: string;
+  shortDescription: string;
+  fullDescription: string;
+  thumbnail: string;
+  category: string;
+  subject: string;
+  content: string;
+  tags: string[];
+  author: string;
+  dateCreated: string;
+  lastUpdated: string;
+  featured: boolean;
+  popular: boolean;
+}

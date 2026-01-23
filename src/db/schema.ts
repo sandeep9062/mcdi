@@ -303,6 +303,38 @@ export const video = pgTable(
   ],
 );
 
+export const note = pgTable(
+  "note",
+  {
+    id: text("id").primaryKey(),
+    slug: text("slug").notNull().unique(),
+    title: text("title").notNull(),
+    shortDescription: text("short_description").notNull(),
+    fullDescription: text("full_description").notNull(),
+    thumbnail: text("thumbnail").notNull(),
+    category: text("category").notNull(),
+    subject: text("subject").notNull(),
+    content: text("content").notNull(),
+    tags: jsonb("tags").notNull(), // string[]
+    author: text("author").notNull(),
+    dateCreated: text("date_created").notNull(),
+    lastUpdated: text("last_updated").notNull(),
+    featured: boolean("featured").default(false).notNull(),
+    popular: boolean("popular").default(false).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+  },
+  (table) => [
+    index("note_slug_idx").on(table.slug),
+    index("note_category_idx").on(table.category),
+    index("note_featured_idx").on(table.featured),
+    index("note_popular_idx").on(table.popular),
+  ],
+);
+
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
   accounts: many(account),
