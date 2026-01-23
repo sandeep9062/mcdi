@@ -9,6 +9,7 @@ import Footer from '@/components/Footer';
 import WhatsAppWidget from '@/components/WhatsAppWidget';
 import { Toaster } from '@/components/ui/sonner';
 import { usePathname } from 'next/navigation';
+import FloatingSocialButtons from '@/components/FloatingSocialButtons';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -29,6 +30,8 @@ function RootLayoutContent({
       {!isAdmin && <Footer />}
       {!isAdmin && <WhatsAppWidget />}
       <Toaster />
+
+      <FloatingSocialButtons/>
     </CartProvider>
   );
 }
