@@ -11,7 +11,7 @@ export default async function AdminCoursesPage() {
   const allCourses = rawCourses.map(course => ({
     ...course,
     originalPrice: course.originalPrice ?? undefined,
-    mode: course.mode as "Online" | "Offline" | "Both",
+    mode: course.mode as "Online" | "Offline" | "Hybrid",
     whatYouLearn: course.whatYouLearn as string[],
     curriculum: course.curriculum as { module: string; topics: string[]; }[],
     whoIsThisFor: course.whoIsThisFor as string[],

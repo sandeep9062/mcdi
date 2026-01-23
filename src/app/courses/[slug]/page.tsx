@@ -410,7 +410,7 @@ export default function CourseDetailPage({
                         <CheckCircle className="h-4 w-4 text-teal-600" />
                         <span>Lifetime access to course materials</span>
                       </li>
-                      {course.mode === "Both" && (
+                      {course.mode === "Hybrid" && (
                         <li className="flex items-center gap-2">
                           <CheckCircle className="h-4 w-4 text-teal-600" />
                           <span>Hands-on clinical training</span>

@@ -1,9 +1,12 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from "react";
-import { Search } from "lucide-react";
+import { Search, Filter, X, BookOpen, Monitor, Clock, Check } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -56,6 +59,21 @@ export default function CoursesPage() {
   const [selectedDuration, setSelectedDuration] = useState("all");
   const [sortBy, setSortBy] = useState("popular");
 
+  // Calculate active filters count
+  const activeFiltersCount = [
+    selectedCategory !== "all" ? 1 : 0,
+    selectedMode !== "all" ? 1 : 0,
+    selectedDuration !== "all" ? 1 : 0,
+    searchQuery ? 1 : 0,
+  ].reduce((sum, count) => sum + count, 0);
+
+  const clearAllFilters = () => {
+    setSelectedCategory("all");
+    setSelectedMode("all");
+    setSelectedDuration("all");
+    setSearchQuery("");
+  };
+
   const filteredAndSortedCourses = useMemo(() => {
     const filtered = courses.filter((course) => {
       const matchesSearch =
@@ -65,10 +83,13 @@ export default function CoursesPage() {
           .includes(searchQuery.toLowerCase());
       const matchesCategory =
         selectedCategory === "all" || course.category === selectedCategory;
-      const matchesMode =
-        selectedMode === "all" ||
-        course.mode === selectedMode ||
-        course.mode === "Hybrid";
+      const matchesMode = (() => {
+        if (selectedMode === "all") return true;
+        if (selectedMode === "Online") return course.mode === "Online" || course.mode === "Hybrid";
+        if (selectedMode === "Offline") return course.mode === "Offline" || course.mode === "Hybrid";
+        if (selectedMode === "Hybrid") return course.mode === "Hybrid";
+        return true;
+      })();
       const matchesDuration = (() => {
         if (selectedDuration === "all") return true;
         const durationDays = getDurationInDays(course.duration);
@@ -148,80 +169,114 @@ export default function CoursesPage() {
             <div className="lg:w-1/4">
               <div className="bg-white rounded-xl shadow-md p-6 sticky top-20">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900">
-                    Filters
-                  </h3>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      setSelectedCategory("all");
-                      setSelectedMode("all");
-                      setSelectedDuration("all");
-                      setSearchQuery("");
-                    }}
-                  >
-                    Clear All
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    <Filter className="h-5 w-5 text-gray-600" />
+                    <h3 className="text-lg font-semibold text-gray-900">
+                      Filters
+                    </h3>
+                    {activeFiltersCount > 0 && (
+                      <Badge variant="secondary" className="ml-1">
+                        {activeFiltersCount}
+                      </Badge>
+                    )}
+                  </div>
+                  {activeFiltersCount > 0 && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={clearAllFilters}
+                      className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                    >
+                      <X className="h-4 w-4 mr-1" />
+                      Clear All
+                    </Button>
+                  )}
                 </div>
 
                 <div className="space-y-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Category
-                    </label>
+                    <div className="flex items-center gap-2 mb-3">
+                      <BookOpen className="h-4 w-4 text-gray-500" />
+                      <label className="text-sm font-medium text-gray-700">
+                        Category
+                      </label>
+                    </div>
                     <div className="space-y-2">
-                      <button
-                        onClick={() => setSelectedCategory("all")}
-                        className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${
-                          selectedCategory === "all"
-                            ? "bg-teal-50 text-teal-700 font-medium"
-                            : "hover:bg-gray-50"
-                        }`}
-                      >
-                        All Categories
-                      </button>
-                      {categories.map((cat) => (
-                        <button
-                          key={cat.id}
-                          onClick={() => setSelectedCategory(cat.name)}
-                          className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${
-                            selectedCategory === cat.name
-                              ? "bg-teal-50 text-teal-700 font-medium"
-                              : "hover:bg-gray-50"
-                          }`}
-                        >
-                          {cat.name}
-                        </button>
+                      {[
+                        { value: "all", label: "All Categories" },
+                        ...categories.map((cat) => ({ value: cat.name, label: cat.name }))
+                      ].map((option) => (
+                        <div key={option.value} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={`category-${option.value}`}
+                            checked={selectedCategory === option.value}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                setSelectedCategory(option.value);
+                              } else if (selectedCategory === option.value) {
+                                setSelectedCategory("all");
+                              }
+                            }}
+                          />
+                          <label
+                            htmlFor={`category-${option.value}`}
+                            className="text-sm text-gray-700 cursor-pointer flex-1"
+                          >
+                            {option.label}
+                          </label>
+                        </div>
                       ))}
                     </div>
                   </div>
 
+                  <Separator />
+
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Learning Mode
-                    </label>
+                    <div className="flex items-center gap-2 mb-3">
+                      <Monitor className="h-4 w-4 text-gray-500" />
+                      <label className="text-sm font-medium text-gray-700">
+                        Learning Mode
+                      </label>
+                    </div>
                     <div className="space-y-2">
-                      {["all", "Online", "Offline", "Hybrid"].map((mode) => (
-                        <button
-                          key={mode}
-                          onClick={() => setSelectedMode(mode)}
-                          className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${
-                            selectedMode === mode
-                              ? "bg-teal-50 text-teal-700 font-medium"
-                              : "hover:bg-gray-50"
-                          }`}
-                        >
-                          {mode === "all" ? "All Modes" : mode}
-                        </button>
+                      {[
+                        { value: "all", label: "All Modes" },
+                        { value: "Online", label: "Online" },
+                        { value: "Offline", label: "Offline" },
+                        { value: "Hybrid", label: "Hybrid" },
+                      ].map((option) => (
+                        <div key={option.value} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={`mode-${option.value}`}
+                            checked={selectedMode === option.value}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                setSelectedMode(option.value);
+                              } else if (selectedMode === option.value) {
+                                setSelectedMode("all");
+                              }
+                            }}
+                          />
+                          <label
+                            htmlFor={`mode-${option.value}`}
+                            className="text-sm text-gray-700 cursor-pointer flex-1"
+                          >
+                            {option.label}
+                          </label>
+                        </div>
                       ))}
                     </div>
                   </div>
 
+                  <Separator />
+
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Duration
-                    </label>
+                    <div className="flex items-center gap-2 mb-3">
+                      <Clock className="h-4 w-4 text-gray-500" />
+                      <label className="text-sm font-medium text-gray-700">
+                        Duration
+                      </label>
+                    </div>
                     <div className="space-y-2">
                       {[
                         { value: "all", label: "All Durations" },
@@ -229,18 +284,26 @@ export default function CoursesPage() {
                         { value: "3-4-months", label: "3-4 Months" },
                         { value: "5-6-months", label: "5-6 Months" },
                         { value: "6-plus-months", label: "6+ Months" },
-                      ].map((duration) => (
-                        <button
-                          key={duration.value}
-                          onClick={() => setSelectedDuration(duration.value)}
-                          className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${
-                            selectedDuration === duration.value
-                              ? "bg-teal-50 text-teal-700 font-medium"
-                              : "hover:bg-gray-50"
-                          }`}
-                        >
-                          {duration.label}
-                        </button>
+                      ].map((option) => (
+                        <div key={option.value} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={`duration-${option.value}`}
+                            checked={selectedDuration === option.value}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                setSelectedDuration(option.value);
+                              } else if (selectedDuration === option.value) {
+                                setSelectedDuration("all");
+                              }
+                            }}
+                          />
+                          <label
+                            htmlFor={`duration-${option.value}`}
+                            className="text-sm text-gray-700 cursor-pointer flex-1"
+                          >
+                            {option.label}
+                          </label>
+                        </div>
                       ))}
                     </div>
                   </div>
@@ -349,14 +412,7 @@ export default function CoursesPage() {
                       <p className="text-gray-600 mb-6">
                         Try adjusting your filters or search query
                       </p>
-                      <Button
-                        onClick={() => {
-                          setSelectedCategory("all");
-                          setSelectedMode("all");
-                          setSelectedDuration("all");
-                          setSearchQuery("");
-                        }}
-                      >
+                      <Button onClick={clearAllFilters}>
                         Clear Filters
                       </Button>
                     </div>
