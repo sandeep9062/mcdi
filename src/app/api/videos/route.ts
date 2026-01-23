@@ -7,9 +7,19 @@ import { requireAdmin } from '@/lib/admin-middleware';
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
     const youtubeId = searchParams.get('youtubeId');
 
-    if (youtubeId) {
+    if (id) {
+      // Get single video by id
+      const videoData = await db.select().from(video).where(eq(video.id, id)).limit(1);
+
+      if (videoData.length === 0) {
+        return NextResponse.json({ error: 'Video not found' }, { status: 404 });
+      }
+
+      return NextResponse.json(videoData[0]);
+    } else if (youtubeId) {
       // Get single video by youtubeId
       const videoData = await db.select().from(video).where(eq(video.youtubeId, youtubeId)).limit(1);
 
@@ -98,17 +108,17 @@ export async function PUT(request: NextRequest) {
 
     const body = await request.json();
     const { searchParams } = new URL(request.url);
-    const youtubeId = searchParams.get('youtubeId');
+    const id = searchParams.get('id');
 
-    if (!youtubeId) {
+    if (!id) {
       return NextResponse.json(
-        { error: 'YouTube ID parameter required for update' },
+        { error: 'Video ID parameter required for update' },
         { status: 400 }
       );
     }
 
     // Check if video exists
-    const existingVideo = await db.select().from(video).where(eq(video.youtubeId, youtubeId)).limit(1);
+    const existingVideo = await db.select().from(video).where(eq(video.id, id)).limit(1);
     if (!existingVideo.length) {
       return NextResponse.json(
         { error: 'Video not found' },
@@ -129,7 +139,7 @@ export async function PUT(request: NextRequest) {
         date: body.date,
         updatedAt: new Date(),
       })
-      .where(eq(video.youtubeId, youtubeId))
+      .where(eq(video.id, id))
       .returning();
 
     return NextResponse.json(updatedVideo[0]);
@@ -151,17 +161,17 @@ export async function DELETE(request: NextRequest) {
     }
 
     const { searchParams } = new URL(request.url);
-    const youtubeId = searchParams.get('youtubeId');
+    const id = searchParams.get('id');
 
-    if (!youtubeId) {
+    if (!id) {
       return NextResponse.json(
-        { error: 'YouTube ID parameter required for deletion' },
+        { error: 'Video ID parameter required for deletion' },
         { status: 400 }
       );
     }
 
     // Check if video exists
-    const existingVideo = await db.select().from(video).where(eq(video.youtubeId, youtubeId)).limit(1);
+    const existingVideo = await db.select().from(video).where(eq(video.id, id)).limit(1);
     if (!existingVideo.length) {
       return NextResponse.json(
         { error: 'Video not found' },
@@ -170,7 +180,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Delete video
-    await db.delete(video).where(eq(video.youtubeId, youtubeId));
+    await db.delete(video).where(eq(video.id, id));
 
     return NextResponse.json({ message: 'Video deleted successfully' });
   } catch (error) {

@@ -6,6 +6,7 @@ import { useCart } from '@/context/CartContext';
 import { Button } from '@/components/ui/button';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 
 export default function CartPage() {
   const { items, removeFromCart, updateQuantity, getTotalPrice } = useCart();
@@ -73,7 +74,10 @@ export default function CartPage() {
                             <Button
                               size="icon"
                               variant="outline"
-                              onClick={() => updateQuantity(item.course.id, item.quantity - 1)}
+                              onClick={() => {
+                                updateQuantity(item.course.id, item.quantity - 1);
+                                toast.success('Quantity updated');
+                              }}
                               disabled={item.quantity <= 1}
                             >
                               <Minus className="h-4 w-4" />
@@ -82,7 +86,10 @@ export default function CartPage() {
                             <Button
                               size="icon"
                               variant="outline"
-                              onClick={() => updateQuantity(item.course.id, item.quantity + 1)}
+                              onClick={() => {
+                                updateQuantity(item.course.id, item.quantity + 1);
+                                toast.success('Quantity updated');
+                              }}
                             >
                               <Plus className="h-4 w-4" />
                             </Button>
@@ -103,7 +110,10 @@ export default function CartPage() {
                             <Button
                               size="icon"
                               variant="ghost"
-                              onClick={() => removeFromCart(item.course.id)}
+                              onClick={() => {
+                                removeFromCart(item.course.id);
+                                toast.success(`${item.course.title} removed from cart`);
+                              }}
                               className="text-red-600 hover:text-red-700 hover:bg-red-50"
                             >
                               <Trash2 className="h-5 w-5" />

@@ -58,6 +58,7 @@ export default function CheckoutPage() {
     localStorage.setItem('orders', JSON.stringify(orders));
 
     clearCart();
+    toast.success('Order placed successfully!');
     router.push('/order/success?orderId=' + order.id);
   };
 

@@ -3,16 +3,13 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Note } from "@/types/types";
+import { toast } from "sonner";
 
-export default function NotesTable({ data }: { data: Note[] }) {
-  const [error, setError] = useState<string | null>(null);
-
+export default function NotesTable({ data, onRefresh }: { data: Note[]; onRefresh?: () => void }) {
   const handleDelete = async (noteSlug: string) => {
     if (!confirm('Are you sure you want to delete this note? This action cannot be undone.')) return;
 
     try {
-      setError(null);
-
       const response = await fetch(`/api/notes?slug=${noteSlug}`, {
         method: 'DELETE',
       });
@@ -22,20 +19,20 @@ export default function NotesTable({ data }: { data: Note[] }) {
         throw new Error(error.error || 'Failed to delete note');
       }
 
-      // Reload the page to refresh the notes list
-      window.location.reload();
+      toast.success('Note deleted successfully!');
+      // Refresh the data if callback provided, otherwise reload page
+      if (onRefresh) {
+        onRefresh();
+      } else {
+        window.location.reload();
+      }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to delete note");
+      toast.error(err instanceof Error ? err.message : "Failed to delete note");
     }
   };
 
   return (
     <div className="border rounded-lg overflow-hidden">
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 mb-4">
-          {error}
-        </div>
-      )}
       <table className="w-full text-left bg-white">
         <thead className="bg-gray-50 border-b">
           <tr>

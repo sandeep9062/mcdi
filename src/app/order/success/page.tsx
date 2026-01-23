@@ -1,16 +1,21 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { use, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { CheckCircle2, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 
 function SuccessContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get('orderId') || 'ORD-UNKNOWN';
+
+  useEffect(() => {
+    toast.success('Order completed successfully! 🎉');
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
