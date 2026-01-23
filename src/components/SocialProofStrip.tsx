@@ -8,8 +8,9 @@ export function SocialProofStrip() {
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
-    // Generate a number between 300 and 600
-    const randomCount = Math.floor(Math.random() * (600 - 300 + 1)) + 300;
+    // Generate a number 
+    const randomCount =
+      Math.floor(Math.random() * 2 * (6000 - 3000 + 11)) + 300;
     setStudentCount(randomCount);
 
     // Optional: Hide after some time or keep it persistent
@@ -32,13 +33,13 @@ export function SocialProofStrip() {
           <div className="container mx-auto px-4 flex items-center justify-center gap-3 text-amber-800 text-sm md:text-base font-medium">
             <div className="flex -space-x-2 mr-2">
               {[1, 2, 3].map((i) => (
-                <div 
-                  key={i} 
+                <div
+                  key={i}
                   className="w-6 h-6 rounded-full border-2 border-white bg-teal-100 flex items-center justify-center overflow-hidden"
                 >
-                  <img 
-                    src={`https://i.pravatar.cc/100?u=${i + 10}`} 
-                    alt="user" 
+                  <img
+                    src={`https://i.pravatar.cc/100?u=${i + 10}`}
+                    alt="user"
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -46,7 +47,9 @@ export function SocialProofStrip() {
             </div>
             <TrendingUp className="h-4 w-4 text-amber-600 animate-pulse" />
             <span>
-              Join <span className="font-bold text-amber-900">{studentCount}</span> students who recently enrolled in this course!
+              Join{" "}
+              <span className="font-bold text-amber-900">{studentCount}</span>{" "}
+              students who recently enrolled in this course!
             </span>
           </div>
         </motion.div>
