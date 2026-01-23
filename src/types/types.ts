@@ -42,7 +42,7 @@ export interface Course {
   originalPrice?: number;
   thumbnail: string;
   category: string;
-  mode: 'Online' | 'Offline' | 'Both';
+  mode: 'Online' | 'Offline' | 'Hybrid';
   duration: string;
   rating: number;
   reviewCount: number;

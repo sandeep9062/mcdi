@@ -8,7 +8,7 @@ export interface Course {
   originalPrice?: number;
   thumbnail: string;
   category: string;
-  mode: 'Online' | 'Offline' | 'Both';
+  mode: 'Online' | 'Offline' | 'Hybrid';
   duration: string;
   rating: number;
   reviewCount: number;
@@ -130,7 +130,7 @@ export const courses: Course[] =
     originalPrice: 45000,
     thumbnail: 'https://images.pexels.com/photos/6528844/pexels-photo-6528844.jpeg',
     category: 'Clinical Dentistry',
-    mode: 'Both',
+    mode: 'Hybrid',
     duration: '6 months',
     rating: 4.9,
     reviewCount: 203,
@@ -299,7 +299,7 @@ export const courses: Course[] =
     originalPrice: 85000,
     thumbnail: 'https://images.pexels.com/photos/3779706/pexels-photo-3779706.jpeg',
     category: 'Clinical Dentistry',
-    mode: 'Both',
+    mode: 'Hybrid',
     duration: '6 months',
     rating: 4.8,
     reviewCount: 189,
@@ -395,7 +395,7 @@ export const courses: Course[] =
     originalPrice: 110000,
     thumbnail: 'https://images.pexels.com/photos/3845810/pexels-photo-3845810.jpeg',
     category: 'Clinical Dentistry',
-    mode: 'Both',
+    mode: 'Hybrid',
     duration: '8 months',
     rating: 4.9,
     reviewCount: 142,
@@ -565,7 +565,7 @@ export const courses: Course[] =
     originalPrice: 35000,
     thumbnail: 'https://images.pexels.com/photos/6528840/pexels-photo-6528840.jpeg',
     category: 'Clinical Dentistry',
-    mode: 'Both',
+    mode: 'Hybrid',
     duration: '4 months',
     rating: 4.7,
     reviewCount: 87,
@@ -646,7 +646,7 @@ export const courses: Course[] =
     originalPrice: 28000,
     thumbnail: 'https://images.pexels.com/photos/3952048/pexels-photo-3952048.jpeg',
     category: 'Clinical Dentistry',
-    mode: 'Both',
+    mode: 'Hybrid',
     duration: '3 months',
     rating: 4.8,
     reviewCount: 134,

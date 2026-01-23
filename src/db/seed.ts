@@ -19,6 +19,16 @@ async function main() {
     console.log("🌱 Seeding started...");
 
     try {
+        // Clear existing data first
+        console.log("🗑️ Clearing existing data...");
+        await db.delete(schema.course);
+        await db.delete(schema.exam);
+        await db.delete(schema.testSeries);
+        await db.delete(schema.review);
+        await db.delete(schema.video);
+        await db.delete(schema.note);
+        console.log("✅ Existing data cleared!");
+
         // Seed courses
         console.log("📚 Seeding courses...");
         await db.insert(schema.course).values(courses);

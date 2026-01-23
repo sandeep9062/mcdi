@@ -16,6 +16,16 @@ import { Course } from "@/types/types";
 import { categories } from "@/data/categories";
 import { motion } from "framer-motion";
 import { Spinner } from "@/components/ui/spinner";
+
+// Utility function to convert duration string to days
+const getDurationInDays = (duration: string): number => {
+  const match = duration.match(/(\d+)\s*(month|months)/i);
+  if (match) {
+    const months = parseInt(match[1]);
+    return months * 30; // Approximate months to days
+  }
+  return 0;
+};
 export default function CoursesPage() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
@@ -43,6 +53,7 @@ export default function CoursesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedMode, setSelectedMode] = useState("all");
+  const [selectedDuration, setSelectedDuration] = useState("all");
   const [sortBy, setSortBy] = useState("popular");
 
   const filteredAndSortedCourses = useMemo(() => {
@@ -57,8 +68,24 @@ export default function CoursesPage() {
       const matchesMode =
         selectedMode === "all" ||
         course.mode === selectedMode ||
-        course.mode === "Both";
-      return matchesSearch && matchesCategory && matchesMode;
+        course.mode === "Hybrid";
+      const matchesDuration = (() => {
+        if (selectedDuration === "all") return true;
+        const durationDays = getDurationInDays(course.duration);
+        switch (selectedDuration) {
+          case "1-2-months":
+            return durationDays >= 30 && durationDays <= 60;
+          case "3-4-months":
+            return durationDays >= 90 && durationDays <= 120;
+          case "5-6-months":
+            return durationDays >= 150 && durationDays <= 180;
+          case "6-plus-months":
+            return durationDays > 180;
+          default:
+            return true;
+        }
+      })();
+      return matchesSearch && matchesCategory && matchesMode && matchesDuration;
     });
 
     filtered.sort((a, b) => {
@@ -71,13 +98,17 @@ export default function CoursesPage() {
           return a.price - b.price;
         case "price-high":
           return b.price - a.price;
+        case "duration-short":
+          return getDurationInDays(a.duration) - getDurationInDays(b.duration);
+        case "duration-long":
+          return getDurationInDays(b.duration) - getDurationInDays(a.duration);
         default:
           return 0;
       }
     });
 
     return filtered;
-  }, [courses, searchQuery, selectedCategory, selectedMode, sortBy]);
+  }, [courses, searchQuery, selectedCategory, selectedMode, selectedDuration, sortBy]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -126,6 +157,7 @@ export default function CoursesPage() {
                     onClick={() => {
                       setSelectedCategory("all");
                       setSelectedMode("all");
+                      setSelectedDuration("all");
                       setSearchQuery("");
                     }}
                   >
@@ -170,7 +202,7 @@ export default function CoursesPage() {
                       Learning Mode
                     </label>
                     <div className="space-y-2">
-                      {["all", "Online", "Offline", "Both"].map((mode) => (
+                      {["all", "Online", "Offline", "Hybrid"].map((mode) => (
                         <button
                           key={mode}
                           onClick={() => setSelectedMode(mode)}
@@ -181,6 +213,33 @@ export default function CoursesPage() {
                           }`}
                         >
                           {mode === "all" ? "All Modes" : mode}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Duration
+                    </label>
+                    <div className="space-y-2">
+                      {[
+                        { value: "all", label: "All Durations" },
+                        { value: "1-2-months", label: "1-2 Months" },
+                        { value: "3-4-months", label: "3-4 Months" },
+                        { value: "5-6-months", label: "5-6 Months" },
+                        { value: "6-plus-months", label: "6+ Months" },
+                      ].map((duration) => (
+                        <button
+                          key={duration.value}
+                          onClick={() => setSelectedDuration(duration.value)}
+                          className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${
+                            selectedDuration === duration.value
+                              ? "bg-teal-50 text-teal-700 font-medium"
+                              : "hover:bg-gray-50"
+                          }`}
+                        >
+                          {duration.label}
                         </button>
                       ))}
                     </div>
@@ -255,6 +314,12 @@ export default function CoursesPage() {
                           <SelectItem value="price-high">
                             Price: High to Low
                           </SelectItem>
+                          <SelectItem value="duration-short">
+                            Duration: Short to Long
+                          </SelectItem>
+                          <SelectItem value="duration-long">
+                            Duration: Long to Short
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -288,6 +353,7 @@ export default function CoursesPage() {
                         onClick={() => {
                           setSelectedCategory("all");
                           setSelectedMode("all");
+                          setSelectedDuration("all");
                           setSearchQuery("");
                         }}
                       >
