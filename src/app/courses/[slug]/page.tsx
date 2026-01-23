@@ -20,6 +20,7 @@ import {
 import { useCart } from "@/context/CartContext";
 import { toast } from "sonner";
 import FAQAccordion from "@/components/FAQAccordion";
+import { SocialProofStrip } from "@/components/SocialProofStrip";
 import { motion } from "framer-motion";
 import { Course } from "@/types/types";
 export default function CourseDetailPage({
@@ -180,6 +181,8 @@ export default function CourseDetailPage({
           </div>
         </div>
       </section>
+
+      <SocialProofStrip />
 
       <section className="py-12">
         <div className="container mx-auto px-4">
