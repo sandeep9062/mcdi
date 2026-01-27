@@ -5,18 +5,27 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import NotesTable from "./notes-table";
+import { Note } from "@/types/types";
 
 export default async function AdminNotesPage() {
   const rawNotes = await db.select().from(note).orderBy(desc(note.createdAt));
-  const allNotes = rawNotes.map(n => ({
+
+  const allNotes: Note[] = rawNotes.map((n: any) => ({
     ...n,
-    tags: n.tags as string[],
+    tags: Array.isArray(n.tags) ? n.tags : [],
+    
+    // We use (n as any) or casting the map parameter to 'any' 
+    // to stop the "Property price does not exist" error during build.
+    price: n.price ?? 0, 
+    originalPrice: n.originalPrice ?? null,
+
+    dateCreated: n.createdAt ? new Date(n.createdAt).toISOString() : new Date().toISOString(),
   }));
 
   return (
     <div className="p-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Notes Management</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Notes Management</h1>
         <Link href="/admin-dashboard/notes/notes-form">
           <Button className="bg-teal-600 hover:bg-teal-700">
             <Plus className="mr-2 h-4 w-4" />
@@ -53,7 +62,9 @@ export default async function AdminNotesPage() {
         </div>
       </div>
 
-      <NotesTable data={allNotes} />
+      <div className="bg-white rounded-xl shadow-sm border">
+        <NotesTable data={allNotes} />
+      </div>
     </div>
   );
 }

@@ -315,6 +315,10 @@ export const note = pgTable(
     category: text("category").notNull(),
     subject: text("subject").notNull(),
     content: text("content").notNull(),
+
+
+    price: integer("price").notNull().default(0), // Added this
+    originalPrice: integer("original_price"),      // Added this
     tags: jsonb("tags").notNull(), // string[]
     author: text("author").notNull(),
     dateCreated: text("date_created").notNull(),

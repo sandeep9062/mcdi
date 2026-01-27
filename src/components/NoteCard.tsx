@@ -18,18 +18,21 @@ interface NoteCardProps {
 export default function NoteCard({ note }: NoteCardProps) {
   const { addToCart } = useCart();
 
+  // We cast to 'any' here to prevent the build error if originalPrice 
+  // is missing from the global 'Note' type definition.
+  const noteData = note as any;
+
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
-    // Safety check: ensure note exists before adding to cart
-    if (!note) return;
+    if (!noteData) return;
     
-    addToCart(note as any); 
-    toast.success(`${note.title} added to cart!`);
+    addToCart(noteData); 
+    toast.success(`${noteData.title} added to cart!`);
   };
 
-  // Safe variables to prevent crashing if data is missing
-  const currentPrice = note?.price ?? 0;
-  const originalPrice = note?.originalPrice;
+  // Safe variables: explicitly handle the potential missing fields
+  const currentPrice = noteData?.price ?? 0;
+  const originalPrice = noteData?.originalPrice;
 
   return (
     <motion.div
@@ -39,8 +42,8 @@ export default function NoteCard({ note }: NoteCardProps) {
       {/* Thumbnail with Lock Overlay */}
       <div className="relative h-48 overflow-hidden bg-gray-100">
         <Image
-          src={note?.thumbnail || '/placeholder-note.jpg'}
-          alt={note?.title || "Dental Notes"}
+          src={noteData?.thumbnail || '/placeholder-note.jpg'}
+          alt={noteData?.title || "Dental Notes"}
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-500"
         />
@@ -48,19 +51,19 @@ export default function NoteCard({ note }: NoteCardProps) {
             <Lock className="text-white h-8 w-8" />
         </div>
         <Badge className="absolute top-3 left-3 bg-white/90 text-teal-900 backdrop-blur-sm border-none capitalize">
-          {note?.category || "General"}
+          {noteData?.category || "General"}
         </Badge>
       </div>
 
       <div className="p-5 flex flex-col flex-grow">
         <div className="flex justify-between items-start mb-2">
           <h3 className="font-bold text-lg text-gray-900 line-clamp-2 leading-tight group-hover:text-teal-600 transition-colors">
-            {note?.title || "Untitled Note"}
+            {noteData?.title || "Untitled Note"}
           </h3>
         </div>
 
         <p className="text-sm text-gray-600 line-clamp-2 mb-4">
-          {note?.shortDescription || "No description available."}
+          {noteData?.shortDescription || "No description available."}
         </p>
 
         <div className="flex items-center gap-3 mb-4">
@@ -74,13 +77,12 @@ export default function NoteCard({ note }: NoteCardProps) {
 
         <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
           <div>
-            {/* FIXED: Added fallback and optional chaining to prevent crash */}
             <span className="text-xl font-bold text-gray-900">
-              ₹{currentPrice.toLocaleString()}
+              ₹{Number(currentPrice).toLocaleString()}
             </span>
             {originalPrice && (
                 <span className="ml-2 text-xs text-gray-400 line-through">
-                  ₹{originalPrice.toLocaleString()}
+                  ₹{Number(originalPrice).toLocaleString()}
                 </span>
             )}
           </div>
@@ -94,7 +96,7 @@ export default function NoteCard({ note }: NoteCardProps) {
             >
               <ShoppingCart className="h-4 w-4" />
             </Button>
-            <Link href={`/notes/${note?.slug}`}>
+            <Link href={`/notes/${noteData?.slug}`}>
               <Button size="sm" className="bg-teal-600 hover:bg-teal-700 rounded-full px-4 h-9">
                 Preview
               </Button>

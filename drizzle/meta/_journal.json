@@ -43,6 +43,13 @@
       "when": 1769163654800,
       "tag": "0005_breezy_newton_destine",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1769499618653,
+      "tag": "0006_colorful_the_call",
+      "breakpoints": true
     }
   ]
 }
