@@ -110,7 +110,7 @@ export default function TestSeriesPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-teal-600 to-teal-800 text-white py-16">
+      <section className="bg-gradient-to-br from-(--color-1) to-(--color-2) text-white py-16">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

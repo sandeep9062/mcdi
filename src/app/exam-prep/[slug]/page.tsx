@@ -80,7 +80,7 @@ export default function ExamDetailPage({
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <section className="bg-gradient-to-br from-teal-600 to-teal-800 text-white py-16">
+      <section className="bg-gradient-to-br from-(--color-1) to-(--color-2) text-white py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <motion.div
@@ -98,7 +98,7 @@ export default function ExamDetailPage({
                 {exam.name}
               </h1>
               <p className="text-xl text-teal-50 mb-2">{exam.fullName}</p>
-              <Badge className="bg-white text-teal-700 text-base px-4 py-1">
+              <Badge className="bg-white text-(--color-3) text-base px-4 py-1">
                 {exam.country}
               </Badge>
               <p className="text-lg text-teal-50 mt-6 leading-relaxed">
@@ -140,7 +140,7 @@ export default function ExamDetailPage({
                   <div className="space-y-3">
                     {exam.whoIsThisFor.map((item, index) => (
                       <div key={index} className="flex items-start gap-3">
-                        <Users className="h-5 w-5 text-teal-600 flex-shrink-0 mt-0.5" />
+                        <Users className="h-5 w-5 text-(--color-1) flex-shrink-0 mt-0.5" />
                         <span className="text-gray-700">{item}</span>
                       </div>
                     ))}
@@ -159,7 +159,7 @@ export default function ExamDetailPage({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {exam.whatIncluded.map((item, index) => (
                       <div key={index} className="flex items-start gap-3">
-                        <CheckCircle className="h-5 w-5 text-teal-600 flex-shrink-0 mt-0.5" />
+                        <CheckCircle className="h-5 w-5 text-(--color-1) flex-shrink-0 mt-0.5" />
                         <span className="text-gray-700">{item}</span>
                       </div>
                     ))}
@@ -179,10 +179,10 @@ export default function ExamDetailPage({
                     {exam.studyPlan.map((phase, index) => (
                       <div
                         key={index}
-                        className="border-l-4 border-teal-600 pl-6"
+                        className="border-l-4 border-(--color-1) pl-6"
                       >
                         <div className="flex items-center gap-3 mb-2">
-                          <Clock className="h-5 w-5 text-teal-600" />
+                          <Clock className="h-5 w-5 text-(--color-1)" />
                           <h3 className="font-semibold text-lg text-gray-900">
                             {phase.phase}
                           </h3>
@@ -194,7 +194,7 @@ export default function ExamDetailPage({
                               key={itemIndex}
                               className="flex items-start gap-2 text-gray-700"
                             >
-                              <span className="text-teal-600 mt-1">•</span>
+                              <span className="text-(--color-1) mt-1">•</span>
                               <span>{item}</span>
                             </li>
                           ))}
@@ -272,7 +272,7 @@ export default function ExamDetailPage({
                     <Link href="/courses">
                       <Button
                         size="lg"
-                        className="w-full bg-teal-600 hover:bg-teal-700"
+                        className="w-full text-(--color-1) hover:bg-(--color-2)"
                       >
                         Explore Related Courses
                         <ArrowRight className="ml-2 h-5 w-5" />

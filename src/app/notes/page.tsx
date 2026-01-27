@@ -75,21 +75,21 @@ export default function NotesHubPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-teal-700 to-teal-900 text-white py-16">
+      <section className="bg-gradient-to-br from-(--color-1) to-(--color-2) text-white py-16">
         <div className="container mx-auto px-4 text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <Badge className="bg-teal-500/20 text-teal-200 border-teal-500/30 mb-4 px-4 py-1">Premium Study Material</Badge>
+            <Badge className="bg-teal-500/20 text-white border-teal-500/30 mb-4 px-4 py-1">Premium Study Material</Badge>
             <h1 className="text-4xl md:text-5xl font-bold mb-6 text-white tracking-tight">Dental Notes Hub</h1>
-            <p className="text-teal-100 mb-8 max-w-2xl mx-auto text-lg">
+            <p className="text-white mb-8 max-w-2xl mx-auto text-lg">
               Unlock high-yield, expert-curated PDF notes. Master complex dental topics with visual summaries.
             </p>
             <div className="max-w-xl mx-auto relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-teal-300 h-5 w-5" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white h-5 w-5" />
               <Input
                 placeholder="Search by topic, e.g., Endodontics..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 h-14 bg-white/10 border-white/20 text-white placeholder:text-teal-200 focus:bg-white focus:text-black transition-all"
+                className="pl-12 h-14 bg-white/10 border-white/20 text-white placeholder:text-white focus:bg-white focus:text-black transition-all"
               />
             </div>
           </motion.div>
@@ -130,9 +130,9 @@ export default function NotesHubPage() {
                     </div>
                   </div>
                   <Separator />
-                  <div className="bg-teal-50 p-4 rounded-xl border border-teal-100">
-                    <h4 className="text-sm font-bold text-teal-900 mb-2">Note Access</h4>
-                    <p className="text-xs text-teal-700">Once purchased, notes are available in your dashboard for lifetime reading.</p>
+                  <div className="bg-gray-50 p-4 rounded-xl border border-white">
+                    <h4 className="text-sm font-bold text-(--color-1) mb-2">Note Access</h4>
+                    <p className="text-xs text-(--color-1)">Once purchased, notes are available in your dashboard for lifetime reading.</p>
                   </div>
                 </div>
               </div>

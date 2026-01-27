@@ -27,7 +27,7 @@ export default function ExamCard({ exam }: ExamCardProps) {
           <p className="text-sm text-gray-600 line-clamp-2">{exam.fullName}</p>
           <div className="flex items-center gap-1 mt-1">
             <span className="text-xs">{exam.countryFlag}</span>
-            <p className="text-xs text-teal-600 font-medium line-clamp-1">{exam.country}</p>
+            <p className="text-xs text-(--color-1) font-medium line-clamp-1">{exam.country}</p>
           </div>
         </div>
       </div>
@@ -36,7 +36,7 @@ export default function ExamCard({ exam }: ExamCardProps) {
 
       <div className="mt-auto">
         <Link href={`/exam-prep/${exam.slug}`}>
-          <Button className="w-full bg-teal-600 hover:bg-teal-700">
+          <Button className="w-full bg-(--color-1) hover:bg-(--color-2)">
             Learn More
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>

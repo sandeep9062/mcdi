@@ -7,7 +7,7 @@ import { GraduationCap } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import { Exam } from "@/types/types";
 import WhyChooseExamPrep from "@/components/WhyChooseExamPrep";
-
+import Image from "next/image";
 export default function ExamPrepHubPage() {
   const [exams, setExams] = useState<Exam[]>([]);
   const [loading, setLoading] = useState(true);
@@ -34,14 +34,13 @@ export default function ExamPrepHubPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <section className="bg-gradient-to-br from-teal-600 to-teal-800 text-white py-20">
+      <section className="bg-gradient-to-br from-(--color-1) to-(--color-2) text-white py-20">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="max-w-4xl mx-auto text-center"
           >
-            <GraduationCap className="h-16 w-16 mx-auto mb-6" />
             <h1 className="text-4xl md:text-5xl font-bold mb-6">
               International Dental Licensing Exam Preparation
             </h1>
@@ -95,8 +94,7 @@ export default function ExamPrepHubPage() {
           )}
         </div>
       </section>
-<WhyChooseExamPrep/>
-     
+      <WhyChooseExamPrep />
     </div>
   );
 }

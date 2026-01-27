@@ -121,7 +121,7 @@ export default function TestSeriesDetailPage({ params }: { params: Promise<{ slu
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <section className="bg-gradient-to-br from-teal-600 to-teal-800 text-white py-16">
+      <section className="bg-gradient-to-br from-(--color-1) to-(--color-2) text-white py-16">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -142,11 +142,11 @@ export default function TestSeriesDetailPage({ params }: { params: Promise<{ slu
                 <h1 className="text-3xl md:text-4xl font-bold mb-4">
                   {testSeries.title}
                 </h1>
-                <p className="text-lg text-teal-100 mb-6">
+                <p className="text-lg text-white mb-6">
                   {testSeries.shortDescription}
                 </p>
 
-                <div className="flex items-center gap-4 text-sm text-teal-100 mb-6">
+                <div className="flex items-center gap-4 text-sm text-white mb-6">
                   <Badge className="bg-white/20 text-white border-white/30">
                     {testSeries.examType}
                   </Badge>
@@ -158,7 +158,7 @@ export default function TestSeriesDetailPage({ params }: { params: Promise<{ slu
                   </Badge>
                 </div>
 
-                <div className="flex items-center gap-6 text-sm text-teal-100">
+                <div className="flex items-center gap-6 text-sm text-white">
                   <div className="flex items-center gap-1">
                     <BookOpen className="h-4 w-4" />
                     <span>{testSeries.questionsCount} Questions</span>
@@ -185,7 +185,7 @@ export default function TestSeriesDetailPage({ params }: { params: Promise<{ slu
                       className="object-cover rounded-lg"
                     />
                     {testSeries.featured && (
-                      <Badge className="absolute top-3 left-3 bg-teal-600">
+                      <Badge className="absolute top-3 left-3 bg-(--color-1)">
                         Featured
                       </Badge>
                     )}
@@ -208,7 +208,7 @@ export default function TestSeriesDetailPage({ params }: { params: Promise<{ slu
 
                     <Button
                       onClick={handleAddToCart}
-                      className="w-full bg-teal-600 hover:bg-teal-700"
+                      className="w-full bg-(--color-1) hover:bg-(--color-1)"
                     >
                       <ShoppingCart className="mr-2 h-4 w-4" />
                       Add to Cart
@@ -258,7 +258,7 @@ export default function TestSeriesDetailPage({ params }: { params: Promise<{ slu
                         key={index}
                         className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg"
                       >
-                        <CheckCircle className="h-5 w-5 text-teal-600 flex-shrink-0 mt-0.5" />
+                        <CheckCircle className="h-5 w-5 text-(--color-1) flex-shrink-0 mt-0.5" />
                         <span className="text-gray-700">{item}</span>
                       </div>
                     ))}
