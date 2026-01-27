@@ -74,7 +74,7 @@ export default function Navbar() {
                 <span className="font-bold text-(--color-1) leading-none text-lg tracking-tight">
                   Master Clinical
                 </span>
-                <span className="text-(--color-3) font-semibold text-xs uppercase tracking-widest">
+                <span className="text-(--color-3) font-semibold text-xs  tracking-widest">
                   Dentistry Institute
                 </span>
               </div>
@@ -137,7 +137,7 @@ export default function Navbar() {
                   )
                 }
                 variant="default"
-                className="bg-(--color-1) hover:bg-(--color-2) text-white shadow-md shadow-teal-100 transition-all active:scale-95 flex items-center gap-2 rounded-lg"
+                className="bg-(--color-1) hover:bg-(--color-2) text-white shadow-md shadow-(--color-1) transition-all active:scale-95 flex items-center gap-2 rounded-lg"
               >
                 <LayoutDashboard className="w-4 h-4" />
                 <span className="hidden sm:inline">Dashboard</span>

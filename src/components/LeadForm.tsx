@@ -8,6 +8,8 @@ import { Textarea } from "./ui/textarea";
 import { toast } from "sonner";
 import { createLead } from "@/lib/actions/leads-actions";
 
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css"; // Ensure you import the base styles
 export default function LeadForm() {
   const [isPending, startTransition] = useTransition();
 
@@ -71,6 +73,11 @@ export default function LeadForm() {
     });
   };
 
+  // Custom handler for the Phone Input since it returns value directly
+  const handlePhoneChange = (value?: string) => {
+    setFormData((prev) => ({ ...prev, phone: value || "" }));
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -117,19 +124,18 @@ export default function LeadForm() {
             placeholder="your@email.com"
           />
         </div>
-        <div>
-          <Label htmlFor="phone">
-            Phone <span className="text-red-500">*</span>
-          </Label>
-          <Input
-            id="phone"
-            name="phone"
-            type="tel"
-            value={formData.phone}
-            onChange={handleChange}
-            required
-            placeholder="+91-XXXXXXXXXX"
-          />
+         {/* International Phone Input */}
+        <div className="space-y-2">
+          <Label htmlFor="phone" className="text-sm font-semibold">Phone Number <span className="text-destructive">*</span></Label>
+          <div className="phone-input-container">
+            <PhoneInput
+              international
+              defaultCountry="IN"
+              value={formData.phone}
+              onChange={handlePhoneChange}
+              className="flex h-10 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-brand focus-within:ring-offset-2"
+            />
+          </div>
         </div>
       </div>
 
@@ -209,7 +215,7 @@ export default function LeadForm() {
       <Button
         type="submit"
         disabled={isPending}
-        className="w-full bg-teal-600 hover:bg-teal-700"
+        className="w-full bg-(--color-1) hover:bg-(--color-2)"
       >
         {isPending ? "Submitting..." : "Request Free Demo Class"}
       </Button>

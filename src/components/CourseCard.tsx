@@ -39,10 +39,10 @@ export default function CourseCard({ course }: CourseCardProps) {
             className="object-cover hover:scale-105 transition-transform duration-300"
           />
           {course.featured && (
-            <Badge className="absolute top-3 left-3 bg-teal-600">Featured</Badge>
+            <Badge className="absolute top-3 left-3 bg-(--color-1)">Featured</Badge>
           )}
           {course.popular && (
-            <Badge className="absolute top-3 right-3 bg-orange-500">Popular</Badge>
+            <Badge className="absolute top-3 right-3 bg-(--color-4)">Popular</Badge>
           )}
         </div>
       </Link>
@@ -53,7 +53,7 @@ export default function CourseCard({ course }: CourseCardProps) {
             <Badge variant="outline" className="mb-2">
               {course.mode}
             </Badge>
-            <h3 className="font-semibold text-lg text-gray-900 line-clamp-2 hover:text-teal-600 transition-colors">
+            <h3 className="font-semibold text-lg text-gray-900 line-clamp-2 hover:text-(--color-1) transition-colors">
               {course.title}
             </h3>
           </div>
@@ -89,12 +89,12 @@ export default function CourseCard({ course }: CourseCardProps) {
               variant="outline"
               size="icon"
               onClick={handleAddToCart}
-              className="hover:bg-teal-50 hover:text-teal-600 hover:border-teal-600"
+              className="hover:bg-teal-50 hover:text-(--color-2) hover:border-(--color-1)"
             >
               <ShoppingCart className="h-4 w-4" />
             </Button>
             <Link href={`/courses/${course.slug}`}>
-              <Button size="sm" className="bg-teal-600 hover:bg-teal-700">
+              <Button size="sm" className="bg-(--color-1) hover:bg-(--color-2)">
                 View Details
               </Button>
             </Link>

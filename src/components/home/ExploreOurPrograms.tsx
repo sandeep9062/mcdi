@@ -17,7 +17,7 @@ const ExploreOurPrograms = () => {
   };
 
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-10 bg-gray-50">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -43,15 +43,15 @@ const ExploreOurPrograms = () => {
               viewport={{ once: true }}
               className="group bg-white rounded-2xl p-8 shadow-sm hover:shadow-2xl transition-all duration-300 border border-gray-200 flex flex-col items-center text-center"
             >
-              <div className="h-20 w-20 bg-teal-50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-teal-600 transition-colors duration-300">
+              <div className="h-20 w-20 bg-teal-50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-(--color-2) transition-colors duration-300">
                 {category.icon === "Stethoscope" && (
-                  <Stethoscope className="h-10 w-10 text-teal-600 group-hover:text-white transition-colors" />
+                  <Stethoscope className="h-10 w-10 text-(--color-1) group-hover:text-white transition-colors" />
                 )}
                 {category.icon === "GraduationCap" && (
-                  <GraduationCap className="h-10 w-10 text-teal-600 group-hover:text-white transition-colors" />
+                  <GraduationCap className="h-10 w-10 text-(--color-1) group-hover:text-white transition-colors" />
                 )}
                 {category.icon === "HeartPulse" && (
-                  <HeartPulse className="h-10 w-10 text-teal-600 group-hover:text-white transition-colors" />
+                  <HeartPulse className="h-10 w-10 text-(--color-1) group-hover:text-white transition-colors" />
                 )}
               </div>
 
@@ -65,7 +65,7 @@ const ExploreOurPrograms = () => {
 
               <Link 
                 href={getLink(category.slug)}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white border-2 border-teal-600 text-teal-600 font-bold rounded-xl hover:bg-teal-600 hover:text-white transition-all duration-300 group/btn"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white border-2 border-(--color-1) text-(--color-1) font-bold rounded-xl hover:bg-(--color-2) hover:text-white transition-all duration-300 group/btn"
               >
                 Know More
                 <ArrowRight className="h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />

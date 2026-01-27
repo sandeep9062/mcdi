@@ -6,7 +6,7 @@ const RequestFreeDemo = () => {
   return (
      <section
         id="lead-form"
-        className="py-20 bg-gradient-to-br from-teal-600 to-teal-800"
+        className="py-20 bg-gradient-to-br from-(--color-1) to-(--color-2)"
       >
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">

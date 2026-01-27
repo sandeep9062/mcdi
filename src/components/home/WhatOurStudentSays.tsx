@@ -120,7 +120,7 @@ const WhatOurStudentSays = () => {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-2 border-teal-600 text-teal-600 hover:bg-teal-50"
+                  className="border-2 border-(--color-1) text-(--color-2) hover:bg-(--color-1) hover:text-white"
                 >
                   Read More Reviews
                   <ArrowRight className="ml-2 h-5 w-5" />
