@@ -7,7 +7,6 @@ import {
   Zap, 
   History, 
   ChevronRight, 
-  ArrowUpRight,
   Clock,
   Target
 } from "lucide-react";
@@ -19,14 +18,23 @@ import { Spinner } from "@/components/ui/spinner";
 import { 
   Card, 
   CardContent, 
-  CardDescription, 
   CardHeader, 
   CardTitle 
 } from "@/components/ui/card";
 import Link from "next/link";
 
+/** * FIX 1: Import the base TestSeries interface. 
+ * Adjust this path to match your project structure.
+ */
+import { TestSeries } from "@/types/types"; 
+
 // Type definition for Student Test Series
+// FIX 2: Added missing properties used in JSX to the interface
 interface MyTestSeries extends TestSeries {
+  id: string;
+  title: string;
+  examType: string;
+  questionsCount: number;
   totalTests: number;
   completedTests: number;
   averagePercentile: number;
@@ -42,6 +50,7 @@ export default function StudentTestSeriesDashboard() {
     const fetchMySeries = async () => {
       try {
         const response = await fetch("/api/student/my-test-series");
+        if (!response.ok) throw new Error("Failed to load");
         const data = await response.json();
         setMySeries(data);
       } catch (err) {
@@ -53,12 +62,11 @@ export default function StudentTestSeriesDashboard() {
     fetchMySeries();
   }, []);
 
-  // Summary Metrics
   const summary = useMemo(() => {
     return {
       activeSeries: mySeries.length,
       totalQuestionsSolved: mySeries.reduce((acc, curr) => acc + (curr.completedTests * 100), 0),
-      overallAccuracy: 74, // This would ideally be calculated from API data
+      overallAccuracy: 74, 
     };
   }, [mySeries]);
 
@@ -68,7 +76,6 @@ export default function StudentTestSeriesDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-12">
-      {/* Dashboard Top Section */}
       <div className="bg-white border-b border-gray-200 py-10">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
@@ -88,7 +95,6 @@ export default function StudentTestSeriesDashboard() {
       <div className="container mx-auto px-4 mt-10">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
-          {/* Main List of Test Series */}
           <div className="lg:col-span-2 space-y-6">
             <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
               <FileText className="h-5 w-5" />
@@ -104,7 +110,6 @@ export default function StudentTestSeriesDashboard() {
             )}
           </div>
 
-          {/* Right Sidebar: Quick Stats & Recent Activity */}
           <div className="space-y-6">
              <Card>
                 <CardHeader>
@@ -135,10 +140,10 @@ export default function StudentTestSeriesDashboard() {
   );
 }
 
-/** * INDIVIDUAL SERIES INTERACTIVE CARD 
- */
 function SeriesActionCard({ series }: { series: MyTestSeries }) {
-  const progressPercent = Math.round((series.completedTests / series.totalTests) * 100);
+  const progressPercent = series.totalTests > 0 
+    ? Math.round((series.completedTests / series.totalTests) * 100) 
+    : 0;
 
   return (
     <Card className="hover:shadow-md transition-shadow overflow-hidden border-l-4 border-l-teal-600">
@@ -187,13 +192,17 @@ function SeriesActionCard({ series }: { series: MyTestSeries }) {
           </div>
 
           <div className="bg-gray-50 p-6 flex flex-col justify-center gap-3 border-t md:border-t-0 md:border-l border-gray-100 w-full md:w-56">
-             <Button className="w-full bg-teal-600 hover:bg-teal-700">
-                Continue Test
-                <ChevronRight className="ml-2 h-4 w-4" />
+             <Button className="w-full bg-teal-600 hover:bg-teal-700" asChild>
+                <Link href={`/dashboard/test-series/${series.id}`}>
+                  Continue Test
+                  <ChevronRight className="ml-2 h-4 w-4" />
+                </Link>
              </Button>
-             <Button variant="outline" className="w-full text-gray-600">
-                <BarChart2 className="mr-2 h-4 w-4" />
-                Performance
+             <Button variant="outline" className="w-full text-gray-600" asChild>
+                <Link href={`/dashboard/test-series/${series.id}/performance`}>
+                  <BarChart2 className="mr-2 h-4 w-4" />
+                  Performance
+                </Link>
              </Button>
           </div>
         </div>
@@ -202,7 +211,6 @@ function SeriesActionCard({ series }: { series: MyTestSeries }) {
   );
 }
 
-// Sub-components
 function SummaryMetric({ icon, label, value }: { icon: React.ReactNode; label: string; value: string | number }) {
   return (
     <div className="bg-white p-3 rounded-xl shadow-sm border border-gray-100 flex items-center gap-3 min-w-[120px]">

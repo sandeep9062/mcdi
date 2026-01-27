@@ -8,7 +8,6 @@ import {
   Clock, 
   Award, 
   ArrowUpRight,
-  ChevronRight,
   FileText
 } from "lucide-react";
 import { motion } from "framer-motion";
@@ -18,9 +17,12 @@ import { Progress } from "@/components/ui/progress";
 import { Spinner } from "@/components/ui/spinner";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import Link from "next/link";
+import { Exam } from "@/types/types"; 
 
-// Extended Exam type for Student Dashboard
+// Extended Exam type - Added 'title' and 'id' explicitly to satisfy the compiler
 interface StudentExam extends Exam {
+  id: string;
+  title: string; 
   enrolledDate: string;
   nextMockTest: string;
   overallScore: number;
@@ -54,9 +56,17 @@ export default function StudentExamsDashboard() {
     <div className="flex justify-center items-center min-h-[60vh]"><Spinner /></div>
   );
 
+  if (error) return (
+    <div className="p-8 text-center text-red-500 bg-red-50 rounded-lg m-4 border border-red-100">
+      <p>Error: {error}</p>
+      <Button variant="outline" className="mt-4" onClick={() => window.location.reload()}>
+        Retry
+      </Button>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-[#F9FAFB] pb-12">
-      {/* Dashboard Top Banner */}
       <div className="bg-white border-b border-gray-200 pt-10 pb-6">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -65,7 +75,6 @@ export default function StudentExamsDashboard() {
               <p className="text-gray-500">Track your mock tests and licensing exam readiness.</p>
             </div>
             
-            {/* Quick Analytics Summary */}
             <div className="flex gap-4 mb-1">
               <div className="px-4 py-2 bg-teal-50 rounded-lg border border-teal-100 text-center">
                 <p className="text-xs text-teal-600 font-bold uppercase tracking-wider">Avg. Score</p>
@@ -118,10 +127,11 @@ export default function StudentExamsDashboard() {
   );
 }
 
-/**
- * FEATURED CARD FOR ACTIVE PREPARATION
- */
 function ActiveExamCard({ exam }: { exam: StudentExam }) {
+  const completionPercentage = exam.totalMocks > 0 
+    ? Math.round((exam.completedMocks / exam.totalMocks) * 100) 
+    : 0;
+
   return (
     <motion.div 
       initial={{ opacity: 0, scale: 0.98 }}
@@ -140,11 +150,10 @@ function ActiveExamCard({ exam }: { exam: StudentExam }) {
             </div>
           </div>
           <Badge className="bg-orange-100 text-orange-700 hover:bg-orange-100 border-none px-3 py-1">
-            Exam in 24 Days
+            Exam Prep Mode
           </Badge>
         </div>
 
-        {/* Scoring Statistics */}
         <div className="grid grid-cols-3 gap-4 mb-8">
           <ScoreWidget label="Mock Score" value={`${exam.overallScore}%`} icon={<BarChart3 size={14}/>} />
           <ScoreWidget label="Completion" value={`${exam.completedMocks}/${exam.totalMocks}`} icon={<FileText size={14}/>} />
@@ -154,22 +163,21 @@ function ActiveExamCard({ exam }: { exam: StudentExam }) {
         <div className="space-y-4">
           <div className="flex justify-between text-sm">
             <span className="text-gray-600 font-medium">Preparation Readiness</span>
-            <span className="text-teal-600 font-bold">{Math.round((exam.completedMocks / exam.totalMocks) * 100)}%</span>
+            <span className="text-teal-600 font-bold">{completionPercentage}%</span>
           </div>
-          <Progress value={(exam.completedMocks / exam.totalMocks) * 100} className="h-2" />
+          <Progress value={completionPercentage} className="h-2" />
         </div>
 
         <div className="mt-8 flex flex-col sm:flex-row gap-3">
-          <Button className="flex-1 bg-teal-600 hover:bg-teal-700">
-            Take Mock Test
+          <Button className="flex-1 bg-teal-600 hover:bg-teal-700" asChild>
+             <Link href={`/dashboard/exams/${exam.id}/mock`}>Take Mock Test</Link>
           </Button>
-          <Button variant="outline" className="flex-1">
-            Study Material
+          <Button variant="outline" className="flex-1" asChild>
+             <Link href={`/dashboard/exams/${exam.id}/materials`}>Study Material</Link>
           </Button>
         </div>
       </div>
       
-      {/* Bottom status bar */}
       <div className="bg-gray-50 px-6 py-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
         <span className="flex items-center gap-1"><Clock size={12} /> Next Mock: {exam.nextMockTest}</span>
         <Link href={`/dashboard/exams/${exam.id}`} className="text-teal-600 font-bold flex items-center gap-1 hover:underline">
@@ -180,9 +188,6 @@ function ActiveExamCard({ exam }: { exam: StudentExam }) {
   );
 }
 
-/**
- * SMALLER CARD FOR COMPLETED PREP
- */
 function CompletedExamCard({ exam }: { exam: StudentExam }) {
   return (
     <div className="bg-white p-5 rounded-xl border border-gray-200">

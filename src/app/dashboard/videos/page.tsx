@@ -6,7 +6,6 @@ import {
   Clock, 
   Bookmark, 
   Search, 
-  Filter, 
   History,
   CheckCircle2,
   MoreVertical
@@ -19,10 +18,16 @@ import { Progress } from "@/components/ui/progress";
 import { Spinner } from "@/components/ui/spinner";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import Image from "next/image";
+import { Video } from "@/types/types"; 
 
 // Extended Video type for Dashboard
 interface StudentVideo extends Video {
-  progress: number; // Percentage watched
+  id: string;
+  title: string;
+  category: string;
+  // FIX: thumbnail must be a strict string to match the base 'Video' interface
+  thumbnail: string; 
+  progress: number; 
   isSaved: boolean;
   lastWatched: string;
   durationInMins: number;
@@ -37,6 +42,7 @@ export default function StudentVideosDashboard() {
     const fetchMyVideos = async () => {
       try {
         const response = await fetch("/api/student/my-videos");
+        if (!response.ok) throw new Error("Failed to fetch");
         const data = await response.json();
         setVideos(data);
       } catch (err) {
@@ -55,11 +61,14 @@ export default function StudentVideosDashboard() {
     );
   }, [searchQuery, videos]);
 
-  if (loading) return <div className="flex justify-center items-center min-h-[60vh]"><Spinner /></div>;
+  if (loading) return (
+    <div className="flex justify-center items-center min-h-[60vh]">
+      <Spinner />
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-gray-50 pb-12">
-      {/* Dashboard Header */}
       <div className="bg-white border-b border-gray-200 py-8">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
@@ -127,9 +136,6 @@ export default function StudentVideosDashboard() {
   );
 }
 
-/**
- * DASHBOARD SPECIFIC VIDEO CARD
- */
 function VideoDashboardCard({ video, showProgress = false }: { video: StudentVideo; showProgress?: boolean }) {
   return (
     <motion.div 
@@ -143,7 +149,7 @@ function VideoDashboardCard({ video, showProgress = false }: { video: StudentVid
           fill 
           className="object-cover transition-transform group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
           <div className="h-12 w-12 bg-teal-600 rounded-full flex items-center justify-center text-white shadow-xl">
             <Play fill="white" size={24} />
           </div>
@@ -161,7 +167,9 @@ function VideoDashboardCard({ video, showProgress = false }: { video: StudentVid
       <div className="p-4">
         <div className="flex justify-between items-start mb-2">
           <span className="text-[10px] font-bold text-teal-600 uppercase tracking-widest">{video.category}</span>
-          <button className="text-gray-400 hover:text-gray-600"><MoreVertical size={16} /></button>
+          <button className="text-gray-400 hover:text-gray-600">
+            <MoreVertical size={16} />
+          </button>
         </div>
         <h3 className="font-bold text-gray-900 leading-snug line-clamp-2 mb-3 h-10 group-hover:text-teal-700 transition-colors">
           {video.title}
