@@ -38,7 +38,7 @@ const Stats = () => {
       <section className="py-24 relative z-10">
         <div className="container mx-auto px-4">
           
-          <div className="max-w-3xl mb-12">
+          <div className="max-w-4xl mb-12">
             <motion.span 
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
