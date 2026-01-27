@@ -42,16 +42,16 @@ const Stats = () => {
             <motion.span 
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
-              className="text-teal-600 font-bold uppercase tracking-widest text-sm"
+              className="text-(--color-1) font-bold uppercase tracking-widest text-sm"
             >
               Why MCDI?
             </motion.span>
             <motion.h2 
               className="text-3xl md:text-4xl font-black text-gray-900 mt-3 mb-6"
             >
-              Empowering Dentists with <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-blue-600">Practical Excellence</span>
+              Empowering Dentists with <span className="text-transparent bg-clip-text bg-gradient-to-r from-(--color-1) to-(--color-1)">Practical Excellence</span>
             </motion.h2>
-            <div className="h-1.5 w-20 bg-teal-600 rounded-full" />
+            <div className="h-1.5 w-20 bg-(--color-1) rounded-full" />
           </div>
           
           {/* Swiper Container */}

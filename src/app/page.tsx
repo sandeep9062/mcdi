@@ -54,13 +54,11 @@ export default function HomePage() {
 
       <ExploreOurPrograms />
 
-      <InternationalExamPreparation />
+      {/* <InternationalExamPreparation /> */}
 
       <FeaturedCourses />
 
       <WhatOurStudentSays />
-
-      <WhyChooseMCDI />
 
       <FAQ />
 
