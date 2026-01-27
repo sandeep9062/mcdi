@@ -6,6 +6,7 @@ import React, { useState, useEffect } from "react";
 import { GraduationCap } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import { Exam } from "@/types/types";
+import WhyChooseExamPrep from "@/components/WhyChooseExamPrep";
 
 export default function ExamPrepHubPage() {
   const [exams, setExams] = useState<Exam[]>([]);
@@ -94,64 +95,8 @@ export default function ExamPrepHubPage() {
           )}
         </div>
       </section>
-
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-12"
-            >
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                Why Choose Our Exam Prep Programs?
-              </h2>
-            </motion.div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {[
-                {
-                  title: "Expert Faculty",
-                  description:
-                    "Learn from experienced professionals who have successfully cleared these exams",
-                },
-                {
-                  title: "Comprehensive Materials",
-                  description:
-                    "Access to extensive question banks, study guides, and mock examinations",
-                },
-                {
-                  title: "Personalized Mentoring",
-                  description:
-                    "One-on-one guidance tailored to your learning needs and weak areas",
-                },
-                {
-                  title: "Proven Track Record",
-                  description:
-                    "High success rate with students clearing exams on first attempt",
-                },
-              ].map((feature, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                  className="bg-gray-50 rounded-xl p-6"
-                >
-                  <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                    {feature.title}
-                  </h3>
-                  <p className="text-gray-700 leading-relaxed">
-                    {feature.description}
-                  </p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
+<WhyChooseExamPrep/>
+     
     </div>
   );
 }
