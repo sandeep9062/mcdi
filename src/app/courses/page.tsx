@@ -1,12 +1,21 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from "react";
-import { Search, Filter, X, BookOpen, Monitor, Clock, Check } from "lucide-react";
+import {
+  Search,
+  Filter,
+  X,
+  BookOpen,
+  Monitor,
+  Clock,
+  Check,
+} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
+import Image from "next/image";
 import {
   Select,
   SelectContent,
@@ -85,8 +94,10 @@ export default function CoursesPage() {
         selectedCategory === "all" || course.category === selectedCategory;
       const matchesMode = (() => {
         if (selectedMode === "all") return true;
-        if (selectedMode === "Online") return course.mode === "Online" || course.mode === "Hybrid";
-        if (selectedMode === "Offline") return course.mode === "Offline" || course.mode === "Hybrid";
+        if (selectedMode === "Online")
+          return course.mode === "Online" || course.mode === "Hybrid";
+        if (selectedMode === "Offline")
+          return course.mode === "Offline" || course.mode === "Hybrid";
         if (selectedMode === "Hybrid") return course.mode === "Hybrid";
         return true;
       })();
@@ -129,17 +140,29 @@ export default function CoursesPage() {
     });
 
     return filtered;
-  }, [courses, searchQuery, selectedCategory, selectedMode, selectedDuration, sortBy]);
+  }, [
+    courses,
+    searchQuery,
+    selectedCategory,
+    selectedMode,
+    selectedDuration,
+    sortBy,
+  ]);
 
   return (
     <div className="min-h-screen bg-gray-50">
       <section className="bg-gradient-to-br from-(--color-1)  to-(--color-2)  text-white py-16">
         <div className="container mx-auto px-4">
+
+
+          
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="max-w-4xl mx-auto text-center"
+            className="max-w-4xl mx-auto text-center "
           >
+            
+
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
               Dental Courses
             </h1>
@@ -204,9 +227,15 @@ export default function CoursesPage() {
                     <div className="space-y-2">
                       {[
                         { value: "all", label: "All Categories" },
-                        ...categories.map((cat) => ({ value: cat.name, label: cat.name }))
+                        ...categories.map((cat) => ({
+                          value: cat.name,
+                          label: cat.name,
+                        })),
                       ].map((option) => (
-                        <div key={option.value} className="flex items-center space-x-2">
+                        <div
+                          key={option.value}
+                          className="flex items-center space-x-2"
+                        >
                           <Checkbox
                             id={`category-${option.value}`}
                             checked={selectedCategory === option.value}
@@ -245,7 +274,10 @@ export default function CoursesPage() {
                         { value: "Offline", label: "Offline" },
                         { value: "Hybrid", label: "Hybrid" },
                       ].map((option) => (
-                        <div key={option.value} className="flex items-center space-x-2">
+                        <div
+                          key={option.value}
+                          className="flex items-center space-x-2"
+                        >
                           <Checkbox
                             id={`mode-${option.value}`}
                             checked={selectedMode === option.value}
@@ -285,7 +317,10 @@ export default function CoursesPage() {
                         { value: "5-6-months", label: "5-6 Months" },
                         { value: "6-plus-months", label: "6+ Months" },
                       ].map((option) => (
-                        <div key={option.value} className="flex items-center space-x-2">
+                        <div
+                          key={option.value}
+                          className="flex items-center space-x-2"
+                        >
                           <Checkbox
                             id={`duration-${option.value}`}
                             checked={selectedDuration === option.value}
@@ -339,7 +374,11 @@ export default function CoursesPage() {
                           const data = await response.json();
                           setCourses(data);
                         } catch (err) {
-                          setError(err instanceof Error ? err.message : "An error occurred");
+                          setError(
+                            err instanceof Error
+                              ? err.message
+                              : "An error occurred",
+                          );
                         } finally {
                           setLoading(false);
                         }
@@ -412,9 +451,7 @@ export default function CoursesPage() {
                       <p className="text-gray-600 mb-6">
                         Try adjusting your filters or search query
                       </p>
-                      <Button onClick={clearAllFilters}>
-                        Clear Filters
-                      </Button>
+                      <Button onClick={clearAllFilters}>Clear Filters</Button>
                     </div>
                   )}
                 </>
