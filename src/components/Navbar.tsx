@@ -53,7 +53,7 @@ export default function Navbar() {
     { href: "/reviews", label: "Reviews" },
     { href: "/videos", label: "Videos" },
  
-    { href: "/contact", label: "Contact" },
+
 
     { href: "/about", label: "About" },
   ];

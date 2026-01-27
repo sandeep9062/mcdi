@@ -97,32 +97,6 @@ export default function ReviewsPage() {
             <p className="text-lg text-teal-50 mb-8">
               See what our students say about their learning experience
             </p>
-
-            <div className="flex items-center justify-center gap-8 bg-white/10 backdrop-blur-sm rounded-xl p-6">
-              <div className="text-center">
-                <div className="text-4xl font-bold mb-2">
-                  {averageRating.toFixed(1)}
-                </div>
-                <div className="flex justify-center mb-2">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`h-5 w-5 ${
-                        i < Math.round(averageRating)
-                          ? "fill-yellow-400 text-yellow-400"
-                          : "text-white/50"
-                      }`}
-                    />
-                  ))}
-                </div>
-                <div className="text-sm text-teal-100">Average Rating</div>
-              </div>
-              <div className="h-16 w-px bg-white/20"></div>
-              <div className="text-center">
-                <div className="text-4xl font-bold mb-2">{reviews.length}</div>
-                <div className="text-sm text-teal-100">Total Reviews</div>
-              </div>
-            </div>
           </motion.div>
         </div>
       </section>
