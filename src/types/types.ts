@@ -118,7 +118,7 @@ export interface Note {
   title: string;
   shortDescription: string;
   fullDescription: string;
-  thumbnail: string;
+  thumbnail: string;price: number;
   category: string;
   subject: string;
   content: string;

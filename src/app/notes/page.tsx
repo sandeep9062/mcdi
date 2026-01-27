@@ -1,225 +1,171 @@
 "use client";
 
+import React, { useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
-import NoteCard from "@/components/NoteCard";
-import React, { useState, useEffect } from "react";
-import { BookOpen, Search } from "lucide-react";
-import { Spinner } from "@/components/ui/spinner";
+import { 
+  BookOpen, 
+  Search, 
+  Filter, 
+  X, 
+  FileText, 
+  Users, 
+  Tags,
+  ChevronRight
+} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Spinner } from "@/components/ui/spinner";
+import NoteCard from "@/components/NoteCard";
 import { Note } from "@/types/types";
 
 export default function NotesHubPage() {
   const [notes, setNotes] = useState<Note[]>([]);
-  const [filteredNotes, setFilteredNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [sortBy, setSortBy] = useState("newest");
 
   useEffect(() => {
     const fetchNotes = async () => {
       try {
         const response = await fetch("/api/notes");
-        if (!response.ok) {
-          throw new Error("Failed to fetch notes");
-        }
+        if (!response.ok) throw new Error("Failed to fetch notes");
         const data = await response.json();
         setNotes(data);
-        setFilteredNotes(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : "An error occurred");
       } finally {
         setLoading(false);
       }
     };
-
     fetchNotes();
   }, []);
 
-  useEffect(() => {
-    let filtered = notes;
+  const categories = useMemo(() => ["all", ...Array.from(new Set(notes.map(n => n.category)))], [notes]);
 
-    // Filter by search term
-    if (searchTerm) {
-      filtered = filtered.filter(note =>
-        note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        note.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        note.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
-      );
-    }
+  const filteredAndSortedNotes = useMemo(() => {
+    let filtered = notes.filter((note) => {
+      const matchesSearch =
+        note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        note.subject.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory =
+        selectedCategory === "all" || note.category === selectedCategory;
+      return matchesSearch && matchesCategory;
+    });
 
-    // Filter by category
-    if (selectedCategory !== "All") {
-      filtered = filtered.filter(note => note.category === selectedCategory);
-    }
-
-    setFilteredNotes(filtered);
-  }, [notes, searchTerm, selectedCategory]);
-
-  const categories = ["All", ...Array.from(new Set(notes.map(note => note.category)))];
+    return filtered.sort((a, b) => {
+      if (sortBy === "price-low") return a.price - b.price;
+      if (sortBy === "price-high") return b.price - a.price;
+      return new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime();
+    });
+  }, [notes, searchQuery, selectedCategory, sortBy]);
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <section className="bg-gradient-to-br from-teal-600 to-teal-800 text-white py-20">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="max-w-4xl mx-auto text-center"
-          >
-            <BookOpen className="h-16 w-16 mx-auto mb-6" />
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Dental Study Notes
-            </h1>
-            <p className="text-lg md:text-xl text-teal-50 leading-relaxed max-w-3xl mx-auto">
-              Comprehensive study materials and notes covering all aspects of dentistry.
-              Expert-curated content to help you master dental concepts and excel in your studies.
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-teal-700 to-teal-900 text-white py-16">
+        <div className="container mx-auto px-4 text-center">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+            <Badge className="bg-teal-500/20 text-teal-200 border-teal-500/30 mb-4 px-4 py-1">Premium Study Material</Badge>
+            <h1 className="text-4xl md:text-5xl font-bold mb-6 text-white tracking-tight">Dental Notes Hub</h1>
+            <p className="text-teal-100 mb-8 max-w-2xl mx-auto text-lg">
+              Unlock high-yield, expert-curated PDF notes. Master complex dental topics with visual summaries.
             </p>
+            <div className="max-w-xl mx-auto relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-teal-300 h-5 w-5" />
+              <Input
+                placeholder="Search by topic, e.g., Endodontics..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-12 h-14 bg-white/10 border-white/20 text-white placeholder:text-teal-200 focus:bg-white focus:text-black transition-all"
+              />
+            </div>
           </motion.div>
         </div>
       </section>
 
-      <section className="py-12 bg-white border-b">
+      <section className="py-12">
         <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            {/* Search and Filter */}
-            <div className="flex flex-col md:flex-row gap-4 mb-8">
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <Input
-                  placeholder="Search notes by title, subject, or tags..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-              <div className="flex gap-2 flex-wrap">
-                {categories.map((category) => (
-                  <Button
-                    key={category}
-                    variant={selectedCategory === category ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setSelectedCategory(category)}
-                    className={selectedCategory === category ? "bg-teal-600 hover:bg-teal-700" : ""}
-                  >
-                    {category}
-                  </Button>
-                ))}
-              </div>
-            </div>
-
-            {/* Results Summary */}
-            <div className="flex items-center justify-between mb-6">
-              <p className="text-gray-600">
-                Showing {filteredNotes.length} of {notes.length} notes
-              </p>
-              {(searchTerm || selectedCategory !== "All") && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setSearchTerm("");
-                    setSelectedCategory("All");
-                  }}
-                  className="text-teal-600 hover:text-teal-700"
-                >
-                  Clear filters
-                </Button>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          {loading ? (
-            <div className="flex justify-center items-center py-20">
-              <Spinner className="h-8 w-8" />
-            </div>
-          ) : error ? (
-            <div className="text-center py-20">
-              <p className="text-red-600 text-lg">{error}</p>
-            </div>
-          ) : filteredNotes.length === 0 ? (
-            <div className="text-center py-20">
-              <BookOpen className="h-16 w-16 mx-auto text-gray-400 mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No notes found</h3>
-              <p className="text-gray-600">Try adjusting your search or filter criteria.</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-              {filteredNotes.map((note, index) => (
-                <motion.div
-                  key={note.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                >
-                  <NoteCard note={note} />
-                </motion.div>
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
-
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-12"
-            >
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                Why Study with Our Notes?
-              </h2>
-            </motion.div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {[
-                {
-                  title: "Expert-Curated Content",
-                  description:
-                    "Notes prepared by experienced dental professionals with deep clinical knowledge",
-                },
-                {
-                  title: "Comprehensive Coverage",
-                  description:
-                    "Complete coverage of dental topics from basic sciences to clinical applications",
-                },
-                {
-                  title: "Clinical Relevance",
-                  description:
-                    "Focus on clinically important concepts and their practical applications",
-                },
-                {
-                  title: "Regular Updates",
-                  description:
-                    "Content regularly updated to reflect current dental practices and standards",
-                },
-              ].map((feature, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                  className="bg-gray-50 rounded-xl p-6"
-                >
-                  <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                    {feature.title}
+          <div className="flex flex-col lg:flex-row gap-8">
+            {/* Sidebar Filters */}
+            <aside className="lg:w-1/4">
+              <div className="bg-white rounded-2xl shadow-sm border p-6 sticky top-24">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="font-bold text-gray-900 flex items-center gap-2">
+                    <Filter className="h-4 w-4" /> Filters
                   </h3>
-                  <p className="text-gray-700 leading-relaxed">
-                    {feature.description}
-                  </p>
-                </motion.div>
-              ))}
-            </div>
+                  {(selectedCategory !== "all" || searchQuery) && (
+                    <Button variant="ghost" size="sm" onClick={() => {setSelectedCategory("all"); setSearchQuery("");}} className="h-7 text-xs text-red-600">
+                      Clear
+                    </Button>
+                  )}
+                </div>
+
+                <div className="space-y-6">
+                  <div>
+                    <label className="text-sm font-semibold text-gray-700 mb-3 block">Subject Category</label>
+                    <div className="space-y-2">
+                      {categories.map((cat) => (
+                        <div key={cat} className="flex items-center space-x-2">
+                          <Checkbox 
+                            id={cat} 
+                            checked={selectedCategory === cat}
+                            onCheckedChange={() => setSelectedCategory(cat)}
+                          />
+                          <label htmlFor={cat} className="text-sm text-gray-600 capitalize cursor-pointer">{cat}</label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <Separator />
+                  <div className="bg-teal-50 p-4 rounded-xl border border-teal-100">
+                    <h4 className="text-sm font-bold text-teal-900 mb-2">Note Access</h4>
+                    <p className="text-xs text-teal-700">Once purchased, notes are available in your dashboard for lifetime reading.</p>
+                  </div>
+                </div>
+              </div>
+            </aside>
+
+            {/* Content Area */}
+            <main className="lg:w-3/4">
+              <div className="flex items-center justify-between mb-6">
+                <p className="text-sm text-gray-500 font-medium">
+                  Showing {filteredAndSortedNotes.length} Premium Notes
+                </p>
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="w-[180px] bg-white">
+                    <SelectValue placeholder="Sort By" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="newest">Newest First</SelectItem>
+                    <SelectItem value="price-low">Price: Low to High</SelectItem>
+                    <SelectItem value="price-high">Price: High to Low</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {loading ? (
+                <div className="flex justify-center py-20"><Spinner className="h-10 w-10 text-teal-600" /></div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {filteredAndSortedNotes.map((note) => (
+                    <NoteCard key={note.id} note={note} />
+                  ))}
+                </div>
+              )}
+            </main>
           </div>
         </div>
       </section>

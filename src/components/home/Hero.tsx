@@ -26,10 +26,7 @@ const Hero = () => {
               Advance Your Dental Career With Expert-Led Training
             </h1>
             <p className="text-lg md:text-xl mb-8 text-teal-50 leading-relaxed max-w-3xl mx-auto">
-              Master clinical dentistry with flexible online and offline
-              learning, comprehensive international exam preparation, and
-              hands-on training with real patients. Join 11+ years of
-              educational excellence.
+              Learn from 32+ Expert Faculty with 18+ Years of Excellence — Flexible Online & Classroom Clinical Dentistry Training. 
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/courses">
