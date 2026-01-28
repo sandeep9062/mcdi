@@ -149,6 +149,43 @@ export const course = pgTable(
   ],
 );
 
+export const dentistRegistration = pgTable(
+  "dentist_registration",
+  {
+    id: text("id").primaryKey(),
+    slug: text("slug").notNull().unique(),
+    title: text("title").notNull(),
+    shortDescription: text("short_description").notNull(),
+    fullDescription: text("full_description").notNull(),
+    price: integer("price").notNull(),
+    originalPrice: integer("original_price"),
+    thumbnail: text("thumbnail").notNull(),
+    category: text("category").notNull(),
+    mode: text("mode").notNull(), // 'Online' | 'Offline' | 'Hybrid'
+    duration: text("duration").notNull(),
+    rating: real("rating").notNull(),
+    reviewCount: integer("review_count").notNull(),
+    featured: boolean("featured").default(false).notNull(),
+    popular: boolean("popular").default(false).notNull(),
+    whatYouLearn: jsonb("what_you_learn").notNull(), // string[]
+    curriculum: jsonb("curriculum").notNull(), // { module: string; topics: string[]; }[]
+    whoIsThisFor: jsonb("who_is_this_for").notNull(), // string[]
+    faculty: jsonb("faculty").notNull(), // { name: string; title: string; image: string; bio: string; }
+    faqs: jsonb("faqs").notNull(), // { question: string; answer: string; }[]
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+  },
+  (table) => [
+    index("dentist_registration_slug_idx").on(table.slug),
+    index("dentist_registration_category_idx").on(table.category),
+    index("dentist_registration_featured_idx").on(table.featured),
+    index("dentist_registration_popular_idx").on(table.popular),
+  ],
+);
+
 
 
 

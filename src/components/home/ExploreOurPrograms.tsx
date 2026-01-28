@@ -55,7 +55,7 @@ const ExploreOurPrograms = () => {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <span className="text-brand font-bold tracking-widest uppercase text-sm mb-3 block">Educational Ecosystem</span>
+
           <h2 className="text-4xl md:text-5xl font-extrabold text-foreground mb-4">
             Explore Our Dental Programs
           </h2>

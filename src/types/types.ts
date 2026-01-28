@@ -65,6 +65,39 @@ export interface Course {
     answer: string;
   }[];
 }
+export interface DentistRegistration {
+  id: string;
+  slug: string;
+  title: string;
+  shortDescription: string;
+  fullDescription: string;
+  price: number;
+  originalPrice?: number;
+  thumbnail: string;
+  category: string;
+  mode: 'Online' | 'Offline' | 'Hybrid';
+  duration: string;
+  rating: number;
+  reviewCount: number;
+  featured: boolean;
+  popular: boolean;
+  whatYouLearn: string[];
+  curriculum: {
+    module: string;
+    topics: string[];
+  }[];
+  whoIsThisFor: string[];
+  faculty: {
+    name: string;
+    title: string;
+    image: string;
+    bio: string;
+  };
+  faqs: {
+    question: string;
+    answer: string;
+  }[];
+}
 export interface Review {
   id: string;
   name: string;

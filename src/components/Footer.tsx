@@ -36,7 +36,7 @@ export default function Footer() {
             </div>
             <p className="text-sm mb-4">
               Master Clinical Dentistry Institute - Advancing dental education
-              with 11+ years of excellence.
+              with 18+ years of excellence.
             </p>
             <div className="flex space-x-3">
               <a
@@ -69,6 +69,14 @@ export default function Footer() {
           <div>
             <h3 className="font-semibold text-white mb-4">Quick Links</h3>
             <ul className="space-y-2 text-sm">
+                <li>
+                <Link
+                  href="/about"
+                  className="hover:text-(--color-1)  transition-colors"
+                >
+                  About Us
+                </Link>
+              </li>
               <li>
                 <Link
                   href="/courses"
@@ -85,14 +93,7 @@ export default function Footer() {
                   Exam Preparation
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/about"
-                  className="hover:text-(--color-1)  transition-colors"
-                >
-                  About Us
-                </Link>
-              </li>
+            
               <li>
                 <Link
                   href="/reviews"
@@ -115,14 +116,7 @@ export default function Footer() {
           <div>
             <h3 className="font-semibold text-white mb-4">Support</h3>
             <ul className="space-y-2 text-sm">
-              <li>
-                <Link
-                  href="/qa"
-                  className="hover:text-(--color-1)  transition-colors"
-                >
-                  Q&A
-                </Link>
-              </li>
+              
               <li>
                 <Link
                   href="/contact"
@@ -160,7 +154,7 @@ export default function Footer() {
                   href="mailto:masterclinicaldentistry@gmail.com"
                   className="hover:text-(--color-1) transition-colors break-all"
                 >
-                  masterclinicaldentistry@gmail.com
+                  info@masterclinicaldentistry.com
                 </a>
               </li>
               <li className="text-sm">Mohali, Punjab, India</li>

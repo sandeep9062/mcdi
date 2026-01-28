@@ -38,7 +38,7 @@ const getDurationInDays = (duration: string): number => {
   }
   return 0;
 };
-export default function CoursesPage() {
+export default function DentistRegistrationPage() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -46,9 +46,9 @@ export default function CoursesPage() {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await fetch("/api/courses");
+        const response = await fetch("/api/dentist-registrations");
         if (!response.ok) {
-          throw new Error("Failed to fetch courses");
+          throw new Error("Failed to fetch dentist registrations");
         }
         const data = await response.json();
         setCourses(data);
@@ -151,7 +151,7 @@ export default function CoursesPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <section className="bg-gradient-to-br from-(--color-1)  to-(--color-2)  text-white py-16">
+      <section className="bg-gradient-to-br from-[--color-1] to-[--color-2] text-white py-16">
         <div className="container mx-auto px-4">
 
 
@@ -164,10 +164,10 @@ export default function CoursesPage() {
             
 
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Dental Courses
+              Dentist Registration
             </h1>
             <p className="text-lg text-teal-50 mb-8">
-              Browse our comprehensive collection of clinical dentistry courses
+              Browse and register qualified dentists for our clinical programs
             </p>
 
             <div className="max-w-2xl mx-auto">
@@ -175,7 +175,7 @@ export default function CoursesPage() {
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                 <Input
                   type="text"
-                  placeholder="Search courses by title or keywords..."
+                  placeholder="Search dentist registrations by name or keywords..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-12 h-14 text-lg text-black bg-white"
@@ -350,7 +350,7 @@ export default function CoursesPage() {
               {loading ? (
                 <div className="flex justify-center items-center py-20">
                   <Spinner className="h-8 w-8" />
-                  <span className="ml-2 text-gray-600">Loading courses...</span>
+                  <span className="ml-2 text-gray-600">Loading dentist registrations...</span>
                 </div>
               ) : error ? (
                 <div className="text-center py-20">
@@ -358,7 +358,7 @@ export default function CoursesPage() {
                     <Search className="h-16 w-16 mx-auto" />
                   </div>
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                    Failed to load courses
+                    Failed to load dentist registrations
                   </h3>
                   <p className="text-gray-600 mb-6">{error}</p>
                   <Button
@@ -367,10 +367,10 @@ export default function CoursesPage() {
                       setError(null);
                       const fetchCourses = async () => {
                         try {
-                          const response = await fetch("/api/courses");
-                          if (!response.ok) {
-                            throw new Error("Failed to fetch courses");
-                          }
+                        const response = await fetch("/api/dentist-registrations");
+                        if (!response.ok) {
+                          throw new Error("Failed to fetch dentist registrations");
+                        }
                           const data = await response.json();
                           setCourses(data);
                         } catch (err) {
@@ -397,7 +397,7 @@ export default function CoursesPage() {
                         <span className="font-semibold text-gray-900">
                           {filteredAndSortedCourses.length}
                         </span>{" "}
-                        courses found
+                        dentist registrations found
                       </p>
                     </div>
 
@@ -446,7 +446,7 @@ export default function CoursesPage() {
                         <Search className="h-16 w-16 mx-auto" />
                       </div>
                       <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                        No courses found
+                        No dentist registrations found
                       </h3>
                       <p className="text-gray-600 mb-6">
                         Try adjusting your filters or search query

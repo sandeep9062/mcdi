@@ -1,7 +1,8 @@
 'use client';
 
 import React,{useTransition} from 'react';
-import { Phone, Mail, MapPin, Instagram, Facebook, Youtube, Clock, Send, MessageSquare, Users } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, Send, MessageSquare, Users } from 'lucide-react';
+import { RiInstagramFill, RiFacebookFill, RiYoutubeFill } from 'react-icons/ri';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -381,9 +382,9 @@ export default function ContactPage() {
                     <h4 className="font-semibold text-gray-900 mb-4">Follow Us</h4>
                     <div className="flex gap-3">
                       {[
-                        { icon: Instagram, href: 'https://instagram.com', label: 'Instagram' },
-                        { icon: Facebook, href: 'https://facebook.com', label: 'Facebook' },
-                        { icon: Youtube, href: 'https://youtube.com', label: 'YouTube' },
+                        { icon: RiInstagramFill, href: 'https://www.instagram.com/masterclinicaldentistry', label: 'Instagram', bgColor: 'bg-gradient-to-br from-[#833AB4] via-[#E1306C] to-[#F56040]' },
+                        { icon: RiFacebookFill, href: 'https://www.facebook.com/masterclinicaldentistry', label: 'Facebook', bgColor: 'bg-[#1877F2]' },
+                        { icon: RiYoutubeFill, href: 'https://www.youtube.com/@masterclinicaldentistry', label: 'YouTube', bgColor: 'bg-[#FF0000]' },
                       ].map((social, index) => (
                         <motion.a
                           key={index}
@@ -392,10 +393,10 @@ export default function ContactPage() {
                           rel="noopener noreferrer"
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.95 }}
-                          className="h-12 w-12 rounded-xl bg-gradient-to-br from-teal-100 to-teal-200 flex items-center justify-center text-teal-600 hover:from-teal-600 hover:to-teal-700 hover:text-white transition-all duration-300 shadow-md hover:shadow-lg"
+                          className={`h-12 w-12 rounded-xl ${social.bgColor} flex items-center justify-center text-white transition-all duration-300 shadow-md hover:shadow-lg hover:brightness-110`}
                           aria-label={social.label}
                         >
-                          <social.icon className="h-6 w-6" />
+                          <social.icon className="h-7 w-7" />
                         </motion.a>
                       ))}
                     </div>
