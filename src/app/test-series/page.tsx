@@ -158,7 +158,7 @@ export default function TestSeriesPage() {
                         onClick={() => setSelectedCategory(cat)}
                         className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
                           selectedCategory === cat 
-                          ? "bg-teal-50 text-teal-700 font-bold" 
+                          ? "bg-teal-50 text-(--color-1) font-bold" 
                           : "text-gray-600 hover:bg-gray-50"
                         }`}
                       >
@@ -235,7 +235,7 @@ export default function TestSeriesPage() {
                     >
                       <div className="relative h-44">
                         <Image src={series.thumbnail} alt={series.title} fill className="object-cover" />
-                        <Badge className="absolute top-4 right-4 bg-teal-600 border-none">{series.examType}</Badge>
+                        <Badge className="absolute top-4 right-4 bg-(--color-1) border-none">{series.examType}</Badge>
                         
                         {/* ENROLLMENT OVERLAY BADGE */}
                         <div className="absolute bottom-3 left-3 bg-black/70 backdrop-blur-sm text-white px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-wider flex items-center gap-2 border border-white/10">
@@ -246,8 +246,8 @@ export default function TestSeriesPage() {
 
                       <div className="p-6 flex flex-col flex-grow">
                         <div className="flex items-center gap-2 mb-2">
-                           <Users className="h-4 w-4 text-teal-600" />
-                           <span className="text-xs font-bold text-teal-700 uppercase tracking-tighter">Popular Choice</span>
+                           <Users className="h-4 w-4 text-(--color-1)" />
+                           <span className="text-xs font-bold text-(--color-1) uppercase tracking-tighter">Popular Choice</span>
                         </div>
                         
                         <h3 className="font-bold text-xl text-gray-900 mb-2">{series.title}</h3>
@@ -255,11 +255,11 @@ export default function TestSeriesPage() {
 
                         <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-6">
                           <div className="flex items-center gap-1.5 bg-gray-100 px-2 py-1 rounded-md">
-                            <Target className="h-4 w-4 text-teal-600" />
+                            <Target className="h-4 w-4 text-(--color-1)" />
                             <span>{series.questionsCount} Qs</span>
                           </div>
                           <div className="flex items-center gap-1.5 bg-gray-100 px-2 py-1 rounded-md">
-                            <Clock className="h-4 w-4 text-teal-600" />
+                            <Clock className="h-4 w-4 text-(--color-1)" />
                             <span>{series.duration}</span>
                           </div>
                           <div className="flex items-center gap-1">
@@ -271,7 +271,7 @@ export default function TestSeriesPage() {
                         {/* Accordion for Samples */}
                         <Accordion type="single" collapsible className="mb-6">
                           <AccordionItem value="samples" className="border-none">
-                            <AccordionTrigger className="bg-gray-50 hover:no-underline rounded-xl px-4 py-2 text-sm text-teal-700">
+                            <AccordionTrigger className="bg-gray-50 hover:no-underline rounded-xl px-4 py-2 text-sm text-(--color-1)">
                               Preview Sample Questions
                             </AccordionTrigger>
                             <AccordionContent className="pt-4 space-y-4">
@@ -301,7 +301,7 @@ export default function TestSeriesPage() {
                           </div>
                           <Button 
                             onClick={() => handleAddToCart(series)} 
-                            className="bg-teal-600 hover:bg-teal-700 rounded-xl px-6"
+                            className="bg-(--color-1) hover:bg-(--color-2) rounded-xl px-6"
                           >
                             <ShoppingCart className="mr-2 h-4 w-4" />
                             Add to Cart

@@ -10,7 +10,7 @@ export const metadata = {
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-gray-50">
-      <section className="bg-gradient-to-br from-teal-600 to-teal-800 text-white py-20">
+      <section className="bg-gradient-to-br from-(--color-1) to-(--color-2) text-white py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-7xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-6">About Us</h1>
@@ -63,7 +63,7 @@ export default function AboutPage() {
                 },
               ].map((item, index) => (
                 <div key={index} className="bg-white rounded-xl shadow-md p-6">
-                  <item.icon className="h-12 w-12 text-teal-600 mb-4" />
+                  <item.icon className="h-12 w-12 text-(--color-1) mb-4" />
                   <h3 className="text-xl font-semibold text-gray-900 mb-3">{item.title}</h3>
                   <p className="text-gray-700">{item.description}</p>
                 </div>
@@ -91,7 +91,7 @@ export default function AboutPage() {
                     description: 'Your success is our success. We are committed to helping every student achieve their career goals.',
                   },
                 ].map((value, index) => (
-                  <div key={index} className="border-l-4 border-teal-600 pl-6 py-2">
+                  <div key={index} className="border-l-4 border-(--color-1) pl-6 py-2">
                     <h4 className="font-semibold text-lg text-gray-900 mb-2">{value.title}</h4>
                     <p className="text-gray-700">{value.description}</p>
                   </div>
