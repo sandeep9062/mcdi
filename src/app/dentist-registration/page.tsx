@@ -24,7 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import CourseCard from "@/components/CourseCard";
-import { Course } from "@/types/types";
+import { DentistRegistration } from "@/types/types";
 import { categories } from "@/data/categories";
 import { motion } from "framer-motion";
 import { Spinner } from "@/components/ui/spinner";
@@ -38,20 +38,21 @@ const getDurationInDays = (duration: string): number => {
   }
   return 0;
 };
+
 export default function DentistRegistrationPage() {
-  const [courses, setCourses] = useState<Course[]>([]);
+  const [dentistRegistrations, setDentistRegistrations] = useState<DentistRegistration[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchCourses = async () => {
+    const fetchDentistRegistrations = async () => {
       try {
         const response = await fetch("/api/dentist-registrations");
         if (!response.ok) {
           throw new Error("Failed to fetch dentist registrations");
         }
         const data = await response.json();
-        setCourses(data);
+        setDentistRegistrations(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : "An error occurred");
       } finally {
@@ -59,7 +60,7 @@ export default function DentistRegistrationPage() {
       }
     };
 
-    fetchCourses();
+    fetchDentistRegistrations();
   }, []);
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -83,27 +84,27 @@ export default function DentistRegistrationPage() {
     setSearchQuery("");
   };
 
-  const filteredAndSortedCourses = useMemo(() => {
-    const filtered = courses.filter((course) => {
+  const filteredAndSortedRegistrations = useMemo(() => {
+    const filtered = dentistRegistrations.filter((registration) => {
       const matchesSearch =
-        course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        course.shortDescription
+        registration.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        registration.shortDescription
           .toLowerCase()
           .includes(searchQuery.toLowerCase());
       const matchesCategory =
-        selectedCategory === "all" || course.category === selectedCategory;
+        selectedCategory === "all" || registration.category === selectedCategory;
       const matchesMode = (() => {
         if (selectedMode === "all") return true;
         if (selectedMode === "Online")
-          return course.mode === "Online" || course.mode === "Hybrid";
+          return registration.mode === "Online" || registration.mode === "Hybrid";
         if (selectedMode === "Offline")
-          return course.mode === "Offline" || course.mode === "Hybrid";
-        if (selectedMode === "Hybrid") return course.mode === "Hybrid";
+          return registration.mode === "Offline" || registration.mode === "Hybrid";
+        if (selectedMode === "Hybrid") return registration.mode === "Hybrid";
         return true;
       })();
       const matchesDuration = (() => {
         if (selectedDuration === "all") return true;
-        const durationDays = getDurationInDays(course.duration);
+        const durationDays = getDurationInDays(registration.duration);
         switch (selectedDuration) {
           case "1-2-months":
             return durationDays >= 30 && durationDays <= 60;
@@ -141,7 +142,7 @@ export default function DentistRegistrationPage() {
 
     return filtered;
   }, [
-    courses,
+    dentistRegistrations,
     searchQuery,
     selectedCategory,
     selectedMode,
@@ -163,7 +164,7 @@ export default function DentistRegistrationPage() {
           >
             
 
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            <h1 className="text-4xl text-black md:text-5xl font-bold mb-4">
               Dentist Registration
             </h1>
             <p className="text-lg text-teal-50 mb-8">
@@ -365,14 +366,14 @@ export default function DentistRegistrationPage() {
                     onClick={() => {
                       setLoading(true);
                       setError(null);
-                      const fetchCourses = async () => {
+                      const fetchDentistRegistrations = async () => {
                         try {
-                        const response = await fetch("/api/dentist-registrations");
-                        if (!response.ok) {
-                          throw new Error("Failed to fetch dentist registrations");
-                        }
+                          const response = await fetch("/api/dentist-registrations");
+                          if (!response.ok) {
+                            throw new Error("Failed to fetch dentist registrations");
+                          }
                           const data = await response.json();
-                          setCourses(data);
+                          setDentistRegistrations(data);
                         } catch (err) {
                           setError(
                             err instanceof Error
@@ -383,7 +384,7 @@ export default function DentistRegistrationPage() {
                           setLoading(false);
                         }
                       };
-                      fetchCourses();
+                      fetchDentistRegistrations();
                     }}
                   >
                     Try Again
@@ -395,7 +396,7 @@ export default function DentistRegistrationPage() {
                     <div>
                       <p className="text-gray-600">
                         <span className="font-semibold text-gray-900">
-                          {filteredAndSortedCourses.length}
+                          {filteredAndSortedRegistrations.length}
                         </span>{" "}
                         dentist registrations found
                       </p>
@@ -427,16 +428,16 @@ export default function DentistRegistrationPage() {
                     </div>
                   </div>
 
-                  {filteredAndSortedCourses.length > 0 ? (
+                  {filteredAndSortedRegistrations.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                      {filteredAndSortedCourses.map((course, index) => (
+                      {filteredAndSortedRegistrations.map((registration, index) => (
                         <motion.div
-                          key={course.id}
+                          key={registration.id}
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: index * 0.05 }}
                         >
-                          <CourseCard course={course} />
+                          <CourseCard course={registration} />
                         </motion.div>
                       ))}
                     </div>

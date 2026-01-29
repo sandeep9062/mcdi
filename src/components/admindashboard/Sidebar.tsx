@@ -48,6 +48,11 @@ const Sidebar = () => {
       icon: BookOpen,
     },
     {
+      title: "Dentist Registration",
+      url: "/admin-dashboard/dentist-registration",
+      icon: BookOpen,
+    },
+    {
       title: "Exams",
       url: "/admin-dashboard/exams",
       icon: GraduationCap,

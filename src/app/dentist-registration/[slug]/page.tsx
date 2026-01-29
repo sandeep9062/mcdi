@@ -35,7 +35,7 @@ export default function CourseDetailPage({
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await fetch("/api/courses");
+        const response = await fetch("/api/dentist-registration");
         if (!response.ok) {
           throw new Error("Failed to fetch courses");
         }
@@ -75,7 +75,7 @@ export default function CourseDetailPage({
             <Search className="h-16 w-16 mx-auto" />
           </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-4">
-            Failed to load course
+            Failed to load dentist registration
           </h1>
           <p className="text-gray-600 mb-6">{error}</p>
           <div className="space-x-4">
