@@ -34,7 +34,6 @@ export default function NotesHubPage() {
   const [error, setError] = useState<string | null>(null);
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
 
   useEffect(() => {
@@ -53,16 +52,11 @@ export default function NotesHubPage() {
     fetchNotes();
   }, []);
 
-  const categories = useMemo(() => ["all", ...Array.from(new Set(notes.map(n => n.category)))], [notes]);
-
   const filteredAndSortedNotes = useMemo(() => {
     let filtered = notes.filter((note) => {
       const matchesSearch =
-        note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        note.subject.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesCategory =
-        selectedCategory === "all" || note.category === selectedCategory;
-      return matchesSearch && matchesCategory;
+        note.title.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesSearch;
     });
 
     return filtered.sort((a, b) => {
@@ -70,7 +64,7 @@ export default function NotesHubPage() {
       if (sortBy === "price-high") return b.price - a.price;
       return new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime();
     });
-  }, [notes, searchQuery, selectedCategory, sortBy]);
+  }, [notes, searchQuery, sortBy]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -106,30 +100,14 @@ export default function NotesHubPage() {
                   <h3 className="font-bold text-gray-900 flex items-center gap-2">
                     <Filter className="h-4 w-4" /> Filters
                   </h3>
-                  {(selectedCategory !== "all" || searchQuery) && (
-                    <Button variant="ghost" size="sm" onClick={() => {setSelectedCategory("all"); setSearchQuery("");}} className="h-7 text-xs text-red-600">
+                  {searchQuery && (
+                    <Button variant="ghost" size="sm" onClick={() => setSearchQuery("")} className="h-7 text-xs text-red-600">
                       Clear
                     </Button>
                   )}
                 </div>
 
                 <div className="space-y-6">
-                  <div>
-                    <label className="text-sm font-semibold text-gray-700 mb-3 block">Subject Category</label>
-                    <div className="space-y-2">
-                      {categories.map((cat) => (
-                        <div key={cat} className="flex items-center space-x-2">
-                          <Checkbox 
-                            id={cat} 
-                            checked={selectedCategory === cat}
-                            onCheckedChange={() => setSelectedCategory(cat)}
-                          />
-                          <label htmlFor={cat} className="text-sm text-gray-600 capitalize cursor-pointer">{cat}</label>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  <Separator />
                   <div className="bg-gray-50 p-4 rounded-xl border border-white">
                     <h4 className="text-sm font-bold text-(--color-1) mb-2">Note Access</h4>
                     <p className="text-xs text-(--color-1)">Once purchased, notes are available in your dashboard for lifetime reading.</p>

@@ -10,6 +10,7 @@ export default async function AdminExamsPage() {
   const rawExams = await db.select().from(exam).orderBy(desc(exam.createdAt));
   const allExams = rawExams.map(exam => ({
     ...exam,
+    thumbnails: exam.thumbnails as string[],
     whoIsThisFor: exam.whoIsThisFor as string[],
     whatIncluded: exam.whatIncluded as string[],
     studyPlan: exam.studyPlan as { phase: string; duration: string; focus: string[]; }[],

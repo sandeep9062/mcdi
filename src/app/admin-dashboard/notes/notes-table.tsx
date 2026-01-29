@@ -37,8 +37,6 @@ export default function NotesTable({ data, onRefresh }: { data: Note[]; onRefres
         <thead className="bg-gray-50 border-b">
           <tr>
             <th className="p-4">Title</th>
-            <th className="p-4">Category</th>
-            <th className="p-4">Subject</th>
             <th className="p-4">Author</th>
             <th className="p-4">Tags</th>
             <th className="p-4 text-right">Actions</th>
@@ -50,15 +48,6 @@ export default function NotesTable({ data, onRefresh }: { data: Note[]; onRefres
               <td className="p-4">
                 <div className="font-medium">{note.title}</div>
                 <div className="text-sm text-gray-500">{note.shortDescription}</div>
-              </td>
-              <td className="p-4">
-                <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">{note.category}</span>
-              </td>
-              <td className="p-4">
-                <span className="text-sm">{note.subject}</span>
-              </td>
-              <td className="p-4">
-                <span className="text-sm">{note.author}</span>
               </td>
               <td className="p-4">
                 <div className="flex flex-wrap gap-1">

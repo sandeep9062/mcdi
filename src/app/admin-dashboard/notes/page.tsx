@@ -53,12 +53,6 @@ export default async function AdminNotesPage() {
             </div>
             <div className="text-purple-700">Popular</div>
           </div>
-          <div>
-            <div className="text-2xl font-bold text-orange-600">
-              {new Set(allNotes.map(n => n.category)).size}
-            </div>
-            <div className="text-orange-700">Categories</div>
-          </div>
         </div>
       </div>
 

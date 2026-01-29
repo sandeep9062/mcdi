@@ -13,7 +13,7 @@ import { Save, ArrowLeft, Plus, Trash2, Upload, X } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { Course } from "@/types/types";
-import { UploadButton } from "@/utils/uploadthing";
+import { CloudinaryUpload } from "@/components/Upload";
 
 function CourseFormContent() {
   const router = useRouter();
@@ -30,18 +30,19 @@ function CourseFormContent() {
     shortDescription: "",
     fullDescription: "",
     price: 0,
-    thumbnail: "",
+    thumbnails: [],
     category: "",
     mode: "Online",
     duration: "",
     rating: 5,
     reviewCount: 0,
+    enrollmentCount: 0,
     featured: false,
     popular: false,
     whatYouLearn: [""],
     curriculum: [{ module: "", topics: [""] }],
     whoIsThisFor: [""],
-    faculty: { name: "", title: "", image: "", bio: "" },
+    faculty: [{ name: "", title: "", image: "", bio: "" }],
     faqs: [{ question: "", answer: "" }]
   });
 
@@ -105,7 +106,7 @@ function CourseFormContent() {
     if (!formData.title.trim()) errors.push("Title is required");
     if (!formData.shortDescription.trim()) errors.push("Short description is required");
     if (!formData.fullDescription.trim()) errors.push("Full description is required");
-    if (!formData.thumbnail.trim()) errors.push("Thumbnail URL is required");
+    if (!formData.thumbnails.length) errors.push("At least one thumbnail is required");
     if (!formData.category.trim()) errors.push("Category is required");
     if (!formData.duration.trim()) errors.push("Duration is required");
     if (formData.price <= 0) errors.push("Price must be greater than 0");
@@ -135,10 +136,10 @@ function CourseFormContent() {
     }
 
     // Validate faculty
-    if (!formData.faculty.name.trim()) errors.push("Faculty name is required");
-    if (!formData.faculty.title.trim()) errors.push("Faculty title is required");
-    if (!formData.faculty.image.trim()) errors.push("Faculty image URL is required");
-    if (!formData.faculty.bio.trim()) errors.push("Faculty bio is required");
+    if (formData.faculty.length === 0 || formData.faculty.some(f => !f.name.trim())) errors.push("At least one faculty member name is required");
+    if (formData.faculty.length === 0 || formData.faculty.some(f => !f.title.trim())) errors.push("At least one faculty member title is required");
+    if (formData.faculty.length === 0 || formData.faculty.some(f => !f.image.trim())) errors.push("At least one faculty member image URL is required");
+    if (formData.faculty.length === 0 || formData.faculty.some(f => !f.bio.trim())) errors.push("At least one faculty member bio is required");
 
     return errors;
   };
@@ -244,47 +245,47 @@ function CourseFormContent() {
             </div>
 
             <div>
-              <Label>Thumbnail</Label>
+              <Label>Thumbnails</Label>
               <div className="space-y-4">
-                {formData.thumbnail && (
-                  <div className="flex items-center gap-4 p-4 border rounded-lg">
+                {formData.thumbnails.map((thumbnail, index) => (
+                  <div key={index} className="flex items-center gap-4 p-4 border rounded-lg">
                     <img
-                      src={formData.thumbnail}
-                      alt="Course thumbnail"
+                      src={thumbnail}
+                      alt={`Course thumbnail ${index + 1}`}
                       className="w-20 h-20 object-cover rounded"
                     />
                     <div className="flex-1">
-                      <p className="text-sm text-gray-600">Current thumbnail</p>
-                      <p className="text-xs text-gray-400 break-all">{formData.thumbnail}</p>
+                      <p className="text-sm text-gray-600">Thumbnail {index + 1}</p>
+                      <p className="text-xs text-gray-400 break-all">{thumbnail}</p>
                     </div>
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => handleInputChange("thumbnail", "")}
+                      onClick={() => {
+                        const newThumbnails = formData.thumbnails.filter((_, i) => i !== index);
+                        handleInputChange("thumbnails", newThumbnails);
+                      }}
                     >
                       <X className="h-4 w-4" />
                     </Button>
                   </div>
-                )}
+                ))}
                 <div className="flex items-center gap-4">
-                  <UploadButton
-                    endpoint="Image"
-                    onClientUploadComplete={(res) => {
-                      if (res && res[0]) {
-                        handleInputChange("thumbnail", res[0].url);
-                        toast.success("Thumbnail uploaded successfully!");
-                      }
+                  <CloudinaryUpload
+                    onUploadComplete={(url: string) => {
+                      const newThumbnails = [...formData.thumbnails, url];
+                      handleInputChange("thumbnails", newThumbnails);
+                      toast.success("Thumbnail uploaded successfully!");
                     }}
-                    onUploadError={(error: Error) => {
+                    onError={(error: Error) => {
                       toast.error(`Upload failed: ${error.message}`);
                     }}
-                    className="ut-button:bg-primary ut-button:hover:bg-primary/90 ut-button:text-primary-foreground ut-button:px-4 ut-button:py-2 ut-button:rounded-md ut-button:text-sm ut-button:font-medium"
                   />
-                  {!formData.thumbnail && (
+                  {!formData.thumbnails.length && (
                     <span className="text-sm text-gray-500">
                       <Upload className="inline h-4 w-4 mr-1" />
-                      Upload a thumbnail image
+                      Upload course thumbnails
                     </span>
                   )}
                 </div>
@@ -562,82 +563,122 @@ function CourseFormContent() {
             <CardTitle>Faculty Information</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="faculty.name">Name</Label>
-                <Input
-                  id="faculty.name"
-                  value={formData.faculty.name}
-                  onChange={(e) => handleNestedChange("faculty", "name", e.target.value)}
-                />
-              </div>
-              <div>
-                <Label htmlFor="faculty.title">Title</Label>
-                <Input
-                  id="faculty.title"
-                  value={formData.faculty.title}
-                  onChange={(e) => handleNestedChange("faculty", "title", e.target.value)}
-                />
-              </div>
-            </div>
+            {formData.faculty.map((instructor, index) => (
+              <div key={index} className="border rounded-lg p-4">
+                <div className="flex justify-between items-center mb-4">
+                  <h4 className="font-medium">Faculty Member {index + 1}</h4>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => removeArrayItem("faculty", index)}
+                    disabled={formData.faculty.length === 1}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
 
-            <div>
-              <Label>Faculty Image</Label>
-              <div className="space-y-4">
-                {formData.faculty.image && (
-                  <div className="flex items-center gap-4 p-4 border rounded-lg">
-                    <img
-                      src={formData.faculty.image}
-                      alt="Faculty image"
-                      className="w-20 h-20 object-cover rounded"
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <Label>Faculty Name</Label>
+                    <Input
+                      value={instructor.name}
+                      onChange={(e) => {
+                        const newFaculty = [...formData.faculty];
+                        newFaculty[index].name = e.target.value;
+                        handleInputChange("faculty", newFaculty);
+                      }}
+                      placeholder="Faculty member name"
                     />
-                    <div className="flex-1">
-                      <p className="text-sm text-gray-600">Current faculty image</p>
-                      <p className="text-xs text-gray-400 break-all">{formData.faculty.image}</p>
-                    </div>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleNestedChange("faculty", "image", "")}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
                   </div>
-                )}
-                <div className="flex items-center gap-4">
-                  <UploadButton
-                    endpoint="Image"
-                    onClientUploadComplete={(res) => {
-                      if (res && res[0]) {
-                        handleNestedChange("faculty", "image", res[0].url);
-                        toast.success("Faculty image uploaded successfully!");
-                      }
+                  <div>
+                    <Label>Faculty Title</Label>
+                    <Input
+                      value={instructor.title}
+                      onChange={(e) => {
+                        const newFaculty = [...formData.faculty];
+                        newFaculty[index].title = e.target.value;
+                        handleInputChange("faculty", newFaculty);
+                      }}
+                      placeholder="Faculty member title"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label>Faculty Image</Label>
+                  <div className="space-y-4">
+                    {instructor.image && (
+                      <div className="flex items-center gap-4 p-4 border rounded-lg">
+                        <img
+                          src={instructor.image}
+                          alt="Faculty image"
+                          className="w-20 h-20 object-cover rounded"
+                        />
+                        <div className="flex-1">
+                          <p className="text-sm text-gray-600">Current faculty image</p>
+                          <p className="text-xs text-gray-400 break-all">{instructor.image}</p>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            const newFaculty = [...formData.faculty];
+                            newFaculty[index].image = "";
+                            handleInputChange("faculty", newFaculty);
+                          }}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    )}
+                    <div className="flex items-center gap-4">
+                      <CloudinaryUpload
+                        onUploadComplete={(url: string) => {
+                          const newFaculty = [...formData.faculty];
+                          newFaculty[index].image = url;
+                          handleInputChange("faculty", newFaculty);
+                          toast.success("Faculty image uploaded successfully!");
+                        }}
+                        onError={(error: Error) => {
+                          toast.error(`Upload failed: ${error.message}`);
+                        }}
+                      />
+                      {!instructor.image && (
+                        <span className="text-sm text-gray-500">
+                          <Upload className="inline h-4 w-4 mr-1" />
+                          Upload faculty image
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <Label>Faculty Bio</Label>
+                  <Textarea
+                    value={instructor.bio}
+                    onChange={(e) => {
+                      const newFaculty = [...formData.faculty];
+                      newFaculty[index].bio = e.target.value;
+                      handleInputChange("faculty", newFaculty);
                     }}
-                    onUploadError={(error: Error) => {
-                      toast.error(`Upload failed: ${error.message}`);
-                    }}
-                    className="ut-button:bg-primary ut-button:hover:bg-primary/90 ut-button:text-primary-foreground ut-button:px-4 ut-button:py-2 ut-button:rounded-md ut-button:text-sm ut-button:font-medium"
+                    rows={4}
+                    placeholder="Faculty member bio"
                   />
-                  {!formData.faculty.image && (
-                    <span className="text-sm text-gray-500">
-                      <Upload className="inline h-4 w-4 mr-1" />
-                      Upload faculty image
-                    </span>
-                  )}
                 </div>
               </div>
-            </div>
+            ))}
 
-            <div>
-              <Label htmlFor="faculty.bio">Bio</Label>
-              <Textarea
-                id="faculty.bio"
-                value={formData.faculty.bio}
-                onChange={(e) => handleNestedChange("faculty", "bio", e.target.value)}
-                rows={4}
-              />
-            </div>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => addArrayItem("faculty", { name: "", title: "", image: "", bio: "" })}
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Add Faculty Member
+            </Button>
           </CardContent>
         </Card>
 

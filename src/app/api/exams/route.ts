@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
     // Validate required fields
     const requiredFields = [
       'slug', 'name', 'fullName', 'country', 'countryFlag',
-      'shortDescription', 'fullDescription', 'thumbnail', 'icon',
+      'shortDescription', 'fullDescription', 'thumbnails', 'icon',
       'whoIsThisFor', 'whatIncluded', 'studyPlan', 'reviews'
     ];
 
@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
       countryFlag: body.countryFlag,
       shortDescription: body.shortDescription,
       fullDescription: body.fullDescription,
-      thumbnail: body.thumbnail,
+      thumbnails: body.thumbnails,
       icon: body.icon,
       whoIsThisFor: body.whoIsThisFor,
       whatIncluded: body.whatIncluded,
@@ -132,7 +132,7 @@ export async function PUT(request: NextRequest) {
         countryFlag: body.countryFlag,
         shortDescription: body.shortDescription,
         fullDescription: body.fullDescription,
-        thumbnail: body.thumbnail,
+        thumbnails: body.thumbnails,
         icon: body.icon,
         whoIsThisFor: body.whoIsThisFor,
         whatIncluded: body.whatIncluded,

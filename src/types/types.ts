@@ -17,7 +17,7 @@ export interface Exam {
   countryFlag: string;
   shortDescription: string;
   fullDescription: string;
-  thumbnail: string;
+  thumbnails: string[];
   icon: string;
   whoIsThisFor: string[];
   whatIncluded: string[];
@@ -40,12 +40,13 @@ export interface Course {
   fullDescription: string;
   price: number;
   originalPrice?: number;
-  thumbnail: string;
+  thumbnails: string[]; // Array of thumbnail URLs
   category: string;
   mode: 'Online' | 'Offline' | 'Hybrid';
   duration: string;
   rating: number;
   reviewCount: number;
+  enrollmentCount: number;
   featured: boolean;
   popular: boolean;
   whatYouLearn: string[];
@@ -59,7 +60,7 @@ export interface Course {
     title: string;
     image: string;
     bio: string;
-  };
+  }[];
   faqs: {
     question: string;
     answer: string;
@@ -73,7 +74,7 @@ export interface DentistRegistration {
   fullDescription: string;
   price: number;
   originalPrice?: number;
-  thumbnail: string;
+  thumbnails: string[]; // Array of thumbnail URLs
   category: string;
   mode: 'Online' | 'Offline' | 'Hybrid';
   duration: string;
@@ -92,11 +93,46 @@ export interface DentistRegistration {
     title: string;
     image: string;
     bio: string;
-  };
+  }[];
   faqs: {
     question: string;
     answer: string;
   }[];
+  // Legacy dentist registration fields
+  name: string;
+  email: string;
+  phone: string;
+  qualification: string;
+  experience: number;
+  clinicName: string;
+  clinicAddress: string;
+  registrationNumber: string;
+  specializations: string[];
+  availability: {
+    monday: { start: string; end: string } | { available: boolean };
+    tuesday: { start: string; end: string } | { available: boolean };
+    wednesday: { start: string; end: string } | { available: boolean };
+    thursday: { start: string; end: string } | { available: boolean };
+    friday: { start: string; end: string } | { available: boolean };
+    saturday: { start: string; end: string } | { available: boolean };
+    sunday: { start: string; end: string } | { available: boolean };
+  };
+  consultationFee: number;
+  emergencyFee: number;
+  languages: string[];
+  about: string;
+  education: {
+    degree: string;
+    institution: string;
+    year: number;
+  }[];
+  certifications: string[];
+  awards: string[];
+  photo: string;
+  verified: boolean;
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 export interface Review {
   id: string;
@@ -114,7 +150,7 @@ export interface TestSeries {
   title: string;
   shortDescription: string;
   fullDescription: string;
-  thumbnail: string;
+  thumbnails: string[]; // Array of thumbnail URLs
   category: string;
   examType: string;
   price: number;
@@ -151,13 +187,12 @@ export interface Note {
   title: string;
   shortDescription: string;
   fullDescription: string;
-  thumbnail: string;price: number;
+  thumbnails: string[];
+  price: number;
   originalPrice?: number;
-  category: string;
-  subject: string;
   content: string;
   tags: string[];
-  author: string;
+
   dateCreated: string;
   lastUpdated: string;
   featured: boolean;

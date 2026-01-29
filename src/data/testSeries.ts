@@ -4,7 +4,7 @@ export interface TestSeries {
   title: string;
   shortDescription: string;
   fullDescription: string;
-  thumbnail: string;
+  thumbnails: string[];
   category: string;
   examType: string;
   price: number;
@@ -31,7 +31,7 @@ export const testSeries: TestSeries[] = [
     title: 'INBDE Complete Test Series',
     shortDescription: 'Comprehensive question bank with 2000+ questions covering all INBDE exam domains',
     fullDescription: 'Master the INBDE with our comprehensive test series featuring 2000+ practice questions, detailed explanations, and performance analytics. Designed by experts who have successfully cleared the exam.',
-    thumbnail: 'https://images.pexels.com/photos/5212700/pexels-photo-5212700.jpeg',
+    thumbnails: ['https://images.pexels.com/photos/5212700/pexels-photo-5212700.jpeg'],
     category: 'Exam Prep',
     examType: 'INBDE',
     price: 12000,
@@ -81,7 +81,7 @@ export const testSeries: TestSeries[] = [
     title: 'DHA Mock Test Series',
     shortDescription: '1500+ DHA-specific questions with detailed explanations and Dubai healthcare protocols',
     fullDescription: 'Prepare for the DHA exam with questions specifically designed to match the exam pattern. Includes Gulf region-specific clinical scenarios and healthcare protocols.',
-    thumbnail: 'https://images.pexels.com/photos/3952223/pexels-photo-3952223.jpeg',
+    thumbnails: ['https://images.pexels.com/photos/3952223/pexels-photo-3952223.jpeg'],
     category: 'Exam Prep',
     examType: 'DHA',
     price: 10000,
@@ -120,7 +120,7 @@ export const testSeries: TestSeries[] = [
     title: 'ADC Practice Question Bank',
     shortDescription: '1800+ questions for both written and practical ADC exam preparation',
     fullDescription: 'Complete question bank covering all aspects of ADC examination including biomedical sciences, clinical dentistry, and practical scenarios aligned with Australian standards.',
-    thumbnail: 'https://images.pexels.com/photos/3845981/pexels-photo-3845981.jpeg',
+    thumbnails: ['https://images.pexels.com/photos/3845981/pexels-photo-3845981.jpeg'],
     category: 'Exam Prep',
     examType: 'ADC',
     price: 11000,
@@ -159,7 +159,7 @@ export const testSeries: TestSeries[] = [
     title: 'ORE Part 1 Test Series',
     shortDescription: '2200+ questions covering all ORE Part 1 exam topics with UK GDC standards',
     fullDescription: 'Comprehensive test series for ORE Part 1 examination with questions aligned to UK General Dental Council standards and exam format.',
-    thumbnail: 'https://images.pexels.com/photos/3845624/pexels-photo-3845624.jpeg',
+    thumbnails: ['https://images.pexels.com/photos/3845624/pexels-photo-3845624.jpeg'],
     category: 'Exam Prep',
     examType: 'ORE',
     price: 13000,
@@ -198,7 +198,7 @@ export const testSeries: TestSeries[] = [
     title: 'General Dentistry MCQ Bank',
     shortDescription: '3000+ questions covering all aspects of general dental practice',
     fullDescription: 'Massive question bank covering operative dentistry, endodontics, periodontics, oral surgery, prosthodontics, and more. Perfect for knowledge building and exam preparation.',
-    thumbnail: 'https://images.pexels.com/photos/3779706/pexels-photo-3779706.jpeg',
+    thumbnails: ['https://images.pexels.com/photos/3779706/pexels-photo-3779706.jpeg'],
     category: 'General Knowledge',
     examType: 'General',
     price: 8000,
@@ -237,7 +237,7 @@ export const testSeries: TestSeries[] = [
     title: 'Endodontics Mastery Test Series',
     shortDescription: '1200+ specialized endodontic questions with clinical case scenarios',
     fullDescription: 'Deep dive into endodontics with specialized questions covering diagnosis, treatment planning, instrumentation, obturation, and management of endodontic complications.',
-    thumbnail: 'https://images.pexels.com/photos/3845683/pexels-photo-3845683.jpeg',
+    thumbnails: ['https://images.pexels.com/photos/3845683/pexels-photo-3845683.jpeg'],
     category: 'Specialty',
     examType: 'Endodontics',
     price: 6000,
@@ -276,7 +276,7 @@ export const testSeries: TestSeries[] = [
     title: 'Implantology Question Bank',
     shortDescription: '1000+ questions on dental implants, surgical protocols, and prosthetic management',
     fullDescription: 'Comprehensive test series covering all aspects of implant dentistry from surgical planning to prosthetic restoration and maintenance.',
-    thumbnail: 'https://images.pexels.com/photos/6528844/pexels-photo-6528844.jpeg',
+    thumbnails: ['https://images.pexels.com/photos/6528844/pexels-photo-6528844.jpeg'],
     category: 'Specialty',
     examType: 'Implantology',
     price: 7000,
@@ -315,7 +315,7 @@ export const testSeries: TestSeries[] = [
     title: 'Dental Radiology Interpretation Tests',
     shortDescription: '800+ radiographic interpretation questions with image-based scenarios',
     fullDescription: 'Master radiographic interpretation with extensive image-based questions covering intraoral, panoramic, CBCT, and other imaging modalities.',
-    thumbnail: 'https://images.pexels.com/photos/3952048/pexels-photo-3952048.jpeg',
+    thumbnails: ['https://images.pexels.com/photos/3952048/pexels-photo-3952048.jpeg'],
     category: 'Specialty',
     examType: 'Radiology',
     price: 5000,

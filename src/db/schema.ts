@@ -122,18 +122,19 @@ export const course = pgTable(
     fullDescription: text("full_description").notNull(),
     price: integer("price").notNull(),
     originalPrice: integer("original_price"),
-    thumbnail: text("thumbnail").notNull(),
+    thumbnails: jsonb("thumbnails").notNull(), // string[] - array of thumbnail URLs
     category: text("category").notNull(),
     mode: text("mode").notNull(), // 'Online' | 'Offline' | 'Both'
     duration: text("duration").notNull(),
     rating: real("rating").notNull(),
     reviewCount: integer("review_count").notNull(),
+    enrollmentCount: integer("enrollment_count").default(0).notNull(),
     featured: boolean("featured").default(false).notNull(),
     popular: boolean("popular").default(false).notNull(),
     whatYouLearn: jsonb("what_you_learn").notNull(), // string[]
     curriculum: jsonb("curriculum").notNull(), // { module: string; topics: string[]; }[]
     whoIsThisFor: jsonb("who_is_this_for").notNull(), // string[]
-    faculty: jsonb("faculty").notNull(), // { name: string; title: string; image: string; bio: string; }
+    faculty: jsonb("faculty").notNull(), // { name: string; title: string; image: string; bio: string; }[]
     faqs: jsonb("faqs").notNull(), // { question: string; answer: string; }[]
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
@@ -159,7 +160,7 @@ export const dentistRegistration = pgTable(
     fullDescription: text("full_description").notNull(),
     price: integer("price").notNull(),
     originalPrice: integer("original_price"),
-    thumbnail: text("thumbnail").notNull(),
+    thumbnails: jsonb("thumbnails").notNull(), // string[] - array of thumbnail URLs
     category: text("category").notNull(),
     mode: text("mode").notNull(), // 'Online' | 'Offline' | 'Hybrid'
     duration: text("duration").notNull(),
@@ -215,8 +216,8 @@ export const contact = pgTable("contact", {
   lastName: text("last_name").notNull(),
   email: text("email").notNull(),
   phone: text("phone").notNull(),
-  subject: text("subject"),
-  message: text("subject").notNull(),
+  subject: text("subject").notNull(),
+  message: text("message").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -238,7 +239,7 @@ export const exam = pgTable(
     countryFlag: text("country_flag").notNull(),
     shortDescription: text("short_description").notNull(),
     fullDescription: text("full_description").notNull(),
-    thumbnail: text("thumbnail").notNull(),
+    thumbnails: jsonb("thumbnails").notNull(), // string[] - array of thumbnail URLs
     icon: text("icon").notNull(),
     whoIsThisFor: jsonb("who_is_this_for").notNull(), // string[]
     whatIncluded: jsonb("what_included").notNull(), // string[]
@@ -264,7 +265,7 @@ export const testSeries = pgTable(
     title: text("title").notNull(),
     shortDescription: text("short_description").notNull(),
     fullDescription: text("full_description").notNull(),
-    thumbnail: text("thumbnail").notNull(),
+    thumbnails: jsonb("thumbnails").notNull(), // string[] - array of thumbnail URLs
     category: text("category").notNull(),
     examType: text("exam_type").notNull(),
     price: integer("price").notNull(),
@@ -321,7 +322,7 @@ export const video = pgTable(
     id: text("id").primaryKey(),
     title: text("title").notNull(),
     description: text("description").notNull(),
-    thumbnail: text("thumbnail").notNull(),
+    thumbnails: jsonb("thumbnails").notNull(), // string[] - array of thumbnail URLs
     youtubeId: text("youtube_id").notNull(),
     category: text("category").notNull(),
     duration: text("duration").notNull(),
@@ -348,16 +349,11 @@ export const note = pgTable(
     title: text("title").notNull(),
     shortDescription: text("short_description").notNull(),
     fullDescription: text("full_description").notNull(),
-    thumbnail: text("thumbnail").notNull(),
-    category: text("category").notNull(),
-    subject: text("subject").notNull(),
+    thumbnails: jsonb("thumbnails").notNull(), // string[] - array of thumbnail URLs
     content: text("content").notNull(),
-
-
     price: integer("price").notNull().default(0), // Added this
     originalPrice: integer("original_price"),      // Added this
     tags: jsonb("tags").notNull(), // string[]
-    author: text("author").notNull(),
     dateCreated: text("date_created").notNull(),
     lastUpdated: text("last_updated").notNull(),
     featured: boolean("featured").default(false).notNull(),
@@ -370,7 +366,6 @@ export const note = pgTable(
   },
   (table) => [
     index("note_slug_idx").on(table.slug),
-    index("note_category_idx").on(table.category),
     index("note_featured_idx").on(table.featured),
     index("note_popular_idx").on(table.popular),
   ],

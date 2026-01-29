@@ -5,9 +5,7 @@ import {
   User, 
   Lock, 
   Bell, 
-
   Camera, 
-
   Save
 } from "lucide-react";
 import { motion } from "framer-motion";

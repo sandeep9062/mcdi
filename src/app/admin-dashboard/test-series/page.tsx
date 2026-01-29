@@ -10,6 +10,7 @@ export default async function AdminTestSeriesPage() {
   const rawTestSeries = await db.select().from(testSeries).orderBy(desc(testSeries.createdAt));
   const allTestSeries = rawTestSeries.map(ts => ({
     ...ts,
+    thumbnails: ts.thumbnails as string[],
     whatIncluded: ts.whatIncluded as string[],
     sampleQuestions: ts.sampleQuestions as { question: string; options: string[]; correctAnswer: number; explanation: string; }[],
     originalPrice: ts.originalPrice ?? undefined,

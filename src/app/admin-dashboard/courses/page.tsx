@@ -12,10 +12,11 @@ export default async function AdminCoursesPage() {
     ...course,
     originalPrice: course.originalPrice ?? undefined,
     mode: course.mode as "Online" | "Offline" | "Hybrid",
+    thumbnails: course.thumbnails as string[],
     whatYouLearn: course.whatYouLearn as string[],
     curriculum: course.curriculum as { module: string; topics: string[]; }[],
     whoIsThisFor: course.whoIsThisFor as string[],
-    faculty: course.faculty as { name: string; title: string; image: string; bio: string; },
+    faculty: course.faculty as { name: string; title: string; image: string; bio: string; }[],
     faqs: course.faqs as { question: string; answer: string; }[],
   }));
 

@@ -15,7 +15,7 @@ export async function createContact(data: any) {
     // .trim() removes extra spaces
     // .split(/\s+/) splits by any whitespace
     const nameParts = data.name.trim().split(/\s+/);
-    
+
     const firstName = nameParts[0];
     // If there's more than one part, join the rest as the last name. 
     // Otherwise, leave lastName as an empty string or null.
@@ -32,7 +32,7 @@ export async function createContact(data: any) {
     });
 
     revalidatePath("/admin/contact");
-    
+
     return { success: true };
   } catch (error) {
     console.error("Database Error:", error);

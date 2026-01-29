@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
 
     // Validate required fields
     const requiredFields = [
-      'title', 'description', 'thumbnail', 'youtubeId', 'category', 'duration', 'views', 'date'
+      'title', 'description', 'thumbnails', 'youtubeId', 'category', 'duration', 'views', 'date'
     ];
 
     for (const field of requiredFields) {
@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
       id: crypto.randomUUID(),
       title: body.title,
       description: body.description,
-      thumbnail: body.thumbnail,
+      thumbnails: body.thumbnails,
       youtubeId: body.youtubeId,
       category: body.category,
       duration: body.duration,
@@ -131,7 +131,7 @@ export async function PUT(request: NextRequest) {
       .set({
         title: body.title,
         description: body.description,
-        thumbnail: body.thumbnail,
+        thumbnails: body.thumbnails,
         youtubeId: body.youtubeId,
         category: body.category,
         duration: body.duration,

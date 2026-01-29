@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
     // Validate required fields
     const requiredFields = [
       'slug', 'title', 'shortDescription', 'fullDescription', 'price',
-      'thumbnail', 'category', 'mode', 'duration', 'rating', 'reviewCount',
+      'thumbnails', 'category', 'mode', 'duration', 'rating', 'reviewCount',
       'whatYouLearn', 'curriculum', 'whoIsThisFor', 'faculty', 'faqs'
     ];
 
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
       fullDescription: body.fullDescription,
       price: body.price,
       originalPrice: body.originalPrice,
-      thumbnail: body.thumbnail,
+      thumbnails: body.thumbnails,
       category: body.category,
       mode: body.mode,
       duration: body.duration,
@@ -137,7 +137,7 @@ export async function PUT(request: NextRequest) {
         fullDescription: body.fullDescription,
         price: body.price,
         originalPrice: body.originalPrice,
-        thumbnail: body.thumbnail,
+        thumbnails: body.thumbnails,
         category: body.category,
         mode: body.mode,
         duration: body.duration,

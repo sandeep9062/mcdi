@@ -50,7 +50,7 @@ export default function HomePage() {
     <div className="overflow-hidden">
       <Hero />
 
-      <Stats />
+      
 
       <ExploreOurPrograms />
 

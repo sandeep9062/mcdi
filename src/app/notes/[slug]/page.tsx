@@ -97,18 +97,11 @@ export default function NoteDetailPage({
               <h1 className="text-4xl md:text-5xl font-bold mb-4">
                 {note.title}
               </h1>
-              <Badge className="bg-white text-teal-700 text-base px-4 py-1 mb-4">
-                {note.category}
-              </Badge>
               <p className="text-lg text-teal-50 leading-relaxed">
                 {note.shortDescription}
               </p>
 
               <div className="flex items-center gap-6 mt-6 text-teal-100">
-                <div className="flex items-center gap-2">
-                  <User className="h-4 w-4" />
-                  <span>{note.author}</span>
-                </div>
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4" />
                   <span>{new Date(note.dateCreated).toLocaleDateString()}</span>
@@ -152,7 +145,7 @@ export default function NoteDetailPage({
                   {/* Thumbnail */}
                   <div className="aspect-video bg-gray-200 rounded-lg overflow-hidden">
                     <Image
-                      src={note.thumbnail}
+                      src={note.thumbnails?.[0] || '/placeholder-image.jpg'}
                       alt={note.title}
                       fill
                       className="object-cover"
@@ -165,15 +158,6 @@ export default function NoteDetailPage({
                       Note Details
                     </h3>
                     <div className="space-y-2 text-sm text-gray-600">
-                      <div>
-                        <strong>Subject:</strong> {note.subject}
-                      </div>
-                      <div>
-                        <strong>Category:</strong> {note.category}
-                      </div>
-                      <div>
-                        <strong>Author:</strong> {note.author}
-                      </div>
                       <div>
                         <strong>Created:</strong> {new Date(note.dateCreated).toLocaleDateString()}
                       </div>

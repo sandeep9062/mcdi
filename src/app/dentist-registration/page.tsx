@@ -23,7 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import CourseCard from "@/components/CourseCard";
+import DentistRegistrationCard from "@/components/DentistRegistrationCard";
 import { DentistRegistration } from "@/types/types";
 import { categories } from "@/data/categories";
 import { motion } from "framer-motion";
@@ -437,7 +437,7 @@ export default function DentistRegistrationPage() {
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: index * 0.05 }}
                         >
-                          <CourseCard course={registration} />
+                          <DentistRegistrationCard registration={registration} />
                         </motion.div>
                       ))}
                     </div>

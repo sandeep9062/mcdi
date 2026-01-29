@@ -68,24 +68,25 @@ export default function TestSeriesDetailPage({ params }: { params: Promise<{ slu
       fullDescription: testSeries.fullDescription,
       price: testSeries.price,
       originalPrice: testSeries.originalPrice,
-      thumbnail: testSeries.thumbnail,
+      thumbnails: testSeries.thumbnails || [""],
       category: testSeries.category,
       mode: "Online" as const,
       duration: testSeries.duration,
       rating: testSeries.rating,
       reviewCount: testSeries.reviewCount,
+      enrollmentCount: 0,
       featured: testSeries.featured,
       popular: false,
       whatYouLearn: testSeries.whatIncluded,
       curriculum: [],
       whoIsThisFor: [],
-      faculty: {
+      faculty: [{
         name: "Expert Faculty",
         title: "Specialist Team",
         image:
           "https://images.pexels.com/photos/5215024/pexels-photo-5215024.jpeg",
         bio: "Our expert team of dental professionals",
-      },
+      }],
       faqs: [],
     };
     addToCart(courseFormat);
@@ -179,7 +180,7 @@ export default function TestSeriesDetailPage({ params }: { params: Promise<{ slu
                 <div className="bg-white rounded-xl p-6 shadow-lg">
                   <div className="relative h-48 bg-gray-200 rounded-lg mb-4">
                     <Image
-                      src={testSeries.thumbnail}
+                      src={testSeries.thumbnails?.[0] || ""}
                       alt={testSeries.title}
                       fill
                       className="object-cover rounded-lg"

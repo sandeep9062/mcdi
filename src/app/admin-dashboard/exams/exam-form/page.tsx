@@ -7,10 +7,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Save, ArrowLeft, Plus, Trash2 } from "lucide-react";
+import { Save, ArrowLeft, Plus, Trash2, Upload } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { Exam } from "@/types/types";
+import { CloudinaryUpload } from "@/components/Upload";
 
 function ExamFormContent() {
   const router = useRouter();
@@ -29,7 +30,7 @@ function ExamFormContent() {
     countryFlag: "",
     shortDescription: "",
     fullDescription: "",
-    thumbnail: "",
+    thumbnails: [],
     icon: "",
     whoIsThisFor: [""],
     whatIncluded: [""],
@@ -93,7 +94,7 @@ function ExamFormContent() {
     if (!formData.countryFlag.trim()) errors.push("Country flag is required");
     if (!formData.shortDescription.trim()) errors.push("Short description is required");
     if (!formData.fullDescription.trim()) errors.push("Full description is required");
-    if (!formData.thumbnail.trim()) errors.push("Thumbnail URL is required");
+    if (formData.thumbnails.length === 0) errors.push("At least one thumbnail is required");
     if (!formData.icon.trim()) errors.push("Icon is required");
 
     // Validate whoIsThisFor array
@@ -249,13 +250,55 @@ function ExamFormContent() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="thumbnail">Thumbnail URL</Label>
-                <Input
-                  id="thumbnail"
-                  value={formData.thumbnail}
-                  onChange={(e) => handleInputChange("thumbnail", e.target.value)}
-                  placeholder="https://..."
-                />
+                <Label>Thumbnails</Label>
+                <div className="space-y-2">
+                  {formData.thumbnails.map((thumbnail, index) => (
+                    <div key={index} className="flex gap-2">
+                      <Input
+                        value={thumbnail}
+                        onChange={(e) => {
+                          const newThumbnails = [...formData.thumbnails];
+                          newThumbnails[index] = e.target.value;
+                          handleInputChange("thumbnails", newThumbnails);
+                        }}
+                        placeholder="https://..."
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          const newThumbnails = formData.thumbnails.filter((_, i) => i !== index);
+                          handleInputChange("thumbnails", newThumbnails);
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                  <div className="flex gap-2">
+                    <CloudinaryUpload
+                      onUploadComplete={(url: string) => {
+                        const newThumbnails = [...formData.thumbnails, url];
+                        handleInputChange("thumbnails", newThumbnails);
+                      }}
+                      onError={(error: any) => {
+                        toast.error("Failed to upload thumbnail");
+                      }}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        const newThumbnails = [...formData.thumbnails, ""];
+                        handleInputChange("thumbnails", newThumbnails);
+                      }}
+                    >
+                      <Plus className="mr-2 h-4 w-4" />
+                      Add Thumbnail URL
+                    </Button>
+                  </div>
+                </div>
               </div>
               <div>
                 <Label htmlFor="icon">Icon</Label>

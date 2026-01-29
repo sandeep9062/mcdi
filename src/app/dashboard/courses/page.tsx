@@ -28,6 +28,8 @@ import { motion } from "framer-motion";
 import { Spinner } from "@/components/ui/spinner";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 
 // Ensure this path is correct and the interface is exported in that file
 import { Course } from "@/types/types"; 
@@ -47,6 +49,8 @@ export default function StudentCoursesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [sortBy, setSortBy] = useState("recent");
+  const router = useRouter();
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchMyCourses = async () => {
@@ -57,12 +61,17 @@ export default function StudentCoursesPage() {
         setCourses(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : "An error occurred");
+        toast({
+          title: "Error",
+          description: "Failed to load your courses. Please try again.",
+          variant: "destructive",
+        });
       } finally {
         setLoading(false);
       }
     };
     fetchMyCourses();
-  }, []);
+  }, [toast]);
 
   const filteredAndSortedCourses = useMemo(() => {
     let filtered = courses.filter((course) => {
@@ -109,11 +118,18 @@ export default function StudentCoursesPage() {
                 <Button variant="outline" asChild>
                     <Link href="/courses">Browse More Courses</Link>
                 </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={() => router.push("/dashboard")}
+                  className="text-teal-600 border-teal-600 hover:bg-teal-50"
+                >
+                  Back to Dashboard
+                </Button>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
-            <StatCard icon={<BookOpen className="text-blue-600" />} label="Total" value={stats.total} />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
+            <StatCard icon={<BookOpen className="text-blue-600" />} label="Total Courses" value={stats.total} />
             <StatCard icon={<PlayCircle className="text-orange-600" />} label="In Progress" value={stats.inProgress} />
             <StatCard icon={<Trophy className="text-yellow-600" />} label="Completed" value={stats.completed} />
             <StatCard icon={<Clock className="text-teal-600" />} label="Avg. Progress" value={`${stats.avgProgress}%`} />
@@ -162,9 +178,28 @@ export default function StudentCoursesPage() {
           </div>
 
           {loading ? (
-            <div className="flex justify-center items-center py-20"><Spinner /></div>
-          ) : filteredAndSortedCourses.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {[...Array(4)].map((_, index) => (
+                <div key={index} className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200 animate-pulse">
+                  <div className="flex h-full">
+                    <div className="w-32 md:w-48 h-24 md:h-32 bg-gray-300 shrink-0"></div>
+                    <div className="p-4 flex flex-col justify-between flex-1">
+                      <div>
+                        <div className="h-3 bg-gray-300 rounded w-1/4 mb-2"></div>
+                        <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
+                        <div className="h-3 bg-gray-300 rounded w-1/2"></div>
+                      </div>
+                      <div className="mt-4">
+                        <div className="h-2 bg-gray-300 rounded w-full mb-2"></div>
+                        <div className="h-8 bg-gray-300 rounded w-full"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : filteredAndSortedCourses.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredAndSortedCourses.map((course) => (
                 <StudentCourseCard key={course.id} course={course} />
               ))}
@@ -193,24 +228,52 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string
 }
 
 function StudentCourseCard({ course }: { course: StudentCourse }) {
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const handleCourseClick = async () => {
+    try {
+      // Update last accessed time
+      await fetch(`/api/student/courses/${course.id}/access`, {
+        method: 'POST',
+      });
+      
+      // Navigate to course
+      router.push(`/courses/${course.id}`);
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: "Failed to update course access. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <motion.div 
       layout
-      className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
+      className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200 hover:shadow-md transition-shadow cursor-pointer"
+      onClick={handleCourseClick}
     >
       <div className="flex h-full">
         <div className="relative w-32 md:w-48 h-auto shrink-0">
           <Image 
-            src={course.thumbnail || "/course-placeholder.jpg"} 
+            src={course.thumbnails?.[0] || "/course-placeholder.jpg"} 
             alt={course.title} 
             fill 
             className="object-cover"
           />
+          {course.status === "Completed" && (
+            <div className="absolute top-2 left-2">
+              <Badge variant="default" className="bg-green-600 text-white text-[10px]">
+                ✓ Completed
+              </Badge>
+            </div>
+          )}
         </div>
         <div className="p-4 flex flex-col justify-between flex-1">
           <div>
             <div className="flex justify-between items-start mb-1">
-              {/* FIXED: Changed variant="success" to a custom class logic */}
               <Badge 
                 variant={course.status === "Completed" ? "default" : "secondary"} 
                 className={`text-[10px] uppercase ${
@@ -228,16 +291,28 @@ function StudentCourseCard({ course }: { course: StudentCourse }) {
           <div className="mt-4">
             <div className="flex justify-between text-xs mb-1">
               <span className="text-gray-600 font-medium">{course.progress}% Complete</span>
+              <span className="text-xs text-gray-500">{course.duration || 'N/A'}</span>
             </div>
             <Progress value={course.progress} className="h-1.5" />
             <Button 
               className="w-full mt-4 h-9 text-xs" 
               variant={course.status === "Completed" ? "outline" : "default"}
-              asChild
+              onClick={(e) => {
+                e.stopPropagation();
+                handleCourseClick();
+              }}
             >
-              <Link href={`/courses/${course.id}`}>
-                {course.status === "Completed" ? "Review Course" : "Continue Learning"}
-              </Link>
+              {course.status === "Completed" ? (
+                <>
+                  <Trophy className="h-3 w-3 mr-1" />
+                  Review Course
+                </>
+              ) : (
+                <>
+                  <PlayCircle className="h-3 w-3 mr-1" />
+                  Continue Learning
+                </>
+              )}
             </Button>
           </div>
         </div>

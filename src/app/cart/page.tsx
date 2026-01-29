@@ -55,7 +55,7 @@ export default function CartPage() {
                     <div className="flex gap-6">
                       <Link href={`/courses/${item.course.slug}`} className="flex-shrink-0">
                         <img
-                          src={item.course.thumbnail}
+                          src={item.course.thumbnails?.[0] || '/placeholder-image.jpg'}
                           alt={item.course.title}
                           className="w-32 h-24 object-cover rounded-lg"
                         />

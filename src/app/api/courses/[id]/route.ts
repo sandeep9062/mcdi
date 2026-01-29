@@ -58,7 +58,7 @@ export async function PUT(
         fullDescription: body.fullDescription,
         price: body.price,
         originalPrice: body.originalPrice,
-        thumbnail: body.thumbnail,
+        thumbnails: body.thumbnails,
         category: body.category,
         mode: body.mode,
         duration: body.duration,

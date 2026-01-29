@@ -1,16 +1,16 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Course } from '@/data/courses';
+import { Course, DentistRegistration } from '@/types/types';
 
 interface CartItem {
-  course: Course;
+  course: Course | DentistRegistration;
   quantity: number;
 }
 
 interface CartContextType {
   items: CartItem[];
-  addToCart: (course: Course) => void;
+  addToCart: (item: Course | DentistRegistration) => void;
   removeFromCart: (courseId: string) => void;
   updateQuantity: (courseId: string, quantity: number) => void;
   clearCart: () => void;
@@ -42,17 +42,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [items, isLoaded]);
 
-  const addToCart = (course: Course) => {
+  const addToCart = (item: Course | DentistRegistration) => {
     setItems((prevItems) => {
-      const existingItem = prevItems.find((item) => item.course.id === course.id);
+      const existingItem = prevItems.find((cartItem) => cartItem.course.id === item.id);
       if (existingItem) {
-        return prevItems.map((item) =>
-          item.course.id === course.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
+        return prevItems.map((cartItem) =>
+          cartItem.course.id === item.id
+            ? { ...cartItem, quantity: cartItem.quantity + 1 }
+            : cartItem
         );
       }
-      return [...prevItems, { course, quantity: 1 }];
+      return [...prevItems, { course: item, quantity: 1 }];
     });
   };
 

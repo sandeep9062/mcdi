@@ -15,7 +15,7 @@ interface ApiResponse {
   fullDescription: string;
   price: number;
   originalPrice?: number;
-  thumbnail: string;
+  thumbnails: unknown; // Will be cast to string[]
   category: string;
   mode: "Online" | "Offline" | "Hybrid";
   duration: string;
@@ -52,11 +52,41 @@ export default function AdminDentistRegistrationPage() {
           ...registration,
           originalPrice: registration.originalPrice ?? undefined,
           mode: registration.mode as "Online" | "Offline" | "Hybrid",
+          thumbnails: registration.thumbnails as string[],
           whatYouLearn: registration.whatYouLearn as string[],
           curriculum: registration.curriculum as { module: string; topics: string[]; }[],
           whoIsThisFor: registration.whoIsThisFor as string[],
-          faculty: registration.faculty as { name: string; title: string; image: string; bio: string; },
+          faculty: [registration.faculty] as { name: string; title: string; image: string; bio: string; }[],
           faqs: registration.faqs as { question: string; answer: string; }[],
+          // Legacy dentist registration fields (set to defaults for new format)
+          name: "",
+          email: "",
+          phone: "",
+          qualification: "",
+          experience: 0,
+          clinicName: "",
+          clinicAddress: "",
+          registrationNumber: "",
+          specializations: [],
+          availability: {
+            monday: { available: false },
+            tuesday: { available: false },
+            wednesday: { available: false },
+            thursday: { available: false },
+            friday: { available: false },
+            saturday: { available: false },
+            sunday: { available: false },
+          },
+          consultationFee: 0,
+          emergencyFee: 0,
+          languages: [],
+          about: "",
+          education: [],
+          certifications: [],
+          awards: [],
+          photo: "",
+          verified: false,
+          active: false,
         })) as DentistRegistration[];
 
         setData(allDentistRegistrations);

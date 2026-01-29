@@ -13,7 +13,8 @@ import { Save, ArrowLeft, Plus, Trash2, Upload, X } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { DentistRegistration } from "@/types/types";
-import { UploadButton } from "@/utils/uploadthing";
+import { CloudinaryUpload } from "@/components/Upload";
+
 
 function DentistRegistrationFormContent() {
   const router = useRouter();
@@ -30,19 +31,51 @@ function DentistRegistrationFormContent() {
     shortDescription: "",
     fullDescription: "",
     price: 0,
-    thumbnail: "",
+    originalPrice: undefined,
+    thumbnails: [],
     category: "",
     mode: "Online",
     duration: "",
-    rating: 5,
+    rating: 0,
     reviewCount: 0,
     featured: false,
     popular: false,
     whatYouLearn: [""],
     curriculum: [{ module: "", topics: [""] }],
     whoIsThisFor: [""],
-    faculty: { name: "", title: "", image: "", bio: "" },
-    faqs: [{ question: "", answer: "" }]
+    faculty: [{ name: "", title: "", image: "", bio: "" }],
+    faqs: [{ question: "", answer: "" }],
+    // Legacy dentist registration fields
+    name: "",
+    email: "",
+    phone: "",
+    qualification: "",
+    experience: 0,
+    clinicName: "",
+    clinicAddress: "",
+    registrationNumber: "",
+    specializations: [""],
+    availability: {
+      monday: { available: false },
+      tuesday: { available: false },
+      wednesday: { available: false },
+      thursday: { available: false },
+      friday: { available: false },
+      saturday: { available: false },
+      sunday: { available: false }
+    },
+    consultationFee: 0,
+    emergencyFee: 0,
+    languages: [""],
+    about: "",
+    education: [{ degree: "", institution: "", year: 0 }],
+    certifications: [""],
+    awards: [""],
+    photo: "",
+    verified: false,
+    active: true,
+    createdAt: "",
+    updatedAt: ""
   });
 
   // Load dentist registration data for editing
@@ -101,44 +134,48 @@ function DentistRegistrationFormContent() {
   const validateForm = () => {
     const errors: string[] = [];
 
-    if (!formData.slug.trim()) errors.push("Slug is required");
-    if (!formData.title.trim()) errors.push("Title is required");
-    if (!formData.shortDescription.trim()) errors.push("Short description is required");
-    if (!formData.fullDescription.trim()) errors.push("Full description is required");
-    if (!formData.thumbnail.trim()) errors.push("Thumbnail URL is required");
-    if (!formData.category.trim()) errors.push("Category is required");
-    if (!formData.duration.trim()) errors.push("Duration is required");
-    if (formData.price <= 0) errors.push("Price must be greater than 0");
+    if (!formData.name.trim()) errors.push("Name is required");
+    if (!formData.email.trim()) errors.push("Email is required");
+    if (!formData.phone.trim()) errors.push("Phone is required");
+    if (!formData.qualification.trim()) errors.push("Qualification is required");
+    if (!formData.clinicName.trim()) errors.push("Clinic name is required");
+    if (!formData.clinicAddress.trim()) errors.push("Clinic address is required");
+    if (!formData.registrationNumber.trim()) errors.push("Registration number is required");
+    if (formData.experience < 0) errors.push("Experience must be a valid number");
+    if (formData.consultationFee < 0) errors.push("Consultation fee must be a valid number");
+    if (formData.emergencyFee < 0) errors.push("Emergency fee must be a valid number");
 
-    // Validate whatYouLearn array
-    if (formData.whatYouLearn.length === 0 || formData.whatYouLearn.some(item => !item.trim())) {
-      errors.push("At least one learning objective is required");
+    // Validate specializations array
+    if (formData.specializations.length === 0 || formData.specializations.some(item => !item.trim())) {
+      errors.push("At least one specialization is required");
     }
 
-    // Validate curriculum
-    if (formData.curriculum.length === 0) {
-      errors.push("At least one curriculum module is required");
+    // Validate languages array
+    if (formData.languages.length === 0 || formData.languages.some(item => !item.trim())) {
+      errors.push("At least one language is required");
+    }
+
+    // Validate education array
+    if (formData.education.length === 0) {
+      errors.push("At least one education entry is required");
     } else {
-      formData.curriculum.forEach((module, index) => {
-        if (!module.module.trim()) {
-          errors.push(`Module ${index + 1} name is required`);
+      formData.education.forEach((edu, index) => {
+        if (!edu.degree.trim()) {
+          errors.push(`Education ${index + 1} degree is required`);
         }
-        if (module.topics.length === 0 || module.topics.some(topic => !topic.trim())) {
-          errors.push(`Module ${index + 1} must have at least one topic`);
+        if (!edu.institution.trim()) {
+          errors.push(`Education ${index + 1} institution is required`);
+        }
+        if (edu.year <= 0) {
+          errors.push(`Education ${index + 1} year must be valid`);
         }
       });
     }
 
-    // Validate whoIsThisFor array
-    if (formData.whoIsThisFor.length === 0 || formData.whoIsThisFor.some(item => !item.trim())) {
-      errors.push("At least one target audience is required");
+    // Validate certifications array
+    if (formData.certifications.length === 0 || formData.certifications.some(item => !item.trim())) {
+      errors.push("At least one certification is required");
     }
-
-    // Validate faculty
-    if (!formData.faculty.name.trim()) errors.push("Faculty name is required");
-    if (!formData.faculty.title.trim()) errors.push("Faculty title is required");
-    if (!formData.faculty.image.trim()) errors.push("Faculty image URL is required");
-    if (!formData.faculty.bio.trim()) errors.push("Faculty bio is required");
 
     return errors;
   };
@@ -206,486 +243,329 @@ function DentistRegistrationFormContent() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Basic Information */}
+        {/* Personal Information */}
         <Card>
           <CardHeader>
-            <CardTitle>Basic Information</CardTitle>
+            <CardTitle>Personal Information</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="slug">Slug</Label>
+                <Label htmlFor="name">Full Name</Label>
                 <Input
-                  id="slug"
-                  value={formData.slug}
-                  onChange={(e) => handleInputChange("slug", e.target.value)}
-                  placeholder="course-slug"
+                  id="name"
+                  value={formData.name}
+                  onChange={(e) => handleInputChange("name", e.target.value)}
+                  placeholder="Dentist's full name"
                 />
               </div>
               <div>
-                <Label htmlFor="category">Category</Label>
+                <Label htmlFor="email">Email</Label>
                 <Input
-                  id="category"
-                  value={formData.category}
-                  onChange={(e) => handleInputChange("category", e.target.value)}
-                  placeholder="e.g., Medical, Dental"
+                  id="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => handleInputChange("email", e.target.value)}
+                  placeholder="dentist@example.com"
                 />
               </div>
             </div>
 
-            <div>
-              <Label htmlFor="title">Title</Label>
-              <Input
-                id="title"
-                value={formData.title}
-                onChange={(e) => handleInputChange("title", e.target.value)}
-                placeholder="Course Title"
-              />
-            </div>
-
-            <div>
-              <Label>Thumbnail</Label>
-              <div className="space-y-4">
-                {formData.thumbnail && (
-                  <div className="flex items-center gap-4 p-4 border rounded-lg">
-                    <img
-                      src={formData.thumbnail}
-                      alt="Course thumbnail"
-                      className="w-20 h-20 object-cover rounded"
-                    />
-                    <div className="flex-1">
-                      <p className="text-sm text-gray-600">Current thumbnail</p>
-                      <p className="text-xs text-gray-400 break-all">{formData.thumbnail}</p>
-                    </div>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleInputChange("thumbnail", "")}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                )}
-                <div className="flex items-center gap-4">
-                  <UploadButton
-                    endpoint="Image"
-                    onClientUploadComplete={(res) => {
-                      if (res && res[0]) {
-                        handleInputChange("thumbnail", res[0].url);
-                        toast.success("Thumbnail uploaded successfully!");
-                      }
-                    }}
-                    onUploadError={(error: Error) => {
-                      toast.error(`Upload failed: ${error.message}`);
-                    }}
-                    className="ut-button:bg-primary ut-button:hover:bg-primary/90 ut-button:text-primary-foreground ut-button:px-4 ut-button:py-2 ut-button:rounded-md ut-button:text-sm ut-button:font-medium"
-                  />
-                  {!formData.thumbnail && (
-                    <span className="text-sm text-gray-500">
-                      <Upload className="inline h-4 w-4 mr-1" />
-                      Upload a thumbnail image
-                    </span>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="mode">Mode</Label>
-                <Select value={formData.mode} onValueChange={(value) => handleInputChange("mode", value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select mode" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Online">Online</SelectItem>
-                    <SelectItem value="Offline">Offline</SelectItem>
-                    <SelectItem value="Both">Both</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label htmlFor="duration">Duration</Label>
+                <Label htmlFor="phone">Phone</Label>
                 <Input
-                  id="duration"
-                  value={formData.duration}
-                  onChange={(e) => handleInputChange("duration", e.target.value)}
-                  placeholder="e.g., 3 months"
+                  id="phone"
+                  value={formData.phone}
+                  onChange={(e) => handleInputChange("phone", e.target.value)}
+                  placeholder="+1234567890"
                 />
               </div>
               <div>
-                <Label htmlFor="price">Price (₹)</Label>
+                <Label htmlFor="qualification">Qualification</Label>
                 <Input
-                  id="price"
+                  id="qualification"
+                  value={formData.qualification}
+                  onChange={(e) => handleInputChange("qualification", e.target.value)}
+                  placeholder="e.g., BDS, MDS"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="experience">Experience (Years)</Label>
+                <Input
+                  id="experience"
                   type="number"
-                  value={formData.price}
-                  onChange={(e) => handleInputChange("price", parseInt(e.target.value) || 0)}
-                />
-              </div>
-              <div>
-                <Label htmlFor="reviewCount">Review Count</Label>
-                <Input
-                  id="reviewCount"
-                  type="number"
-                  value={formData.reviewCount}
-                  onChange={(e) => handleInputChange("reviewCount", parseInt(e.target.value) || 0)}
+                  value={formData.experience}
+                  onChange={(e) => handleInputChange("experience", parseInt(e.target.value) || 0)}
                   placeholder="0"
                   min="0"
                 />
               </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="originalPrice">Original Price (₹) - Optional</Label>
+                <Label htmlFor="registrationNumber">Registration Number</Label>
                 <Input
-                  id="originalPrice"
-                  type="number"
-                  value={formData.originalPrice || ""}
-                  onChange={(e) => handleInputChange("originalPrice", e.target.value ? parseInt(e.target.value) : undefined)}
-                  placeholder="Leave empty if no discount"
+                  id="registrationNumber"
+                  value={formData.registrationNumber}
+                  onChange={(e) => handleInputChange("registrationNumber", e.target.value)}
+                  placeholder="Dental council registration number"
                 />
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="featured"
-                  checked={formData.featured}
-                  onCheckedChange={(checked) => handleInputChange("featured", checked)}
-                />
-                <Label htmlFor="featured">Featured Course</Label>
               </div>
             </div>
 
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="popular"
-                checked={formData.popular}
-                onCheckedChange={(checked) => handleInputChange("popular", checked)}
+            <div>
+              <Label htmlFor="about">About</Label>
+              <Textarea
+                id="about"
+                value={formData.about}
+                onChange={(e) => handleInputChange("about", e.target.value)}
+                rows={4}
+                placeholder="Brief description about the dentist"
               />
-              <Label htmlFor="popular">Popular Course</Label>
             </div>
           </CardContent>
         </Card>
 
-        {/* Descriptions */}
+        {/* Clinic Information */}
         <Card>
           <CardHeader>
-            <CardTitle>Descriptions</CardTitle>
+            <CardTitle>Clinic Information</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <Label htmlFor="shortDescription">Short Description</Label>
+              <Label htmlFor="clinicName">Clinic Name</Label>
+              <Input
+                id="clinicName"
+                value={formData.clinicName}
+                onChange={(e) => handleInputChange("clinicName", e.target.value)}
+                placeholder="Clinic name"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="clinicAddress">Clinic Address</Label>
               <Textarea
-                id="shortDescription"
-                value={formData.shortDescription}
-                onChange={(e) => handleInputChange("shortDescription", e.target.value)}
+                id="clinicAddress"
+                value={formData.clinicAddress}
+                onChange={(e) => handleInputChange("clinicAddress", e.target.value)}
                 rows={3}
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="fullDescription">Full Description</Label>
-              <Textarea
-                id="fullDescription"
-                value={formData.fullDescription}
-                onChange={(e) => handleInputChange("fullDescription", e.target.value)}
-                rows={6}
+                placeholder="Complete clinic address"
               />
             </div>
           </CardContent>
         </Card>
 
-        {/* What You Will Learn */}
+        {/* Thumbnails */}
         <Card>
           <CardHeader>
-            <CardTitle>What You Will Learn</CardTitle>
+            <CardTitle>Thumbnails</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {formData.whatYouLearn.map((item, index) => (
-              <div key={index} className="flex gap-2">
-                <Input
-                  value={item}
-                  onChange={(e) => handleArrayChange("whatYouLearn", index, e.target.value)}
-                  placeholder="Learning objective"
-                />
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => removeArrayItem("whatYouLearn", index)}
-                  disabled={formData.whatYouLearn.length === 1}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            ))}
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => addArrayItem("whatYouLearn")}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Add Learning Objective
-            </Button>
-          </CardContent>
-        </Card>
-
-        {/* Curriculum */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Curriculum</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {formData.curriculum.map((module, moduleIndex) => (
-              <div key={moduleIndex} className="border rounded-lg p-4">
-                <div className="flex justify-between items-center mb-4">
-                  <h4 className="font-medium">Module {moduleIndex + 1}</h4>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => removeArrayItem("curriculum", moduleIndex)}
-                    disabled={formData.curriculum.length === 1}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-
-                <div className="mb-4">
-                  <Label>Module Name</Label>
-                  <Input
-                    value={module.module}
-                    onChange={(e) => {
-                      const newCurriculum = [...formData.curriculum];
-                      newCurriculum[moduleIndex].module = e.target.value;
-                      handleInputChange("curriculum", newCurriculum);
-                    }}
-                    placeholder="Module title"
-                  />
-                </div>
-
-                <Label>Topics</Label>
-                {module.topics.map((topic, topicIndex) => (
-                  <div key={topicIndex} className="flex gap-2 mt-2">
-                    <Input
-                      value={topic}
-                      onChange={(e) => {
-                        const newCurriculum = [...formData.curriculum];
-                        newCurriculum[moduleIndex].topics[topicIndex] = e.target.value;
-                        handleInputChange("curriculum", newCurriculum);
-                      }}
-                      placeholder="Topic name"
+            <div>
+              <Label>Upload Thumbnails</Label>
+              <div className="space-y-4">
+                {formData.thumbnails.map((thumbnail, index) => (
+                  <div key={index} className="flex items-center gap-4 p-4 border rounded-lg">
+                    <img
+                      src={thumbnail}
+                      alt={`Thumbnail ${index + 1}`}
+                      className="w-20 h-20 object-cover rounded"
                     />
+                    <div className="flex-1">
+                      <p className="text-sm text-gray-600">Thumbnail {index + 1}</p>
+                      <p className="text-xs text-gray-400 break-all">{thumbnail}</p>
+                    </div>
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        const newCurriculum = [...formData.curriculum];
-                        newCurriculum[moduleIndex].topics = newCurriculum[moduleIndex].topics.filter((_, i) => i !== topicIndex);
-                        handleInputChange("curriculum", newCurriculum);
+                        const newThumbnails = formData.thumbnails.filter((_, i) => i !== index);
+                        handleInputChange("thumbnails", newThumbnails);
                       }}
-                      disabled={module.topics.length === 1}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+                <div className="flex items-center gap-4">
+                  <CloudinaryUpload
+                    onUploadComplete={(url: string) => {
+                      const newThumbnails = [...formData.thumbnails, url];
+                      handleInputChange("thumbnails", newThumbnails);
+                      toast.success("Thumbnail uploaded successfully!");
+                    }}
+                    onError={(error: Error) => {
+                      toast.error(`Upload failed: ${error.message}`);
+                    }}
+                  />
+                  <span className="text-sm text-gray-500">
+                    <Upload className="inline h-4 w-4 mr-1" />
+                    Upload thumbnail images
+                  </span>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Professional Information */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Professional Information</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label>Specializations</Label>
+              <div className="space-y-2">
+                {formData.specializations.map((specialization, index) => (
+                  <div key={index} className="flex gap-2">
+                    <Input
+                      value={specialization}
+                      onChange={(e) => handleArrayChange("specializations", index, e.target.value)}
+                      placeholder="Specialization"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => removeArrayItem("specializations", index)}
+                      disabled={formData.specializations.length === 1}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
                 ))}
-
                 <Button
                   type="button"
                   variant="outline"
-                  size="sm"
-                  className="mt-2"
-                  onClick={() => {
-                    const newCurriculum = [...formData.curriculum];
-                    newCurriculum[moduleIndex].topics.push("");
-                    handleInputChange("curriculum", newCurriculum);
-                  }}
+                  onClick={() => addArrayItem("specializations")}
                 >
                   <Plus className="mr-2 h-4 w-4" />
-                  Add Topic
+                  Add Specialization
                 </Button>
-              </div>
-            ))}
-
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => addArrayItem("curriculum", { module: "", topics: [""] })}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Add Module
-            </Button>
-          </CardContent>
-        </Card>
-
-        {/* Target Audience */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Who Is This Course For</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {formData.whoIsThisFor.map((item, index) => (
-              <div key={index} className="flex gap-2">
-                <Input
-                  value={item}
-                  onChange={(e) => handleArrayChange("whoIsThisFor", index, e.target.value)}
-                  placeholder="Target audience"
-                />
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => removeArrayItem("whoIsThisFor", index)}
-                  disabled={formData.whoIsThisFor.length === 1}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            ))}
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => addArrayItem("whoIsThisFor")}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Add Target Audience
-            </Button>
-          </CardContent>
-        </Card>
-
-        {/* Faculty */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Faculty Information</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="faculty.name">Name</Label>
-                <Input
-                  id="faculty.name"
-                  value={formData.faculty.name}
-                  onChange={(e) => handleNestedChange("faculty", "name", e.target.value)}
-                />
-              </div>
-              <div>
-                <Label htmlFor="faculty.title">Title</Label>
-                <Input
-                  id="faculty.title"
-                  value={formData.faculty.title}
-                  onChange={(e) => handleNestedChange("faculty", "title", e.target.value)}
-                />
               </div>
             </div>
 
             <div>
-              <Label>Faculty Image</Label>
-              <div className="space-y-4">
-                {formData.faculty.image && (
-                  <div className="flex items-center gap-4 p-4 border rounded-lg">
-                    <img
-                      src={formData.faculty.image}
-                      alt="Faculty image"
-                      className="w-20 h-20 object-cover rounded"
+              <Label>Languages</Label>
+              <div className="space-y-2">
+                {formData.languages.map((language, index) => (
+                  <div key={index} className="flex gap-2">
+                    <Input
+                      value={language}
+                      onChange={(e) => handleArrayChange("languages", index, e.target.value)}
+                      placeholder="Language"
                     />
-                    <div className="flex-1">
-                      <p className="text-sm text-gray-600">Current faculty image</p>
-                      <p className="text-xs text-gray-400 break-all">{formData.faculty.image}</p>
-                    </div>
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => handleNestedChange("faculty", "image", "")}
+                      onClick={() => removeArrayItem("languages", index)}
+                      disabled={formData.languages.length === 1}
                     >
-                      <X className="h-4 w-4" />
+                      <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
-                )}
-                <div className="flex items-center gap-4">
-                  <UploadButton
-                    endpoint="Image"
-                    onClientUploadComplete={(res) => {
-                      if (res && res[0]) {
-                        handleNestedChange("faculty", "image", res[0].url);
-                        toast.success("Faculty image uploaded successfully!");
-                      }
-                    }}
-                    onUploadError={(error: Error) => {
-                      toast.error(`Upload failed: ${error.message}`);
-                    }}
-                    className="ut-button:bg-primary ut-button:hover:bg-primary/90 ut-button:text-primary-foreground ut-button:px-4 ut-button:py-2 ut-button:rounded-md ut-button:text-sm ut-button:font-medium"
-                  />
-                  {!formData.faculty.image && (
-                    <span className="text-sm text-gray-500">
-                      <Upload className="inline h-4 w-4 mr-1" />
-                      Upload faculty image
-                    </span>
-                  )}
-                </div>
+                ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => addArrayItem("languages")}
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add Language
+                </Button>
               </div>
             </div>
 
-            <div>
-              <Label htmlFor="faculty.bio">Bio</Label>
-              <Textarea
-                id="faculty.bio"
-                value={formData.faculty.bio}
-                onChange={(e) => handleNestedChange("faculty", "bio", e.target.value)}
-                rows={4}
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="consultationFee">Consultation Fee (₹)</Label>
+                <Input
+                  id="consultationFee"
+                  type="number"
+                  value={formData.consultationFee}
+                  onChange={(e) => handleInputChange("consultationFee", parseInt(e.target.value) || 0)}
+                  placeholder="0"
+                  min="0"
+                />
+              </div>
+              <div>
+                <Label htmlFor="emergencyFee">Emergency Fee (₹)</Label>
+                <Input
+                  id="emergencyFee"
+                  type="number"
+                  value={formData.emergencyFee}
+                  onChange={(e) => handleInputChange("emergencyFee", parseInt(e.target.value) || 0)}
+                  placeholder="0"
+                  min="0"
+                />
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* FAQs */}
+        {/* Education */}
         <Card>
           <CardHeader>
-            <CardTitle>Frequently Asked Questions</CardTitle>
+            <CardTitle>Education</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {formData.faqs.map((faq, index) => (
+            {formData.education.map((edu, index) => (
               <div key={index} className="border rounded-lg p-4">
                 <div className="flex justify-between items-center mb-4">
-                  <h4 className="font-medium">FAQ {index + 1}</h4>
+                  <h4 className="font-medium">Education {index + 1}</h4>
                   <Button
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => removeArrayItem("faqs", index)}
+                    onClick={() => removeArrayItem("education", index)}
+                    disabled={formData.education.length === 1}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
 
-                <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <Label>Question</Label>
+                    <Label>Degree</Label>
                     <Input
-                      value={faq.question}
+                      value={edu.degree}
                       onChange={(e) => {
-                        const newFaqs = [...formData.faqs];
-                        newFaqs[index].question = e.target.value;
-                        handleInputChange("faqs", newFaqs);
+                        const newEducation = [...formData.education];
+                        newEducation[index].degree = e.target.value;
+                        handleInputChange("education", newEducation);
                       }}
-                      placeholder="Question"
+                      placeholder="e.g., BDS, MDS"
                     />
                   </div>
-
                   <div>
-                    <Label>Answer</Label>
-                    <Textarea
-                      value={faq.answer}
+                    <Label>Institution</Label>
+                    <Input
+                      value={edu.institution}
                       onChange={(e) => {
-                        const newFaqs = [...formData.faqs];
-                        newFaqs[index].answer = e.target.value;
-                        handleInputChange("faqs", newFaqs);
+                        const newEducation = [...formData.education];
+                        newEducation[index].institution = e.target.value;
+                        handleInputChange("education", newEducation);
                       }}
-                      rows={3}
-                      placeholder="Answer"
+                      placeholder="University/College name"
+                    />
+                  </div>
+                  <div>
+                    <Label>Year</Label>
+                    <Input
+                      value={edu.year}
+                      type="number"
+                      onChange={(e) => {
+                        const newEducation = [...formData.education];
+                        newEducation[index].year = parseInt(e.target.value) || 0;
+                        handleInputChange("education", newEducation);
+                      }}
+                      placeholder="Year"
+                      min="1900"
                     />
                   </div>
                 </div>
@@ -695,20 +575,170 @@ function DentistRegistrationFormContent() {
             <Button
               type="button"
               variant="outline"
-              onClick={() => addArrayItem("faqs", { question: "", answer: "" })}
+              onClick={() => addArrayItem("education", { degree: "", institution: "", year: 0 })}
             >
               <Plus className="mr-2 h-4 w-4" />
-              Add FAQ
+              Add Education
             </Button>
           </CardContent>
         </Card>
 
+        {/* Certifications and Awards */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Certifications and Awards</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label>Certifications</Label>
+              <div className="space-y-2">
+                {formData.certifications.map((certification, index) => (
+                  <div key={index} className="flex gap-2">
+                    <Input
+                      value={certification}
+                      onChange={(e) => handleArrayChange("certifications", index, e.target.value)}
+                      placeholder="Certification"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => removeArrayItem("certifications", index)}
+                      disabled={formData.certifications.length === 1}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => addArrayItem("certifications")}
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add Certification
+                </Button>
+              </div>
+            </div>
+
+            <div>
+              <Label>Awards</Label>
+              <div className="space-y-2">
+                {formData.awards.map((award, index) => (
+                  <div key={index} className="flex gap-2">
+                    <Input
+                      value={award}
+                      onChange={(e) => handleArrayChange("awards", index, e.target.value)}
+                      placeholder="Award"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => removeArrayItem("awards", index)}
+                      disabled={formData.awards.length === 1}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => addArrayItem("awards")}
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add Award
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Availability */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Availability</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {Object.entries(formData.availability).map(([day, availability]) => (
+              <div key={day} className="flex items-center justify-between">
+                <Label className="capitalize">{day}</Label>
+                <div className="flex items-center gap-4">
+                  <Checkbox
+                    checked={(availability as any).available || false}
+                    onCheckedChange={(checked) => {
+                      const newAvailability = { ...formData.availability };
+                      newAvailability[day as keyof typeof formData.availability] = { available: checked as boolean };
+                      handleInputChange("availability", newAvailability);
+                    }}
+                  />
+                  {((availability as any).available || false) && (
+                    <div className="flex gap-2">
+                      <Input
+                        type="time"
+                        value={(availability as any).start || ""}
+                        onChange={(e) => {
+                          const newAvailability = { ...formData.availability };
+                          newAvailability[day as keyof typeof formData.availability] = {
+                            start: e.target.value,
+                            end: (availability as any).end || ""
+                          };
+                          handleInputChange("availability", newAvailability);
+                        }}
+                      />
+                      <span>-</span>
+                      <Input
+                        type="time"
+                        value={(availability as any).end || ""}
+                        onChange={(e) => {
+                          const newAvailability = { ...formData.availability };
+                          newAvailability[day as keyof typeof formData.availability] = {
+                            start: (availability as any).start || "",
+                            end: e.target.value
+                          };
+                          handleInputChange("availability", newAvailability);
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
+        {/* Status */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Status</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="verified"
+                checked={formData.verified}
+                onCheckedChange={(checked) => handleInputChange("verified", checked)}
+              />
+              <Label htmlFor="verified">Verified</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="active"
+                checked={formData.active}
+                onCheckedChange={(checked) => handleInputChange("active", checked)}
+              />
+              <Label htmlFor="active">Active</Label>
+            </div>
+          </CardContent>
+        </Card>
+
         <div className="flex justify-end gap-4">
-        <Link href="/admin-dashboard/dentist-registration">
-          <Button type="button" variant="outline">
-            Cancel
-          </Button>
-        </Link>
+          <Link href="/admin-dashboard/dentist-registration">
+            <Button type="button" variant="outline">
+              Cancel
+            </Button>
+          </Link>
           <Button type="submit" disabled={loading}>
             <Save className="mr-2 h-4 w-4" />
             {loading ? "Saving..." : isEditing ? "Update Dentist Registration" : "Create Dentist Registration"}

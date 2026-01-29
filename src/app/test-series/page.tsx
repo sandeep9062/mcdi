@@ -234,7 +234,7 @@ export default function TestSeriesPage() {
                       className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow flex flex-col"
                     >
                       <div className="relative h-44">
-                        <Image src={series.thumbnail} alt={series.title} fill className="object-cover" />
+                        <Image src={series.thumbnails?.[0] || ""} alt={series.title} fill className="object-cover" />
                         <Badge className="absolute top-4 right-4 bg-(--color-1) border-none">{series.examType}</Badge>
                         
                         {/* ENROLLMENT OVERLAY BADGE */}

@@ -8,9 +8,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ArrowLeft, Save, Loader2 } from "lucide-react";
+import { ArrowLeft, Save, Loader2, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 import { Note } from "@/types/types";
+import { CloudinaryUpload } from "@/components/Upload";
 
 function CreateNoteForm() {
   const router = useRouter();
@@ -24,14 +25,11 @@ function CreateNoteForm() {
     title: "",
     shortDescription: "",
     fullDescription: "",
-    category: "",
-    subject: "",
     content: "",
-    author: "",
     tags: "",
     featured: false,
     popular: false,
-    thumbnail: "/mcdi1.jpeg", // Default thumbnail
+    thumbnails: [] as string[], 
   });
 
   // Load existing note data if editing
@@ -49,14 +47,11 @@ function CreateNoteForm() {
             title: note.title,
             shortDescription: note.shortDescription,
             fullDescription: note.fullDescription || "",
-            category: note.category,
-            subject: note.subject,
             content: note.content,
-            author: note.author,
             tags: note.tags.join(", "),
             featured: note.featured,
             popular: note.popular,
-            thumbnail: note.thumbnail,
+            thumbnails: note.thumbnails,
           });
         } catch (error) {
           console.error("Error fetching note:", error);
@@ -78,20 +73,20 @@ function CreateNoteForm() {
     }));
   };
 
+  const handleThumbnailsChange = (newThumbnails: string[]) => {
+    setFormData((prev) => ({
+      ...prev,
+      thumbnails: newThumbnails,
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
       // Validate required fields
-      if (
-        !formData.title ||
-        !formData.shortDescription ||
-        !formData.category ||
-        !formData.subject ||
-        !formData.content ||
-        !formData.author
-      ) {
+      if (!formData.title || !formData.shortDescription || !formData.content) {
         toast.error("Please fill in all required fields");
         return;
       }
@@ -147,15 +142,6 @@ function CreateNoteForm() {
     }
   };
 
-  const categories = [
-    "Anatomy",
-    "Periodontology",
-    "Endodontics",
-    "Oral Surgery",
-    "Clinical Dentistry",
-    "Support Dentistry",
-  ];
-
   return (
     <div className="p-8 max-w-4xl mx-auto">
       <div className="flex items-center gap-4 mb-6">
@@ -184,58 +170,53 @@ function CreateNoteForm() {
             />
           </div>
 
-          {/* Category */}
-          <div>
-            <Label htmlFor="category">Category *</Label>
-            <select
-              id="category"
-              value={formData.category}
-              onChange={(e) => handleInputChange("category", e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-              required
-            >
-              <option value="">Select a category</option>
-              {categories.map((category) => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Subject */}
-          <div>
-            <Label htmlFor="subject">Subject *</Label>
-            <Input
-              id="subject"
-              value={formData.subject}
-              onChange={(e) => handleInputChange("subject", e.target.value)}
-              placeholder="Enter subject/topic"
-              required
-            />
-          </div>
-
-          {/* Author */}
-          <div>
-            <Label htmlFor="author">Author *</Label>
-            <Input
-              id="author"
-              value={formData.author}
-              onChange={(e) => handleInputChange("author", e.target.value)}
-              placeholder="Dr. Author Name"
-              required
-            />
-          </div>
-
-          {/* Thumbnail */}
-          <div>
-            <Label htmlFor="thumbnail">Thumbnail URL</Label>
-            <Input
-              id="thumbnail"
-              value={formData.thumbnail}
-              onChange={(e) => handleInputChange("thumbnail", e.target.value)}
-              placeholder="Image URL"
-            />
+          {/* Thumbnails */}
+          <div className="md:col-span-2">
+            <Label htmlFor="thumbnails">Thumbnails</Label>
+            <div className="space-y-4">
+              {/* Current Thumbnails Preview */}
+              {formData.thumbnails.length > 0 && (
+                <div className="flex flex-wrap gap-4">
+                  {formData.thumbnails.map((thumbnail, index) => (
+                    <div key={index} className="relative">
+                      <img
+                        src={thumbnail}
+                        alt={`Thumbnail ${index + 1}`}
+                        className="w-32 h-32 object-cover rounded-lg border"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newThumbnails = formData.thumbnails.filter((_, i) => i !== index);
+                          handleThumbnailsChange(newThumbnails);
+                        }}
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              
+              {/* Cloudinary Upload */}
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+                <CloudinaryUpload
+                  onUploadComplete={(url: string) => {
+                    const newThumbnails = [...formData.thumbnails, url];
+                    handleThumbnailsChange(newThumbnails);
+                    toast.success("Thumbnail uploaded successfully!");
+                  }}
+                  onError={(error: any) => {
+                    console.error("Upload error:", error);
+                    toast.error("Failed to upload thumbnail");
+                  }}
+                />
+                <p className="text-sm text-gray-500 mt-2">
+                  Click to upload a new thumbnail image
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Short Description */}

@@ -54,8 +54,8 @@ export async function POST(request: NextRequest) {
 
     // Validate required fields
     const requiredFields = [
-      'slug', 'title', 'shortDescription', 'category',
-      'subject', 'content', 'author', 'tags',
+      'slug', 'title', 'shortDescription',
+      'content', 'tags',
       'dateCreated', 'lastUpdated'
     ];
 
@@ -83,12 +83,9 @@ export async function POST(request: NextRequest) {
       title: body.title,
       shortDescription: body.shortDescription,
       fullDescription: body.fullDescription || '',
-      thumbnail: body.thumbnail || '/mcdi1.jpeg',
-      category: body.category,
-      subject: body.subject,
+      thumbnails: body.thumbnails || ['/mcdi1.jpeg'],
       content: body.content,
       tags: body.tags,
-      author: body.author,
       dateCreated: body.dateCreated,
       lastUpdated: body.lastUpdated,
       featured: body.featured || false,
@@ -122,8 +119,8 @@ export async function PUT(request: NextRequest) {
 
     // Validate required fields
     const requiredFields = [
-      'slug', 'title', 'shortDescription', 'category',
-      'subject', 'content', 'author', 'tags',
+      'slug', 'title', 'shortDescription',
+      'content', 'tags',
       'lastUpdated', 'originalSlug'
     ];
 
@@ -154,12 +151,9 @@ export async function PUT(request: NextRequest) {
         title: body.title,
         shortDescription: body.shortDescription,
         fullDescription: body.fullDescription || '',
-        thumbnail: body.thumbnail || '/mcdi1.jpeg',
-        category: body.category,
-        subject: body.subject,
+        thumbnails: body.thumbnails || ['/mcdi1.jpeg'],
         content: body.content,
         tags: body.tags,
-        author: body.author,
         lastUpdated: body.lastUpdated,
         featured: body.featured || false,
         popular: body.popular || false,

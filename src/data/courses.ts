@@ -1,36 +1,4 @@
-export interface Course {
-  id: string;
-  slug: string;
-  title: string;
-  shortDescription: string;
-  fullDescription: string;
-  price: number;
-  originalPrice?: number;
-  thumbnail: string;
-  category: string;
-  mode: 'Online' | 'Offline' | 'Hybrid';
-  duration: string;
-  rating: number;
-  reviewCount: number;
-  featured: boolean;
-  popular: boolean;
-  whatYouLearn: string[];
-  curriculum: {
-    module: string;
-    topics: string[];
-  }[];
-  whoIsThisFor: string[];
-  faculty: {
-    name: string;
-    title: string;
-    image: string;
-    bio: string;
-  };
-  faqs: {
-    question: string;
-    answer: string;
-  }[];
-}
+import { Course } from '@/types/types';
 
 export const courses: Course[] = 
 [
@@ -42,12 +10,17 @@ export const courses: Course[] =
     fullDescription: 'Comprehensive training in fixed prosthodontics covering crown preparation, bridge design, and advanced restoration techniques. Includes live sessions, recorded lectures, and case studies.',
     price: 18000,
     originalPrice: 25000,
-    thumbnail: 'https://images.pexels.com/photos/3845981/pexels-photo-3845981.jpeg',
+    thumbnails: [
+      'https://images.pexels.com/photos/3845981/pexels-photo-3845981.jpeg',
+      'https://images.pexels.com/photos/3845624/pexels-photo-3845624.jpeg',
+      'https://images.pexels.com/photos/3845810/pexels-photo-3845810.jpeg'
+    ],
     category: 'Clinical Dentistry',
     mode: 'Online',
     duration: '3 months',
     rating: 4.8,
     reviewCount: 124,
+    enrollmentCount: 156,
     featured: true,
     popular: true,
     whatYouLearn: [
@@ -99,12 +72,12 @@ export const courses: Course[] =
       'Dentists preparing for international licensing exams',
       'Practitioners looking to update their skills'
     ],
-    faculty: {
+    faculty: [{
       name: 'Dr. Rajesh Kumar',
       title: 'MDS Prosthodontics, 15+ Years Experience',
       image: 'https://images.pexels.com/photos/5215024/pexels-photo-5215024.jpeg',
       bio: 'Renowned prosthodontist with extensive clinical and teaching experience. Published multiple research papers in international journals.'
-    },
+    }],
     faqs: [
       {
         question: 'Is this course suitable for beginners?',
@@ -128,12 +101,17 @@ export const courses: Course[] =
     fullDescription: 'Master the art and science of dental implantology with comprehensive coverage of surgical protocols, prosthetic considerations, and case management.',
     price: 35000,
     originalPrice: 45000,
-    thumbnail: 'https://images.pexels.com/photos/6528844/pexels-photo-6528844.jpeg',
+    thumbnails: [
+      'https://images.pexels.com/photos/6528844/pexels-photo-6528844.jpeg',
+      'https://images.pexels.com/photos/6528840/pexels-photo-6528840.jpeg',
+      'https://images.pexels.com/photos/3845683/pexels-photo-3845683.jpeg'
+    ],
     category: 'Clinical Dentistry',
     mode: 'Hybrid',
     duration: '6 months',
     rating: 4.9,
     reviewCount: 203,
+    enrollmentCount: 89,
     featured: true,
     popular: true,
     whatYouLearn: [
@@ -186,12 +164,12 @@ export const courses: Course[] =
       'Specialists in prosthodontics or oral surgery',
       'Dentists preparing for certification exams'
     ],
-    faculty: {
+    faculty: [{
       name: 'Dr. Priya Sharma',
       title: 'MDS Oral Surgery, Implant Specialist',
       image: 'https://images.pexels.com/photos/5215109/pexels-photo-5215109.jpeg',
       bio: 'Leading implantologist with 12+ years of experience. Has placed over 5000 implants and trained hundreds of dentists.'
-    },
+    }],
     faqs: [
       {
         question: 'Do I need prior surgical experience?',
@@ -215,12 +193,17 @@ export const courses: Course[] =
     fullDescription: 'Comprehensive endodontic training covering diagnosis, treatment planning, and advanced root canal procedures using latest technology and techniques.',
     price: 18000,
     originalPrice: 24000,
-    thumbnail: 'https://images.pexels.com/photos/3845683/pexels-photo-3845683.jpeg',
+    thumbnails: [
+      'https://images.pexels.com/photos/3845683/pexels-photo-3845683.jpeg',
+      'https://images.pexels.com/photos/3845981/pexels-photo-3845981.jpeg',
+      'https://images.pexels.com/photos/3845810/pexels-photo-3845810.jpeg'
+    ],
     category: 'Clinical Dentistry',
     mode: 'Online',
     duration: '3 months',
     rating: 4.7,
     reviewCount: 156,
+    enrollmentCount: 234,
     featured: true,
     popular: false,
     whatYouLearn: [
@@ -272,12 +255,12 @@ export const courses: Course[] =
       'Dentists seeking international exam preparation',
       'Recent graduates building clinical confidence'
     ],
-    faculty: {
+    faculty: [{
       name: 'Dr. Anil Verma',
       title: 'MDS Endodontics, 10+ Years Experience',
       image: 'https://images.pexels.com/photos/5327585/pexels-photo-5327585.jpeg',
       bio: 'Expert endodontist with special interest in complex cases and retreatments. Published researcher and passionate educator.'
-    },
+    }],
     faqs: [
       {
         question: 'What equipment do I need?',
@@ -297,12 +280,17 @@ export const courses: Course[] =
     fullDescription: 'Complete general dentistry program covering operative dentistry, minor oral surgery, periodontics, and practice management. Perfect for building a strong foundation.',
     price: 65000,
     originalPrice: 85000,
-    thumbnail: 'https://images.pexels.com/photos/3779706/pexels-photo-3779706.jpeg',
+    thumbnails: [
+      'https://images.pexels.com/photos/3779706/pexels-photo-3779706.jpeg',
+      'https://images.pexels.com/photos/3760529/pexels-photo-3760529.jpeg',
+      'https://images.pexels.com/photos/3760263/pexels-photo-3760263.jpeg'
+    ],
     category: 'Clinical Dentistry',
     mode: 'Hybrid',
     duration: '6 months',
     rating: 4.8,
     reviewCount: 189,
+    enrollmentCount: 342,
     featured: true,
     popular: true,
     whatYouLearn: [
@@ -364,12 +352,12 @@ export const courses: Course[] =
       'International dentists preparing for licensing',
       'Practitioners expanding service offerings'
     ],
-    faculty: {
+    faculty: [{
       name: 'Dr. Sunita Malhotra',
       title: 'MDS Oral Medicine, 18+ Years Experience',
       image: 'https://images.pexels.com/photos/5452293/pexels-photo-5452293.jpeg',
       bio: 'Experienced clinician and educator with passion for creating confident general dentists. Mentored over 300 practitioners.'
-    },
+    }],
     faqs: [
       {
         question: 'Is this suitable for fresh graduates?',
@@ -393,12 +381,17 @@ export const courses: Course[] =
     fullDescription: 'Advanced training for experienced practitioners covering complex restorations, advanced surgical procedures, interdisciplinary treatment, and practice growth strategies.',
     price: 85000,
     originalPrice: 110000,
-    thumbnail: 'https://images.pexels.com/photos/3845810/pexels-photo-3845810.jpeg',
+    thumbnails: [
+      'https://images.pexels.com/photos/3845810/pexels-photo-3845810.jpeg',
+      'https://images.pexels.com/photos/3845624/pexels-photo-3845624.jpeg',
+      'https://images.pexels.com/photos/3845981/pexels-photo-3845981.jpeg'
+    ],
     category: 'Clinical Dentistry',
     mode: 'Hybrid',
     duration: '8 months',
     rating: 4.9,
     reviewCount: 142,
+    enrollmentCount: 67,
     featured: true,
     popular: true,
     whatYouLearn: [
@@ -457,12 +450,12 @@ export const courses: Course[] =
       'Dentists planning to expand their practice',
       'Those interested in full mouth rehabilitation'
     ],
-    faculty: {
+    faculty: [{
       name: 'Dr. Vikram Singh',
       title: 'MDS Prosthodontics, Practice Owner',
       image: 'https://images.pexels.com/photos/5215024/pexels-photo-5215024.jpeg',
       bio: 'Renowned for complex full mouth rehabilitations and esthetic transformations. Runs a thriving multi-specialty practice.'
-    },
+    }],
     faqs: [
       {
         question: 'Is Course I a prerequisite?',
@@ -482,12 +475,17 @@ export const courses: Course[] =
     fullDescription: 'Focused training on restorative procedures including composite restorations, inlays, onlays, and esthetic anterior work with modern materials and techniques.',
     price: 15000,
     originalPrice: 20000,
-    thumbnail: 'https://images.pexels.com/photos/3845624/pexels-photo-3845624.jpeg',
+    thumbnails: [
+      'https://images.pexels.com/photos/3845624/pexels-photo-3845624.jpeg',
+      'https://images.pexels.com/photos/3845810/pexels-photo-3845810.jpeg',
+      'https://images.pexels.com/photos/3845981/pexels-photo-3845981.jpeg'
+    ],
     category: 'Clinical Dentistry',
     mode: 'Online',
     duration: '2 months',
     rating: 4.6,
     reviewCount: 98,
+    enrollmentCount: 178,
     featured: false,
     popular: false,
     whatYouLearn: [
@@ -538,12 +536,12 @@ export const courses: Course[] =
       'Recent graduates building skills',
       'Dentists interested in cosmetic dentistry'
     ],
-    faculty: {
+    faculty: [{
       name: 'Dr. Neha Gupta',
       title: 'MDS Conservative Dentistry',
       image: 'https://images.pexels.com/photos/5215109/pexels-photo-5215109.jpeg',
       bio: 'Specialist in esthetic restorative dentistry with keen eye for natural-looking results. Popular speaker at dental conferences.'
-    },
+    }],
     faqs: [
       {
         question: 'What materials are covered?',
@@ -563,12 +561,17 @@ export const courses: Course[] =
     fullDescription: 'Comprehensive introduction to orthodontics covering growth and development, diagnosis, treatment planning, and basic fixed and removable appliance therapy.',
     price: 28000,
     originalPrice: 35000,
-    thumbnail: 'https://images.pexels.com/photos/6528840/pexels-photo-6528840.jpeg',
+    thumbnails: [
+      'https://images.pexels.com/photos/6528840/pexels-photo-6528840.jpeg',
+      'https://images.pexels.com/photos/6528844/pexels-photo-6528844.jpeg',
+      'https://images.pexels.com/photos/3952048/pexels-photo-3952048.jpeg'
+    ],
     category: 'Clinical Dentistry',
     mode: 'Hybrid',
     duration: '4 months',
     rating: 4.7,
     reviewCount: 87,
+    enrollmentCount: 291,
     featured: false,
     popular: true,
     whatYouLearn: [
@@ -619,12 +622,12 @@ export const courses: Course[] =
       'Dentists preparing for specialization',
       'Those interested in interceptive orthodontics'
     ],
-    faculty: {
+    faculty: [{
       name: 'Dr. Amit Khanna',
       title: 'MDS Orthodontics, 14+ Years',
       image: 'https://images.pexels.com/photos/5327585/pexels-photo-5327585.jpeg',
       bio: 'Experienced orthodontist with expertise in both traditional and modern orthodontic systems. Committed to teaching practical skills.'
-    },
+    }],
     faqs: [
       {
         question: 'Can general dentists practice orthodontics?',
@@ -644,12 +647,17 @@ export const courses: Course[] =
     fullDescription: 'Complete training in pediatric dentistry covering behavior management, preventive care, restorative procedures, and management of dental emergencies in children.',
     price: 22000,
     originalPrice: 28000,
-    thumbnail: 'https://images.pexels.com/photos/3952048/pexels-photo-3952048.jpeg',
+    thumbnails: [
+      'https://images.pexels.com/photos/3952048/pexels-photo-3952048.jpeg',
+      'https://images.pexels.com/photos/3845683/pexels-photo-3845683.jpeg',
+      'https://images.pexels.com/photos/3779706/pexels-photo-3779706.jpeg'
+    ],
     category: 'Clinical Dentistry',
     mode: 'Hybrid',
     duration: '3 months',
     rating: 4.8,
     reviewCount: 134,
+    enrollmentCount: 421,
     featured: false,
     popular: false,
     whatYouLearn: [
@@ -700,12 +708,12 @@ export const courses: Course[] =
       'Recent graduates building pediatric skills',
       'Dentists in areas with limited pediatric specialists'
     ],
-    faculty: {
+    faculty: [{
       name: 'Dr. Pooja Reddy',
       title: 'MDS Pedodontics, 11+ Years',
       image: 'https://images.pexels.com/photos/5452293/pexels-photo-5452293.jpeg',
       bio: 'Passionate pediatric dentist known for gentle approach and excellent behavior management skills. Trains dentists in child-friendly practices.'
-    },
+    }],
     faqs: [
       {
         question: 'How do you teach behavior management online?',
@@ -725,12 +733,17 @@ export const courses: Course[] =
     fullDescription: 'Comprehensive practice management training covering business setup, marketing, team building, financial management, and patient retention strategies.',
     price: 19000,
     originalPrice: 25000,
-    thumbnail: 'https://images.pexels.com/photos/3760529/pexels-photo-3760529.jpeg',
+    thumbnails: [
+      'https://images.pexels.com/photos/3760529/pexels-photo-3760529.jpeg',
+      'https://images.pexels.com/photos/3760263/pexels-photo-3760263.jpeg',
+      'https://images.pexels.com/photos/3779706/pexels-photo-3779706.jpeg'
+    ],
     category: 'Support Dentistry',
     mode: 'Online',
     duration: '2 months',
     rating: 4.7,
     reviewCount: 156,
+    enrollmentCount: 543,
     featured: false,
     popular: true,
     whatYouLearn: [
@@ -785,12 +798,12 @@ export const courses: Course[] =
       'Associates considering partnership',
       'Practitioners wanting to improve profitability'
     ],
-    faculty: {
+    faculty: [{
       name: 'Dr. Sanjay Kapoor',
       title: 'BDS, MBA, Practice Consultant',
       image: 'https://images.pexels.com/photos/5215024/pexels-photo-5215024.jpeg',
       bio: 'Successful practice owner and business consultant who has helped dozens of dentists build thriving practices.'
-    },
+    }],
     faqs: [
       {
         question: 'Is this only for practice owners?',
@@ -810,12 +823,17 @@ export const courses: Course[] =
     fullDescription: 'Master clinical dental photography covering equipment selection, lighting techniques, standardized views, and photo editing for clinical documentation and marketing.',
     price: 12000,
     originalPrice: 16000,
-    thumbnail: 'https://images.pexels.com/photos/3760263/pexels-photo-3760263.jpeg',
+    thumbnails: [
+      'https://images.pexels.com/photos/3760263/pexels-photo-3760263.jpeg',
+      'https://images.pexels.com/photos/3760529/pexels-photo-3760529.jpeg',
+      'https://images.pexels.com/photos/3845624/pexels-photo-3845624.jpeg'
+    ],
     category: 'Support Dentistry',
     mode: 'Online',
     duration: '1 month',
     rating: 4.6,
     reviewCount: 73,
+    enrollmentCount: 89,
     featured: false,
     popular: false,
     whatYouLearn: [
@@ -869,12 +887,12 @@ export const courses: Course[] =
       'Practice owners seeking better marketing',
       'Anyone wanting to improve case presentations'
     ],
-    faculty: {
+    faculty: [{
       name: 'Dr. Rohit Malhotra',
       title: 'BDS, Certified Dental Photographer',
       image: 'https://images.pexels.com/photos/5327585/pexels-photo-5327585.jpeg',
       bio: 'Expert in clinical dental photography with work featured in multiple dental journals. Passionate about teaching visual documentation.'
-    },
+    }],
     faqs: [
       {
         question: 'Do I need expensive equipment?',

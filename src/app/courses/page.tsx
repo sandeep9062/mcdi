@@ -47,6 +47,10 @@ export default function CoursesPage() {
     const fetchCourses = async () => {
       try {
         const response = await fetch("/api/courses");
+
+
+
+
         if (!response.ok) {
           throw new Error("Failed to fetch courses");
         }
@@ -148,6 +152,10 @@ export default function CoursesPage() {
     selectedDuration,
     sortBy,
   ]);
+
+
+
+
 
   return (
     <div className="min-h-screen bg-gray-50">

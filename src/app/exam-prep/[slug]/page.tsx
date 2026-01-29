@@ -252,7 +252,7 @@ export default function ExamDetailPage({
                 >
                   <div className="aspect-video bg-gray-200 rounded-lg mb-6 overflow-hidden">
                     <Image
-                      src={exam.thumbnail}
+                      src={exam.thumbnails?.[0] || '/placeholder-image.jpg'}
                       alt={exam.name}
                       fill
                       className="object-cover"

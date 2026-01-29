@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
     // Validate required fields
     const requiredFields = [
       'slug', 'title', 'shortDescription', 'fullDescription', 'price',
-      'thumbnail', 'category', 'examType', 'duration', 'rating', 'reviewCount',
+      'thumbnails', 'category', 'examType', 'duration', 'rating', 'reviewCount',
       'questionsCount', 'difficulty', 'whatIncluded', 'sampleQuestions'
     ];
 
@@ -57,6 +57,22 @@ export async function POST(request: NextRequest) {
           { status: 400 }
         );
       }
+    }
+
+    // Validate that thumbnails is an array
+    if (!Array.isArray(body.thumbnails)) {
+      return NextResponse.json(
+        { error: 'Thumbnails must be an array' },
+        { status: 400 }
+      );
+    }
+
+    // Validate that thumbnails array is not empty
+    if (body.thumbnails.length === 0) {
+      return NextResponse.json(
+        { error: 'Thumbnails array cannot be empty' },
+        { status: 400 }
+      );
     }
 
     // Check if slug already exists
@@ -76,7 +92,7 @@ export async function POST(request: NextRequest) {
       fullDescription: body.fullDescription,
       price: body.price,
       originalPrice: body.originalPrice,
-      thumbnail: body.thumbnail,
+      thumbnails: body.thumbnails,
       category: body.category,
       examType: body.examType,
       duration: body.duration,
@@ -135,7 +151,7 @@ export async function PUT(request: NextRequest) {
         fullDescription: body.fullDescription,
         price: body.price,
         originalPrice: body.originalPrice,
-        thumbnail: body.thumbnail,
+        thumbnails: body.thumbnails,
         category: body.category,
         examType: body.examType,
         duration: body.duration,

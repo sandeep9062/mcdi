@@ -55,7 +55,7 @@ export async function PUT(
       .set({
         title: body.title,
         description: body.description,
-        thumbnail: body.thumbnail,
+        thumbnails: body.thumbnails,
         youtubeId: body.youtubeId,
         category: body.category,
         duration: body.duration,

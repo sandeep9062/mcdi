@@ -30,6 +30,16 @@ export default function ExamCard({ exam }: ExamCardProps) {
             <p className="text-xs text-(--color-1) font-medium line-clamp-1">{exam.country}</p>
           </div>
         </div>
+        <div className="flex gap-2">
+          {exam.thumbnails?.slice(0, 3).map((thumbnail, index) => (
+            <img
+              key={index}
+              src={thumbnail}
+              alt={`${exam.name} thumbnail ${index + 1}`}
+              className="w-16 h-16 object-cover rounded-lg"
+            />
+          ))}
+        </div>
       </div>
 
       <p className="text-gray-700 mb-4 line-clamp-3 flex-1">{exam.shortDescription}</p>

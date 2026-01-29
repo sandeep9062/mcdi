@@ -7,11 +7,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Save, ArrowLeft } from "lucide-react";
+import { Save, ArrowLeft, Upload, X } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { Review } from "@/types/types";
 import { createReview, updateReview, getReviewById } from "@/lib/actions/review-actions";
+import { CloudinaryUpload } from "@/components/Upload";
 
 function ReviewFormContent() {
   const router = useRouter();
@@ -159,13 +160,35 @@ function ReviewFormContent() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="avatar">Avatar URL</Label>
-                <Input
-                  id="avatar"
-                  value={formData.avatar}
-                  onChange={(e) => handleInputChange("avatar", e.target.value)}
-                  placeholder="https://..."
-                />
+                <Label htmlFor="avatar">Avatar</Label>
+                <div className="space-y-2">
+                  {formData.avatar ? (
+                    <div className="relative">
+                      <img
+                        src={formData.avatar}
+                        alt="Avatar preview"
+                        className="w-20 h-20 rounded-full object-cover"
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="absolute -top-2 -right-2 w-6 h-6 p-0"
+                        onClick={() => handleInputChange("avatar", "")}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+                      <CloudinaryUpload
+                        onUploadComplete={(url: string) => handleInputChange("avatar", url)}
+                        onError={(error: any) => toast.error("Failed to upload avatar")}
+                      />
+                      <p className="text-sm text-gray-500 mt-2">Click to upload avatar image</p>
+                    </div>
+                  )}
+                </div>
               </div>
               <div>
                 <Label htmlFor="date">Date</Label>

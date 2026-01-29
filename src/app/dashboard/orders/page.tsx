@@ -60,9 +60,11 @@ export default function StudentOrdersPage() {
       try {
         const response = await fetch("/api/student/orders");
         const data = await response.json();
-        setOrders(data);
+        // Ensure data is always an array
+        setOrders(Array.isArray(data) ? data : []);
       } catch (err) {
-        console.error("Error loading billing history");
+        console.error("Error loading billing history", err);
+        setOrders([]);
       } finally {
         setLoading(false);
       }

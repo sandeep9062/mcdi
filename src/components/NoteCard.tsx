@@ -50,9 +50,6 @@ export default function NoteCard({ note }: NoteCardProps) {
         <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
             <Lock className="text-white h-8 w-8" />
         </div>
-        <Badge className="absolute top-3 left-3 bg-white/90 text-(--color-1) backdrop-blur-sm border-none capitalize">
-          {noteData?.category || "General"}
-        </Badge>
       </div>
 
       <div className="p-5 flex flex-col flex-grow">

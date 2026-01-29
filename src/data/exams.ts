@@ -7,7 +7,7 @@ export interface Exam {
   countryFlag: string;
   shortDescription: string;
   fullDescription: string;
-  thumbnail: string;
+  thumbnails: string[];
   icon: string;
   whoIsThisFor: string[];
   whatIncluded: string[];
@@ -33,7 +33,7 @@ export const exams: Exam[] = [
     countryFlag: '🇺🇸',
     shortDescription: 'Complete preparation for the US dental licensing exam with comprehensive study materials',
     fullDescription: 'The INBDE is a computer-based examination that tests the ability to understand important information from basic biomedical, dental, and clinical sciences, and apply such information in a problem-solving context. Our comprehensive preparation program covers all exam domains with expert guidance.',
-    thumbnail: 'https://images.pexels.com/photos/5212700/pexels-photo-5212700.jpeg',
+    thumbnails: ['https://images.pexels.com/photos/5212700/pexels-photo-5212700.jpeg'],
     icon: 'GraduationCap',
     whoIsThisFor: [
       'Dental graduates seeking US licensure',
@@ -120,7 +120,7 @@ export const exams: Exam[] = [
     countryFlag: '🇦🇪',
     shortDescription: 'Targeted preparation for Dubai dental licensing with focus on Gulf healthcare standards',
     fullDescription: 'The DHA exam is required for dental professionals seeking licensure in Dubai. Our program covers all aspects of the examination including clinical scenarios specific to Gulf region practice requirements and healthcare standards.',
-    thumbnail: 'https://images.pexels.com/photos/3952223/pexels-photo-3952223.jpeg',
+    thumbnails: ['https://images.pexels.com/photos/3952223/pexels-photo-3952223.jpeg'],
     icon: 'Award',
     whoIsThisFor: [
       'Dentists seeking Dubai licensure',
@@ -202,7 +202,7 @@ export const exams: Exam[] = [
     countryFlag: '🇦🇺',
     shortDescription: 'Comprehensive preparation for Australian dental registration with practical exam training',
     fullDescription: 'The ADC examination pathway includes both written and practical components. Our program provides complete preparation for all stages including the initial assessment, written exam, and practical/clinical examination with hands-on guidance.',
-    thumbnail: 'https://images.pexels.com/photos/3845981/pexels-photo-3845981.jpeg',
+    thumbnails: ['https://images.pexels.com/photos/3845981/pexels-photo-3845981.jpeg'],
     icon: 'Sparkles',
     whoIsThisFor: [
       'International dentists seeking Australian registration',
@@ -284,7 +284,7 @@ export const exams: Exam[] = [
     countryFlag: '🇩🇪',
     shortDescription: 'German dental licensing preparation with focus on clinical knowledge exam',
     fullDescription: 'The Kenntnisprüfung (AFK) is the knowledge examination required for international dentists seeking German dental license (Approbation). Our program provides specialized preparation including German dental terminology and clinical standards.',
-    thumbnail: 'https://images.pexels.com/photos/3845810/pexels-photo-3845810.jpeg',
+    thumbnails: ['https://images.pexels.com/photos/3845810/pexels-photo-3845810.jpeg'],
     icon: 'Library',
     whoIsThisFor: [
       'International dentists seeking German Approbation',
@@ -366,7 +366,7 @@ export const exams: Exam[] = [
     countryFlag: '🇦🇪',
     shortDescription: 'Abu Dhabi licensing exam preparation with comprehensive clinical focus',
     fullDescription: 'HAAD (now part of DOH - Department of Health) examination is required for dental professionals in Abu Dhabi. Our program covers all aspects of the examination including clinical scenarios and Abu Dhabi healthcare standards.',
-    thumbnail: 'https://images.pexels.com/photos/6528840/pexels-photo-6528840.jpeg',
+    thumbnails: ['https://images.pexels.com/photos/6528840/pexels-photo-6528840.jpeg'],
     icon: 'FileCheck',
     whoIsThisFor: [
       'Dentists seeking Abu Dhabi licensure',
@@ -448,7 +448,7 @@ export const exams: Exam[] = [
     countryFlag: '🇬🇧',
     shortDescription: 'UK dental registration exam preparation with focus on both parts of ORE',
     fullDescription: 'The ORE is required for international dental graduates seeking registration with the General Dental Council (GDC) in the UK. Our program covers both Part 1 (written) and Part 2 (practical) examinations comprehensively.',
-    thumbnail: 'https://images.pexels.com/photos/3845624/pexels-photo-3845624.jpeg',
+    thumbnails: ['https://images.pexels.com/photos/3845624/pexels-photo-3845624.jpeg'],
     icon: 'Trophy',
     whoIsThisFor: [
       'International dentists seeking UK registration',
@@ -530,7 +530,7 @@ export const exams: Exam[] = [
     countryFlag: '🇸🇦',
     shortDescription: 'GCC countries health ministry exam preparation for dental licensure',
     fullDescription: 'MOH examinations are required for dental practice in various GCC countries including UAE, Saudi Arabia, Qatar, and Bahrain. Our program provides comprehensive preparation for these licensing examinations.',
-    thumbnail: 'https://images.pexels.com/photos/3845683/pexels-photo-3845683.jpeg',
+    thumbnails: ['https://images.pexels.com/photos/3845683/pexels-photo-3845683.jpeg'],
     icon: 'Building2',
     whoIsThisFor: [
       'Dentists seeking GCC countries licensure',

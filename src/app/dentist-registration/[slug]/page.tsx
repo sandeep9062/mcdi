@@ -285,27 +285,31 @@ export default function CourseDetailPage({
                   className="bg-white rounded-xl shadow-md p-8"
                 >
                   <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                    Meet Your Instructor
+                    Meet Your Instructors
                   </h2>
-                  <div className="flex items-start gap-6">
-                    <Image
-                      src={course.faculty.image}
-                      alt={course.faculty.name}
-                      width={96}
-                      height={96}
-                      className="h-24 w-24 rounded-full object-cover"
-                    />
-                    <div>
-                      <h3 className="text-xl font-semibold text-gray-900 mb-1">
-                        {course.faculty.name}
-                      </h3>
-                      <p className="text-teal-600 font-medium mb-3">
-                        {course.faculty.title}
-                      </p>
-                      <p className="text-gray-700 leading-relaxed">
-                        {course.faculty.bio}
-                      </p>
-                    </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {course.faculty.map((instructor, index) => (
+                      <div key={index} className="flex items-start gap-6">
+                        <Image
+                          src={instructor.image}
+                          alt={instructor.name}
+                          width={96}
+                          height={96}
+                          className="h-24 w-24 rounded-full object-cover"
+                        />
+                        <div>
+                          <h3 className="text-xl font-semibold text-gray-900 mb-1">
+                            {instructor.name}
+                          </h3>
+                          <p className="text-teal-600 font-medium mb-3">
+                            {instructor.title}
+                          </p>
+                          <p className="text-gray-700 leading-relaxed">
+                            {instructor.bio}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </motion.div>
 
@@ -338,7 +342,7 @@ export default function CourseDetailPage({
                 >
                   <div className="aspect-video bg-gray-200 rounded-lg mb-6 overflow-hidden">
                     <Image
-                      src={course.thumbnail}
+                      src={course.thumbnails?.[0] || '/placeholder-image.jpg'}
                       alt={course.title}
                       width={400}
                       height={225}

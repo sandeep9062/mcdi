@@ -7,12 +7,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Save, ArrowLeft, Plus, Trash2 } from "lucide-react";
+import { Save, ArrowLeft, Plus, Trash2, Upload, X } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
-import { Exam } from "@/types/types";
+import { TestSeries } from "@/types/types";
+import { CloudinaryUpload } from "@/components/Upload";
 
-function ExamFormContent() {
+function TestSeriesFormContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const slug = searchParams.get("slug");
@@ -20,40 +21,44 @@ function ExamFormContent() {
 
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(isEditing);
-  const [formData, setFormData] = useState<Exam>({
+  const [formData, setFormData] = useState<TestSeries>({
     id: "",
     slug: "",
-    name: "",
-    fullName: "",
-    country: "",
-    countryFlag: "",
+    title: "",
     shortDescription: "",
     fullDescription: "",
-    thumbnail: "",
-    icon: "",
-    whoIsThisFor: [""],
+    thumbnails: [],
+    category: "",
+    examType: "",
+    price: 0,
+    originalPrice: undefined,
+    rating: 0,
+    reviewCount: 0,
+    featured: false,
+    questionsCount: 0,
+    duration: "",
+    difficulty: "Beginner",
     whatIncluded: [""],
-    studyPlan: [{ phase: "", duration: "", focus: [""] }],
-    reviews: [{ name: "", text: "", rating: 5 }]
+    sampleQuestions: [{ question: "", options: [""], correctAnswer: 0, explanation: "" }]
   });
 
-  // Load exam data for editing
+  // Load test series data for editing
   useEffect(() => {
     if (isEditing && slug) {
-      const loadExam = async () => {
+      const loadTestSeries = async () => {
         try {
-          const response = await fetch(`/api/exams?slug=${slug}`);
+          const response = await fetch(`/api/testSeries?slug=${slug}`);
           if (response.ok) {
-            const exam = await response.json();
-            setFormData(exam);
+            const testSeries = await response.json();
+            setFormData(testSeries);
           }
         } catch (error) {
-          toast.error("Failed to load exam data");
+          toast.error("Failed to load test series data");
         } finally {
           setInitialLoading(false);
         }
       };
-      loadExam();
+      loadTestSeries();
     } else {
       setInitialLoading(false);
     }
@@ -64,61 +69,66 @@ function ExamFormContent() {
   };
 
   const handleArrayChange = (field: string, index: number, value: any) => {
-    const currentArray = formData[field as keyof Exam] as any[];
+    const currentArray = (formData as any)[field] as any[];
     const newArray = [...currentArray];
     newArray[index] = value;
     setFormData(prev => ({ ...prev, [field]: newArray }));
   };
 
   const addArrayItem = (field: string, defaultValue: any = "") => {
-    const currentArray = formData[field as keyof Exam] as any[];
+    const currentArray = (formData as any)[field] as any[];
     setFormData(prev => ({ ...prev, [field]: [...currentArray, defaultValue] }));
   };
 
   const removeArrayItem = (field: string, index: number) => {
-    const currentArray = formData[field as keyof Exam] as any[];
+    const currentArray = (formData as any)[field] as any[];
     if (currentArray.length > 1) {
       const newArray = currentArray.filter((_, i) => i !== index);
       setFormData(prev => ({ ...prev, [field]: newArray }));
     }
   };
 
+  const handleThumbnailsChange = (newThumbnails: string[]) => {
+    setFormData(prev => ({
+      ...prev,
+      thumbnails: newThumbnails,
+    }));
+  };
+
   const validateForm = () => {
     const errors: string[] = [];
 
     if (!formData.slug.trim()) errors.push("Slug is required");
-    if (!formData.name.trim()) errors.push("Name is required");
-    if (!formData.fullName.trim()) errors.push("Full name is required");
-    if (!formData.country.trim()) errors.push("Country is required");
-    if (!formData.countryFlag.trim()) errors.push("Country flag is required");
+    if (!formData.title.trim()) errors.push("Title is required");
     if (!formData.shortDescription.trim()) errors.push("Short description is required");
     if (!formData.fullDescription.trim()) errors.push("Full description is required");
-    if (!formData.thumbnail.trim()) errors.push("Thumbnail URL is required");
-    if (!formData.icon.trim()) errors.push("Icon is required");
-
-    // Validate whoIsThisFor array
-    if (formData.whoIsThisFor.length === 0 || formData.whoIsThisFor.some(item => !item.trim())) {
-      errors.push("At least one target audience is required");
-    }
+    if (!formData.category.trim()) errors.push("Category is required");
+    if (!formData.examType.trim()) errors.push("Exam type is required");
+    if (formData.price < 0) errors.push("Price must be a valid number");
+    if (formData.questionsCount < 0) errors.push("Questions count must be a valid number");
+    if (!formData.duration.trim()) errors.push("Duration is required");
 
     // Validate whatIncluded array
     if (formData.whatIncluded.length === 0 || formData.whatIncluded.some(item => !item.trim())) {
       errors.push("At least one included item is required");
     }
 
-    // Validate studyPlan
-    if (formData.studyPlan.length === 0) {
-      errors.push("At least one study plan phase is required");
+    // Validate sampleQuestions
+    if (formData.sampleQuestions.length === 0) {
+      errors.push("At least one sample question is required");
     } else {
-      formData.studyPlan.forEach((phase, index) => {
-        if (!phase.phase.trim()) {
-          errors.push(`Phase ${index + 1} name is required`);
+      formData.sampleQuestions.forEach((question, index) => {
+        if (!question.question.trim()) {
+          errors.push(`Sample question ${index + 1} is required`);
         }
-        if (!phase.duration.trim()) {
-          errors.push(`Phase ${index + 1} duration is required`);
+        if (question.options.length === 0 || question.options.some(option => !option.trim())) {
+          errors.push(`Sample question ${index + 1} must have at least one option`);
         }
-        if (phase.focus.length === 0 || phase.focus.some(focus => !focus.trim())) {
-          errors.push(`Phase ${index + 1} must have at least one focus area`);
+        if (question.correctAnswer < 0 || question.correctAnswer >= question.options.length) {
+          errors.push(`Sample question ${index + 1} must have a valid correct answer index`);
+        }
+        if (!question.explanation.trim()) {
+          errors.push(`Sample question ${index + 1} must have an explanation`);
         }
       });
     }
@@ -139,7 +149,7 @@ function ExamFormContent() {
 
     try {
       const method = isEditing ? "PUT" : "POST";
-      const url = isEditing ? `/api/exams?slug=${slug}` : "/api/exams";
+      const url = isEditing ? `/api/testSeries?slug=${slug}` : "/api/testSeries";
 
       const response = await fetch(url, {
         method,
@@ -153,14 +163,14 @@ function ExamFormContent() {
       const responseData = await response.json();
 
       if (response.ok) {
-        toast.success(isEditing ? "Exam updated successfully" : "Exam created successfully");
-        router.push("/admin-dashboard/exams");
+        toast.success(isEditing ? "Test series updated successfully" : "Test series created successfully");
+        router.push("/admin-dashboard/test-series");
       } else {
         toast.error(responseData.error || "Something went wrong");
       }
     } catch (error) {
       console.error("Submit error:", error);
-      toast.error("Failed to save exam");
+      toast.error("Failed to save test series");
     } finally {
       setLoading(false);
     }
@@ -169,22 +179,22 @@ function ExamFormContent() {
   if (initialLoading) {
     return (
       <div className="p-8">
-        <div className="text-center">Loading exam data...</div>
+        <div className="text-center">Loading test series data...</div>
       </div>
     );
   }
 
   return (
-    <div className="p-4 max-w-full mx-auto">
+    <div className="p-8 max-w-4xl mx-auto">
       <div className="flex items-center gap-4 mb-6">
-        <Link href="/admin-dashboard/exams">
+        <Link href="/admin-dashboard/test-series">
           <Button variant="outline" size="sm">
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Exams
+            Back to Test Series
           </Button>
         </Link>
         <h1 className="text-2xl font-bold">
-          {isEditing ? "Edit Exam" : "Create New Exam"}
+          {isEditing ? "Edit Test Series" : "Create New Test Series"}
         </h1>
       </div>
 
@@ -202,69 +212,154 @@ function ExamFormContent() {
                   id="slug"
                   value={formData.slug}
                   onChange={(e) => handleInputChange("slug", e.target.value)}
-                  placeholder="exam-slug"
+                  placeholder="test-series-slug"
                 />
               </div>
               <div>
-                <Label htmlFor="name">Name</Label>
+                <Label htmlFor="title">Title</Label>
                 <Input
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) => handleInputChange("name", e.target.value)}
-                  placeholder="INBDE"
+                  id="title"
+                  value={formData.title}
+                  onChange={(e) => handleInputChange("title", e.target.value)}
+                  placeholder="Dental Board Exam Practice Tests"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="category">Category</Label>
+                <Input
+                  id="category"
+                  value={formData.category}
+                  onChange={(e) => handleInputChange("category", e.target.value)}
+                  placeholder="Dental Exams"
+                />
+              </div>
+              <div>
+                <Label htmlFor="examType">Exam Type</Label>
+                <Input
+                  id="examType"
+                  value={formData.examType}
+                  onChange={(e) => handleInputChange("examType", e.target.value)}
+                  placeholder="INBDE, NEET MDS, etc."
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="price">Price (₹)</Label>
+                <Input
+                  id="price"
+                  type="number"
+                  value={formData.price}
+                  onChange={(e) => handleInputChange("price", parseInt(e.target.value) || 0)}
+                  placeholder="0"
+                  min="0"
+                />
+              </div>
+              <div>
+                <Label htmlFor="originalPrice">Original Price (₹)</Label>
+                <Input
+                  id="originalPrice"
+                  type="number"
+                  value={formData.originalPrice || ""}
+                  onChange={(e) => handleInputChange("originalPrice", e.target.value ? parseInt(e.target.value) : undefined)}
+                  placeholder="0"
+                  min="0"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="questionsCount">Questions Count</Label>
+                <Input
+                  id="questionsCount"
+                  type="number"
+                  value={formData.questionsCount}
+                  onChange={(e) => handleInputChange("questionsCount", parseInt(e.target.value) || 0)}
+                  placeholder="100"
+                  min="0"
+                />
+              </div>
+              <div>
+                <Label htmlFor="duration">Duration</Label>
+                <Input
+                  id="duration"
+                  value={formData.duration}
+                  onChange={(e) => handleInputChange("duration", e.target.value)}
+                  placeholder="2 hours"
                 />
               </div>
             </div>
 
             <div>
-              <Label htmlFor="fullName">Full Name</Label>
-              <Input
-                id="fullName"
-                value={formData.fullName}
-                onChange={(e) => handleInputChange("fullName", e.target.value)}
-                placeholder="Integrated National Board Dental Examination"
-              />
+              <Label htmlFor="difficulty">Difficulty</Label>
+              <select
+                id="difficulty"
+                value={formData.difficulty}
+                onChange={(e) => handleInputChange("difficulty", e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+              >
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+              </select>
             </div>
+          </CardContent>
+        </Card>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="country">Country</Label>
-                <Input
-                  id="country"
-                  value={formData.country}
-                  onChange={(e) => handleInputChange("country", e.target.value)}
-                  placeholder="USA"
-                />
-              </div>
-              <div>
-                <Label htmlFor="countryFlag">Country Flag</Label>
-                <Input
-                  id="countryFlag"
-                  value={formData.countryFlag}
-                  onChange={(e) => handleInputChange("countryFlag", e.target.value)}
-                  placeholder="🇺🇸"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="thumbnail">Thumbnail URL</Label>
-                <Input
-                  id="thumbnail"
-                  value={formData.thumbnail}
-                  onChange={(e) => handleInputChange("thumbnail", e.target.value)}
-                  placeholder="https://..."
-                />
-              </div>
-              <div>
-                <Label htmlFor="icon">Icon</Label>
-                <Input
-                  id="icon"
-                  value={formData.icon}
-                  onChange={(e) => handleInputChange("icon", e.target.value)}
-                  placeholder="GraduationCap"
-                />
+        {/* Thumbnails */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Thumbnails</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label>Upload Thumbnails</Label>
+              <div className="space-y-4">
+                {formData.thumbnails.map((thumbnail, index) => (
+                  <div key={index} className="flex items-center gap-4 p-4 border rounded-lg">
+                    <img
+                      src={thumbnail}
+                      alt={`Thumbnail ${index + 1}`}
+                      className="w-20 h-20 object-cover rounded"
+                    />
+                    <div className="flex-1">
+                      <p className="text-sm text-gray-600">Thumbnail {index + 1}</p>
+                      <p className="text-xs text-gray-400 break-all">{thumbnail}</p>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        const newThumbnails = formData.thumbnails.filter((_, i) => i !== index);
+                        handleThumbnailsChange(newThumbnails);
+                      }}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+                <div className="flex items-center gap-4">
+                  <CloudinaryUpload
+                    onUploadComplete={(url: string) => {
+                      const newThumbnails = [...formData.thumbnails, url];
+                      handleThumbnailsChange(newThumbnails);
+                      toast.success("Thumbnail uploaded successfully!");
+                    }}
+                    onError={(error: Error) => {
+                      toast.error(`Upload failed: ${error.message}`);
+                    }}
+                  />
+                  <span className="text-sm text-gray-500">
+                    <Upload className="inline h-4 w-4 mr-1" />
+                    Upload thumbnail images
+                  </span>
+                </div>
               </div>
             </div>
           </CardContent>
@@ -283,6 +378,7 @@ function ExamFormContent() {
                 value={formData.shortDescription}
                 onChange={(e) => handleInputChange("shortDescription", e.target.value)}
                 rows={2}
+                placeholder="Brief description of the test series"
               />
             </div>
 
@@ -293,43 +389,9 @@ function ExamFormContent() {
                 value={formData.fullDescription}
                 onChange={(e) => handleInputChange("fullDescription", e.target.value)}
                 rows={4}
+                placeholder="Detailed description of the test series"
               />
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Who Is This For */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Who Is This For</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {formData.whoIsThisFor.map((item, index) => (
-              <div key={index} className="flex gap-2">
-                <Input
-                  value={item}
-                  onChange={(e) => handleArrayChange("whoIsThisFor", index, e.target.value)}
-                  placeholder="Target audience"
-                />
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => removeArrayItem("whoIsThisFor", index)}
-                  disabled={formData.whoIsThisFor.length === 1}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            ))}
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => addArrayItem("whoIsThisFor")}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Add Target Audience
-            </Button>
           </CardContent>
         </Card>
 
@@ -368,172 +430,114 @@ function ExamFormContent() {
           </CardContent>
         </Card>
 
-        {/* Study Plan */}
+        {/* Sample Questions */}
         <Card>
           <CardHeader>
-            <CardTitle>Study Plan</CardTitle>
+            <CardTitle>Sample Questions</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            {formData.studyPlan.map((phase, phaseIndex) => (
-              <div key={phaseIndex} className="border rounded-lg p-4">
+            {formData.sampleQuestions.map((question, questionIndex) => (
+              <div key={questionIndex} className="border rounded-lg p-4">
                 <div className="flex justify-between items-center mb-4">
-                  <h4 className="font-medium">Phase {phaseIndex + 1}</h4>
+                  <h4 className="font-medium">Sample Question {questionIndex + 1}</h4>
                   <Button
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => removeArrayItem("studyPlan", phaseIndex)}
-                    disabled={formData.studyPlan.length === 1}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <Label>Phase Name</Label>
-                    <Input
-                      value={phase.phase}
-                      onChange={(e) => {
-                        const newStudyPlan = [...formData.studyPlan];
-                        newStudyPlan[phaseIndex].phase = e.target.value;
-                        handleInputChange("studyPlan", newStudyPlan);
-                      }}
-                      placeholder="Foundation Phase"
-                    />
-                  </div>
-                  <div>
-                    <Label>Duration</Label>
-                    <Input
-                      value={phase.duration}
-                      onChange={(e) => {
-                        const newStudyPlan = [...formData.studyPlan];
-                        newStudyPlan[phaseIndex].duration = e.target.value;
-                        handleInputChange("studyPlan", newStudyPlan);
-                      }}
-                      placeholder="2-3 months"
-                    />
-                  </div>
-                </div>
-
-                <Label>Focus Areas</Label>
-                {phase.focus.map((focus, focusIndex) => (
-                  <div key={focusIndex} className="flex gap-2 mt-2">
-                    <Input
-                      value={focus}
-                      onChange={(e) => {
-                        const newStudyPlan = [...formData.studyPlan];
-                        newStudyPlan[phaseIndex].focus[focusIndex] = e.target.value;
-                        handleInputChange("studyPlan", newStudyPlan);
-                      }}
-                      placeholder="Focus area"
-                    />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        const newStudyPlan = [...formData.studyPlan];
-                        newStudyPlan[phaseIndex].focus = newStudyPlan[phaseIndex].focus.filter((_, i) => i !== focusIndex);
-                        handleInputChange("studyPlan", newStudyPlan);
-                      }}
-                      disabled={phase.focus.length === 1}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
-
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="mt-2"
-                  onClick={() => {
-                    const newStudyPlan = [...formData.studyPlan];
-                    newStudyPlan[phaseIndex].focus.push("");
-                    handleInputChange("studyPlan", newStudyPlan);
-                  }}
-                >
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Focus Area
-                </Button>
-              </div>
-            ))}
-
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => addArrayItem("studyPlan", { phase: "", duration: "", focus: [""] })}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Add Phase
-            </Button>
-          </CardContent>
-        </Card>
-
-        {/* Reviews */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Reviews</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {formData.reviews.map((review, index) => (
-              <div key={index} className="border rounded-lg p-4">
-                <div className="flex justify-between items-center mb-4">
-                  <h4 className="font-medium">Review {index + 1}</h4>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => removeArrayItem("reviews", index)}
+                    onClick={() => removeArrayItem("sampleQuestions", questionIndex)}
+                    disabled={formData.sampleQuestions.length === 1}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
 
                 <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label>Name</Label>
-                      <Input
-                        value={review.name}
-                        onChange={(e) => {
-                          const newReviews = [...formData.reviews];
-                          newReviews[index].name = e.target.value;
-                          handleInputChange("reviews", newReviews);
-                        }}
-                        placeholder="Reviewer name"
-                      />
-                    </div>
-                    <div>
-                      <Label>Rating</Label>
-                      <Input
-                        type="number"
-                        min="1"
-                        max="5"
-                        value={review.rating}
-                        onChange={(e) => {
-                          const newReviews = [...formData.reviews];
-                          newReviews[index].rating = parseInt(e.target.value) || 5;
-                          handleInputChange("reviews", newReviews);
-                        }}
-                      />
-                    </div>
+                  <div>
+                    <Label>Question</Label>
+                    <Textarea
+                      value={question.question}
+                      onChange={(e) => {
+                        const newSampleQuestions = [...formData.sampleQuestions];
+                        newSampleQuestions[questionIndex].question = e.target.value;
+                        handleInputChange("sampleQuestions", newSampleQuestions);
+                      }}
+                      rows={3}
+                      placeholder="Enter the question"
+                    />
                   </div>
 
                   <div>
-                    <Label>Review Text</Label>
-                    <Textarea
-                      value={review.text}
-                      onChange={(e) => {
-                        const newReviews = [...formData.reviews];
-                        newReviews[index].text = e.target.value;
-                        handleInputChange("reviews", newReviews);
+                    <Label>Options</Label>
+                    {question.options.map((option, optionIndex) => (
+                      <div key={optionIndex} className="flex gap-2 mt-2">
+                        <Input
+                          value={option}
+                          onChange={(e) => {
+                            const newSampleQuestions = [...formData.sampleQuestions];
+                            newSampleQuestions[questionIndex].options[optionIndex] = e.target.value;
+                            handleInputChange("sampleQuestions", newSampleQuestions);
+                          }}
+                          placeholder={`Option ${optionIndex + 1}`}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            const newSampleQuestions = [...formData.sampleQuestions];
+                            newSampleQuestions[questionIndex].options = newSampleQuestions[questionIndex].options.filter((_, i) => i !== optionIndex);
+                            handleInputChange("sampleQuestions", newSampleQuestions);
+                          }}
+                          disabled={question.options.length === 1}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="mt-2"
+                      onClick={() => {
+                        const newSampleQuestions = [...formData.sampleQuestions];
+                        newSampleQuestions[questionIndex].options.push("");
+                        handleInputChange("sampleQuestions", newSampleQuestions);
                       }}
-                      rows={3}
-                      placeholder="Review text"
-                    />
+                    >
+                      <Plus className="mr-2 h-4 w-4" />
+                      Add Option
+                    </Button>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label>Correct Answer Index</Label>
+                      <Input
+                        type="number"
+                        min="0"
+                        value={question.correctAnswer}
+                        onChange={(e) => {
+                          const newSampleQuestions = [...formData.sampleQuestions];
+                          newSampleQuestions[questionIndex].correctAnswer = parseInt(e.target.value) || 0;
+                          handleInputChange("sampleQuestions", newSampleQuestions);
+                        }}
+                        placeholder="0"
+                      />
+                    </div>
+                    <div>
+                      <Label>Explanation</Label>
+                      <Textarea
+                        value={question.explanation}
+                        onChange={(e) => {
+                          const newSampleQuestions = [...formData.sampleQuestions];
+                          newSampleQuestions[questionIndex].explanation = e.target.value;
+                          handleInputChange("sampleQuestions", newSampleQuestions);
+                        }}
+                        rows={2}
+                        placeholder="Explanation for the correct answer"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -542,23 +546,44 @@ function ExamFormContent() {
             <Button
               type="button"
               variant="outline"
-              onClick={() => addArrayItem("reviews", { name: "", text: "", rating: 5 })}
+              onClick={() => addArrayItem("sampleQuestions", { question: "", options: [""], correctAnswer: 0, explanation: "" })}
             >
               <Plus className="mr-2 h-4 w-4" />
-              Add Review
+              Add Sample Question
             </Button>
           </CardContent>
         </Card>
 
+        {/* Status */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Status</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center space-x-6">
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="featured"
+                  checked={formData.featured}
+                  onChange={(e) => handleInputChange("featured", e.target.checked)}
+                  className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded"
+                />
+                <Label htmlFor="featured">Featured</Label>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         <div className="flex justify-end gap-4">
-          <Link href="/admin-dashboard/exams">
+          <Link href="/admin-dashboard/test-series">
             <Button type="button" variant="outline">
               Cancel
             </Button>
           </Link>
           <Button type="submit" disabled={loading}>
             <Save className="mr-2 h-4 w-4" />
-            {loading ? "Saving..." : isEditing ? "Update Exam" : "Create Exam"}
+            {loading ? "Saving..." : isEditing ? "Update Test Series" : "Create Test Series"}
           </Button>
         </div>
       </form>
@@ -566,10 +591,10 @@ function ExamFormContent() {
   );
 }
 
-export default function ExamFormPage() {
+export default function TestSeriesFormPage() {
   return (
     <Suspense fallback={<div className="p-8"><div className="text-center">Loading...</div></div>}>
-      <ExamFormContent />
+      <TestSeriesFormContent />
     </Suspense>
   );
 }

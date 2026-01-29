@@ -9,7 +9,18 @@ import VideosTable from "./videos-table";
 export default async function AdminVideosPage() {
   const rawVideos = await db.select().from(video).orderBy(desc(video.createdAt));
   const allVideos = rawVideos.map(v => ({
-    ...v,
+    id: v.id,
+    title: v.title,
+    description: v.description,
+    thumbnails: v.thumbnails as string[],
+    thumbnail: (v.thumbnails as string[])?.[0] || "", // Extract first thumbnail for the Video type
+    youtubeId: v.youtubeId,
+    category: v.category,
+    duration: v.duration,
+    views: v.views,
+    date: v.date,
+    createdAt: v.createdAt,
+    updatedAt: v.updatedAt,
   }));
 
   return (
