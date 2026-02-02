@@ -201,7 +201,7 @@ const page = () => {
                 <Button
                   type="submit"
                   disabled={form.formState.isSubmitting}
-                  className="w-full h-11 bg-teal-600 hover:bg-teal-700 text-white font-medium"
+                  className="w-full h-11 bg-(--color-1) hover:bg-(--color-2) text-white font-medium"
                 >
                   {form.formState.isSubmitting
                     ? "Creating Account..."
@@ -252,7 +252,7 @@ const page = () => {
               Already have an account?{" "}
               <Link
                 href="/login"
-                className="text-teal-600 hover:underline font-medium"
+                className="text-(--color-1) hover:underline font-medium"
               >
                 Sign in
               </Link>
