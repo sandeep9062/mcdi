@@ -62,7 +62,7 @@ export default function NotesHubPage() {
     return filtered.sort((a, b) => {
       if (sortBy === "price-low") return a.price - b.price;
       if (sortBy === "price-high") return b.price - a.price;
-      return new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime();
+      return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
     });
   }, [notes, searchQuery, sortBy]);
 

@@ -120,17 +120,26 @@ CREATE TABLE "note" (
 	"short_description" text NOT NULL,
 	"full_description" text NOT NULL,
 	"thumbnails" jsonb NOT NULL,
-	"content" text NOT NULL,
 	"price" integer DEFAULT 0 NOT NULL,
 	"original_price" integer,
+	"currency" text DEFAULT 'USD' NOT NULL,
+	"pdf_count" integer DEFAULT 0 NOT NULL,
 	"tags" jsonb NOT NULL,
-	"date_created" text NOT NULL,
-	"last_updated" text NOT NULL,
 	"featured" boolean DEFAULT false NOT NULL,
 	"popular" boolean DEFAULT false NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "note_slug_unique" UNIQUE("slug")
+);
+--> statement-breakpoint
+CREATE TABLE "note_files" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"note_id" text NOT NULL,
+	"url" text NOT NULL,
+	"file_name" text NOT NULL,
+	"file_size" integer,
+	"page_count" integer,
+	"order" integer DEFAULT 0
 );
 --> statement-breakpoint
 CREATE TABLE "order_items" (
@@ -240,6 +249,7 @@ CREATE TABLE "video" (
 );
 --> statement-breakpoint
 ALTER TABLE "account" ADD CONSTRAINT "account_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "note_files" ADD CONSTRAINT "note_files_note_id_note_id_fk" FOREIGN KEY ("note_id") REFERENCES "public"."note"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "order_items" ADD CONSTRAINT "order_items_orderId_orders_id_fk" FOREIGN KEY ("orderId") REFERENCES "public"."orders"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "order_items" ADD CONSTRAINT "order_items_courseId_course_id_fk" FOREIGN KEY ("courseId") REFERENCES "public"."course"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "order_items" ADD CONSTRAINT "order_items_testSeriesId_test_series_id_fk" FOREIGN KEY ("testSeriesId") REFERENCES "public"."test_series"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
@@ -259,7 +269,6 @@ CREATE INDEX "exam_slug_idx" ON "exam" USING btree ("slug");--> statement-breakp
 CREATE INDEX "exam_country_idx" ON "exam" USING btree ("country");--> statement-breakpoint
 CREATE INDEX "note_slug_idx" ON "note" USING btree ("slug");--> statement-breakpoint
 CREATE INDEX "note_featured_idx" ON "note" USING btree ("featured");--> statement-breakpoint
-CREATE INDEX "note_popular_idx" ON "note" USING btree ("popular");--> statement-breakpoint
 CREATE INDEX "review_course_idx" ON "review" USING btree ("course");--> statement-breakpoint
 CREATE INDEX "review_rating_idx" ON "review" USING btree ("rating");--> statement-breakpoint
 CREATE INDEX "review_verified_idx" ON "review" USING btree ("verified");--> statement-breakpoint

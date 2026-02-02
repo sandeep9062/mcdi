@@ -8,6 +8,7 @@ import { reviews } from "../data/reviews";
 import { testSeries } from "../data/testSeries";
 import { videos } from "../data/videos";
 import { dentistRegistrations } from "../data/denistRegistration";
+import { notes } from "../data/notes";
 
 
 // Load environment variables from .env
@@ -28,7 +29,14 @@ async function main() {
         await db.delete(schema.review);
         await db.delete(schema.video);
         await db.delete(schema.dentistRegistration);
-      
+        // Try to delete noteFiles first (to handle foreign key constraints)
+        try {
+            await db.delete(schema.noteFiles);
+        } catch (error) {
+            console.log("⚠️ Note files table not found or error deleting, continuing...");
+        }
+        await db.delete(schema.note);
+        
         console.log("✅ Existing data cleared!");
 
         // Seed courses
@@ -85,6 +93,18 @@ async function main() {
         
         await db.insert(schema.dentistRegistration).values(filteredDentistRegistrations);
         console.log("✅ Dentist registrations seeded successfully!");
+
+        // Seed notes - match schema structure
+        console.log("📓 Seeding notes...");
+        const notesToSeed = notes.map(note => ({
+          ...note,
+          dateCreated: new Date().toISOString(),
+          lastUpdated: new Date().toISOString(),
+          createdAt: new Date(),
+          updatedAt: new Date()
+        }));
+        await db.insert(schema.note).values(notesToSeed);
+        console.log("✅ Notes seeded successfully!");
 
         console.log("🎉 All seeding completed successfully!");
     } catch (error) {

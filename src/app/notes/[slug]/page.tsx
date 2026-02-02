@@ -80,7 +80,7 @@ export default function NoteDetailPage({
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <section className="bg-gradient-to-br from-teal-600 to-teal-800 text-white py-16">
+      <section className="bg-gradient-to-br from-(--color-1) to-(--color-2) text-white py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <motion.div
@@ -104,11 +104,15 @@ export default function NoteDetailPage({
               <div className="flex items-center gap-6 mt-6 text-teal-100">
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4" />
-                  <span>{new Date(note.dateCreated).toLocaleDateString()}</span>
+                  <span>{new Date(note.createdAt || Date.now()).toLocaleDateString()}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Clock className="h-4 w-4" />
-                  <span>Last updated: {new Date(note.lastUpdated).toLocaleDateString()}</span>
+                  <span>Last updated: {new Date(note.updatedAt || Date.now()).toLocaleDateString()}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Tag className="h-4 w-4" />
+                  <span>{note.pdfCount} PDFs</span>
                 </div>
               </div>
             </motion.div>
@@ -129,7 +133,30 @@ export default function NoteDetailPage({
                   className="bg-white rounded-xl shadow-md p-8"
                 >
                   <div className="prose prose-lg max-w-none">
-                    <div dangerouslySetInnerHTML={{ __html: note.content.replace(/\n/g, '<br>') }} />
+                    <h3 className="text-xl font-semibold mb-4">Description</h3>
+                    <p className="text-gray-700 leading-relaxed">{note.fullDescription}</p>
+                    
+                    <h3 className="text-xl font-semibold mt-8 mb-4">What's Included</h3>
+                    <div className="bg-gray-50 rounded-lg p-4 mb-6">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Tag className="h-5 w-5 text-(--color-1)" />
+                        <span className="font-medium">{note.pdfCount} PDF Files</span>
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        <p>High-quality, expert-curated study material</p>
+                        <p>Lifetime access to purchased notes</p>
+                        <p>Compatible with all devices</p>
+                      </div>
+                    </div>
+                    
+                    <h3 className="text-xl font-semibold mt-8 mb-4">Tags</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {note.tags.map((tag, index) => (
+                        <Badge key={index} variant="secondary" className="text-sm">
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
                   </div>
                 </motion.div>
               </div>
@@ -159,7 +186,18 @@ export default function NoteDetailPage({
                     </h3>
                     <div className="space-y-2 text-sm text-gray-600">
                       <div>
-                        <strong>Created:</strong> {new Date(note.dateCreated).toLocaleDateString()}
+                        <strong>Created:</strong> {new Date(note.createdAt || Date.now()).toLocaleDateString()}
+                      </div>
+                      <div>
+                        <strong>PDF Count:</strong> {note.pdfCount} files
+                      </div>
+                      <div>
+                        <strong>Price:</strong> ${note.price}
+                        {note.originalPrice && (
+                          <span className="ml-1 text-xs line-through text-gray-400">
+                            ${note.originalPrice}
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>

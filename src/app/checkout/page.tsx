@@ -43,12 +43,33 @@ export default function CheckoutPage() {
       id: `ORD-${Date.now()}`,
       date: new Date().toISOString(),
       customer: formData,
-      items: items.map(item => ({
-        id: item.course.id,
-        title: item.course.title,
-        price: item.course.price,
-        quantity: item.quantity,
-      })),
+      items: items.map(item => {
+        if (item.course) {
+          return {
+            id: item.course.id,
+            title: item.course.title,
+            price: item.course.price,
+            quantity: item.quantity,
+          };
+        }
+        if (item.dentistRegistration) {
+          return {
+            id: item.dentistRegistration.id,
+            title: item.dentistRegistration.title,
+            price: item.dentistRegistration.price,
+            quantity: item.quantity,
+          };
+        }
+        if (item.note) {
+          return {
+            id: item.note.id,
+            title: item.note.title,
+            price: item.note.price,
+            quantity: item.quantity,
+          };
+        }
+        return {};
+      }).filter(item => Object.keys(item).length > 0),
       total: getTotalPrice(),
       paymentMethod,
     };
@@ -201,17 +222,27 @@ export default function CheckoutPage() {
                   <h2 className="text-xl font-semibold text-gray-900 mb-6">Order Summary</h2>
 
                   <div className="space-y-4 mb-6">
-                    {items.map((item) => (
-                      <div key={item.course.id} className="flex justify-between text-sm">
-                        <div className="flex-1">
-                          <div className="font-medium text-gray-900">{item.course.title}</div>
-                          <div className="text-gray-600">Qty: {item.quantity}</div>
+                    {items.map((item) => {
+                      const getItemData = () => {
+                        if (item.course) return item.course;
+                        if (item.dentistRegistration) return item.dentistRegistration;
+                        if (item.note) return item.note;
+                        return null;
+                      };
+                      const itemData = getItemData();
+                      if (!itemData) return null;
+                      return (
+                        <div key={itemData.id} className="flex justify-between text-sm">
+                          <div className="flex-1">
+                            <div className="font-medium text-gray-900">{itemData.title}</div>
+                            <div className="text-gray-600">Qty: {item.quantity}</div>
+                          </div>
+                          <div className="font-semibold text-gray-900">
+                            ₹{(itemData.price * item.quantity).toLocaleString()}
+                          </div>
                         </div>
-                        <div className="font-semibold text-gray-900">
-                          ₹{(item.course.price * item.quantity).toLocaleString()}
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
 
                   <div className="border-t border-gray-200 pt-4 mb-6 space-y-2">

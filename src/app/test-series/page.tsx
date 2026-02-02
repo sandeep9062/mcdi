@@ -12,8 +12,10 @@ import {
   Filter,
   Calendar,
   Target,
-  Users // Added for enrollment visibility
+  Users, // Added for enrollment visibility
+  ArrowRight // Added for view details button
 } from "lucide-react";
+import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -291,21 +293,34 @@ export default function TestSeriesPage() {
                           </AccordionItem>
                         </Accordion>
 
-                        {/* Price and Cart Action */}
-                        <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
-                          <div>
-                            <span className="text-2xl font-black text-gray-900">₹{series.price.toLocaleString()}</span>
-                            {series.originalPrice && (
-                              <span className="ml-2 text-sm text-gray-400 line-through">₹{series.originalPrice.toLocaleString()}</span>
-                            )}
+                        {/* Price and Actions */}
+                        <div className="mt-auto pt-4 border-t border-gray-100">
+                          <div className="flex items-center justify-between mb-4">
+                            <div>
+                              <span className="text-2xl font-black text-gray-900">₹{series.price.toLocaleString()}</span>
+                              {series.originalPrice && (
+                                <span className="ml-2 text-sm text-gray-400 line-through">₹{series.originalPrice.toLocaleString()}</span>
+                              )}
+                            </div>
                           </div>
-                          <Button 
-                            onClick={() => handleAddToCart(series)} 
-                            className="bg-(--color-1) hover:bg-(--color-2) rounded-xl px-6"
-                          >
-                            <ShoppingCart className="mr-2 h-4 w-4" />
-                            Add to Cart
-                          </Button>
+                          <div className="flex gap-3">
+                            <Button 
+                              asChild
+                              className="flex-1 bg-white text-(--color-1) border border-(--color-1) hover:bg-(--color-1) hover:text-white rounded-xl px-4"
+                            >
+                              <Link href={`/test-series/${series.slug}`}>
+                                <ArrowRight className="mr-2 h-4 w-4" />
+                                View Details
+                              </Link>
+                            </Button>
+                            <Button 
+                              onClick={() => handleAddToCart(series)} 
+                              className="flex-1 bg-(--color-1) hover:bg-(--color-2) rounded-xl px-4"
+                            >
+                              <ShoppingCart className="mr-2 h-4 w-4" />
+                              Add to Cart
+                            </Button>
+                          </div>
                         </div>
                       </div>
                     </motion.div>

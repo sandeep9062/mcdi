@@ -190,11 +190,21 @@ export interface Note {
   thumbnails: string[];
   price: number;
   originalPrice?: number;
-  content: string;
+  currency?: string;
+  pdfCount: number;
   tags: string[];
-
-  dateCreated: string;
-  lastUpdated: string;
   featured: boolean;
   popular: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface NoteFile {
+  id: string;
+  noteId: string;
+  url: string;
+  fileName: string;
+  fileSize?: number;
+  pageCount?: number;
+  order?: number;
 }

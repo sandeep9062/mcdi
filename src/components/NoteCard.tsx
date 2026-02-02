@@ -42,7 +42,7 @@ export default function NoteCard({ note }: NoteCardProps) {
       {/* Thumbnail with Lock Overlay */}
       <div className="relative h-48 overflow-hidden bg-gray-100">
         <Image
-          src={noteData?.thumbnail || '/placeholder-note.jpg'}
+          src={noteData?.thumbnails?.[0] || '/placeholder-note.jpg'}
           alt={noteData?.title || "Dental Notes"}
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-500"

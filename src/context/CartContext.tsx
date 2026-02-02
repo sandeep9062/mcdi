@@ -1,18 +1,20 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Course, DentistRegistration } from '@/types/types';
+import { Course, DentistRegistration, Note } from '@/types/types';
 
 interface CartItem {
-  course: Course | DentistRegistration;
+  course?: Course;
+  dentistRegistration?: DentistRegistration;
+  note?: Note;
   quantity: number;
 }
 
 interface CartContextType {
   items: CartItem[];
-  addToCart: (item: Course | DentistRegistration) => void;
-  removeFromCart: (courseId: string) => void;
-  updateQuantity: (courseId: string, quantity: number) => void;
+  addToCart: (item: Course | DentistRegistration | Note) => void;
+  removeFromCart: (itemId: string) => void;
+  updateQuantity: (itemId: string, quantity: number) => void;
   clearCart: () => void;
   getTotalPrice: () => number;
   getItemCount: () => number;
@@ -42,33 +44,60 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [items, isLoaded]);
 
-  const addToCart = (item: Course | DentistRegistration) => {
+  const addToCart = (item: Course | DentistRegistration | Note) => {
     setItems((prevItems) => {
-      const existingItem = prevItems.find((cartItem) => cartItem.course.id === item.id);
+      const existingItem = prevItems.find((cartItem) => {
+        if (cartItem.course) return cartItem.course.id === item.id;
+        if (cartItem.dentistRegistration) return cartItem.dentistRegistration.id === item.id;
+        if (cartItem.note) return cartItem.note.id === item.id;
+        return false;
+      });
+
       if (existingItem) {
-        return prevItems.map((cartItem) =>
-          cartItem.course.id === item.id
-            ? { ...cartItem, quantity: cartItem.quantity + 1 }
-            : cartItem
-        );
+        return prevItems.map((cartItem) => {
+          const matches = 
+            (cartItem.course?.id === item.id) || 
+            (cartItem.dentistRegistration?.id === item.id) || 
+            (cartItem.note?.id === item.id);
+          
+          return matches ? { ...cartItem, quantity: cartItem.quantity + 1 } : cartItem;
+        });
       }
-      return [...prevItems, { course: item, quantity: 1 }];
+
+      if ('category' in item) {
+        if ('mode' in item && ['Online', 'Offline', 'Hybrid'].includes(item.mode)) {
+          return [...prevItems, { dentistRegistration: item as DentistRegistration, quantity: 1 }];
+        }
+        return [...prevItems, { course: item as Course, quantity: 1 }];
+      }
+      
+      return [...prevItems, { note: item as Note, quantity: 1 }];
     });
   };
 
-  const removeFromCart = (courseId: string) => {
-    setItems((prevItems) => prevItems.filter((item) => item.course.id !== courseId));
+  const removeFromCart = (itemId: string) => {
+    setItems((prevItems) => prevItems.filter((item) => {
+      if (item.course) return item.course.id !== itemId;
+      if (item.dentistRegistration) return item.dentistRegistration.id !== itemId;
+      if (item.note) return item.note.id !== itemId;
+      return true;
+    }));
   };
 
-  const updateQuantity = (courseId: string, quantity: number) => {
+  const updateQuantity = (itemId: string, quantity: number) => {
     if (quantity <= 0) {
-      removeFromCart(courseId);
+      removeFromCart(itemId);
       return;
     }
     setItems((prevItems) =>
-      prevItems.map((item) =>
-        item.course.id === courseId ? { ...item, quantity } : item
-      )
+      prevItems.map((item) => {
+        const matches = 
+          (item.course?.id === itemId) || 
+          (item.dentistRegistration?.id === itemId) || 
+          (item.note?.id === itemId);
+          
+        return matches ? { ...item, quantity } : item;
+      })
     );
   };
 
@@ -77,7 +106,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   const getTotalPrice = () => {
-    return items.reduce((total, item) => total + item.course.price * item.quantity, 0);
+    return items.reduce((total, item) => {
+      if (item.course) return total + item.course.price * item.quantity;
+      if (item.dentistRegistration) return total + item.dentistRegistration.price * item.quantity;
+      if (item.note) return total + item.note.price * item.quantity;
+      return total;
+    }, 0);
   };
 
   const getItemCount = () => {

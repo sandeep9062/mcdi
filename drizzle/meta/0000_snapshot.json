@@ -1,5 +1,5 @@
 {
-  "id": "3ca0aa3f-5d84-41d5-8fbe-dacb65b7e913",
+  "id": "ca0589ba-7b2e-46c6-a35d-316ea1cec7b6",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -909,12 +909,6 @@
           "primaryKey": false,
           "notNull": true
         },
-        "content": {
-          "name": "content",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
         "price": {
           "name": "price",
           "type": "integer",
@@ -928,21 +922,23 @@
           "primaryKey": false,
           "notNull": false
         },
+        "currency": {
+          "name": "currency",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'USD'"
+        },
+        "pdf_count": {
+          "name": "pdf_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
         "tags": {
           "name": "tags",
           "type": "jsonb",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "date_created": {
-          "name": "date_created",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
@@ -1005,21 +1001,6 @@
           "concurrently": false,
           "method": "btree",
           "with": {}
-        },
-        "note_popular_idx": {
-          "name": "note_popular_idx",
-          "columns": [
-            {
-              "expression": "popular",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
         }
       },
       "foreignKeys": {},
@@ -1033,6 +1014,77 @@
           ]
         }
       },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.note_files": {
+      "name": "note_files",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "note_id": {
+          "name": "note_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "url": {
+          "name": "url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "file_name": {
+          "name": "file_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "file_size": {
+          "name": "file_size",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "page_count": {
+          "name": "page_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "order": {
+          "name": "order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "note_files_note_id_note_id_fk": {
+          "name": "note_files_note_id_note_id_fk",
+          "tableFrom": "note_files",
+          "tableTo": "note",
+          "columnsFrom": [
+            "note_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false

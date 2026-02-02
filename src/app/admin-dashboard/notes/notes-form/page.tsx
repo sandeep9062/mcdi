@@ -25,11 +25,13 @@ function CreateNoteForm() {
     title: "",
     shortDescription: "",
     fullDescription: "",
-    content: "",
     tags: "",
     featured: false,
     popular: false,
     thumbnails: [] as string[], 
+    price: 0,
+    originalPrice: null as number | null,
+    pdfCount: 0,
   });
 
   // Load existing note data if editing
@@ -47,11 +49,13 @@ function CreateNoteForm() {
             title: note.title,
             shortDescription: note.shortDescription,
             fullDescription: note.fullDescription || "",
-            content: note.content,
             tags: note.tags.join(", "),
             featured: note.featured,
             popular: note.popular,
             thumbnails: note.thumbnails,
+            price: note.price || 0,
+            originalPrice: note.originalPrice || null,
+            pdfCount: note.pdfCount || 0,
           });
         } catch (error) {
           console.error("Error fetching note:", error);
@@ -66,7 +70,7 @@ function CreateNoteForm() {
     }
   }, [isEditing, slug, router]);
 
-  const handleInputChange = (field: string, value: string | boolean) => {
+  const handleInputChange = (field: string, value: string | boolean | number | null) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
@@ -86,7 +90,7 @@ function CreateNoteForm() {
 
     try {
       // Validate required fields
-      if (!formData.title || !formData.shortDescription || !formData.content) {
+      if (!formData.title || !formData.shortDescription) {
         toast.error("Please fill in all required fields");
         return;
       }
@@ -102,10 +106,6 @@ function CreateNoteForm() {
           .split(",")
           .map((tag) => tag.trim())
           .filter((tag) => tag.length > 0),
-        dateCreated: isEditing
-          ? undefined
-          : new Date().toISOString().split("T")[0],
-        lastUpdated: new Date().toISOString().split("T")[0],
       };
 
       const response = await fetch("/api/notes", {
@@ -262,32 +262,42 @@ function CreateNoteForm() {
             </p>
           </div>
 
-          {/* Content */}
-          <div className="md:col-span-2">
-            <Label htmlFor="content">Content (Markdown) *</Label>
-            <Textarea
-              id="content"
-              value={formData.content}
-              onChange={(e) => handleInputChange("content", e.target.value)}
-              placeholder="# Introduction
-
-Enter your note content here using Markdown formatting...
-
-## Section Title
-
-- Bullet points
-- More content
-
-### Subsection
-
-**Bold text** and *italic text* supported."
-              rows={20}
-              className="font-mono text-sm"
-              required
+          {/* Pricing */}
+          <div className="md:col-span-1">
+            <Label htmlFor="price">Price ($)</Label>
+            <Input
+              id="price"
+              type="number"
+              value={formData.price}
+              onChange={(e) => handleInputChange("price", parseInt(e.target.value) || 0)}
+              placeholder="0"
+              min="0"
             />
-            <p className="text-sm text-gray-500 mt-1">
-              Use Markdown formatting for headings, lists, and text styling
-            </p>
+          </div>
+
+          <div className="md:col-span-1">
+            <Label htmlFor="originalPrice">Original Price ($)</Label>
+            <Input
+              id="originalPrice"
+              type="number"
+              value={formData.originalPrice || ""}
+              onChange={(e) => handleInputChange("originalPrice", parseInt(e.target.value) || null)}
+              placeholder="0"
+              min="0"
+            />
+          </div>
+
+          {/* PDF Count */}
+          <div className="md:col-span-1">
+            <Label htmlFor="pdfCount">PDF Count</Label>
+            <Input
+              id="pdfCount"
+              type="number"
+              value={formData.pdfCount}
+              onChange={(e) => handleInputChange("pdfCount", parseInt(e.target.value) || 0)}
+              placeholder="0"
+              min="0"
+            />
           </div>
 
           {/* Featured & Popular */}

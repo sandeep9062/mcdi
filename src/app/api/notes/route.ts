@@ -55,8 +55,7 @@ export async function POST(request: NextRequest) {
     // Validate required fields
     const requiredFields = [
       'slug', 'title', 'shortDescription',
-      'content', 'tags',
-      'dateCreated', 'lastUpdated'
+      'tags'
     ];
 
     for (const field of requiredFields) {
@@ -77,6 +76,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const now = new Date().toISOString();
     const newNote = await db.insert(note).values({
       id: crypto.randomUUID(),
       slug: body.slug,
@@ -84,14 +84,18 @@ export async function POST(request: NextRequest) {
       shortDescription: body.shortDescription,
       fullDescription: body.fullDescription || '',
       thumbnails: body.thumbnails || ['/mcdi1.jpeg'],
-      content: body.content,
+      price: body.price || 0,
+      originalPrice: body.originalPrice,
+      currency: body.currency || 'USD',
+      pdfCount: body.pdfCount || 0,
       tags: body.tags,
-      dateCreated: body.dateCreated,
-      lastUpdated: body.lastUpdated,
       featured: body.featured || false,
       popular: body.popular || false,
+      dateCreated: now,
+      lastUpdated: now,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     }).returning();
-
     const createdNote = {
       ...newNote[0],
       tags: newNote[0].tags as string[],
@@ -120,8 +124,7 @@ export async function PUT(request: NextRequest) {
     // Validate required fields
     const requiredFields = [
       'slug', 'title', 'shortDescription',
-      'content', 'tags',
-      'lastUpdated', 'originalSlug'
+      'tags', 'originalSlug'
     ];
 
     for (const field of requiredFields) {
@@ -152,16 +155,18 @@ export async function PUT(request: NextRequest) {
         shortDescription: body.shortDescription,
         fullDescription: body.fullDescription || '',
         thumbnails: body.thumbnails || ['/mcdi1.jpeg'],
-        content: body.content,
+        price: body.price || 0,
+        originalPrice: body.originalPrice,
+        currency: body.currency || 'USD',
+        pdfCount: body.pdfCount || 0,
         tags: body.tags,
-        lastUpdated: body.lastUpdated,
         featured: body.featured || false,
         popular: body.popular || false,
+        lastUpdated: new Date().toISOString(),
         updatedAt: new Date(),
       })
       .where(eq(note.slug, body.originalSlug))
       .returning();
-
     if (updatedNote.length === 0) {
       return NextResponse.json(
         { error: 'Note not found' },

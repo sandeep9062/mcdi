@@ -341,6 +341,7 @@ export const video = pgTable(
   ],
 );
 
+
 export const note = pgTable(
   "note",
   {
@@ -349,27 +350,44 @@ export const note = pgTable(
     title: text("title").notNull(),
     shortDescription: text("short_description").notNull(),
     fullDescription: text("full_description").notNull(),
-    thumbnails: jsonb("thumbnails").notNull(), // string[] - array of thumbnail URLs
-    content: text("content").notNull(),
-    price: integer("price").notNull().default(0), // Added this
-    originalPrice: integer("original_price"),      // Added this
-    tags: jsonb("tags").notNull(), // string[]
-    dateCreated: text("date_created").notNull(),
-    lastUpdated: text("last_updated").notNull(),
+    thumbnails: jsonb("thumbnails").$type<string[]>().notNull(), 
+    
+    // Pricing logic
+    price: integer("price").notNull().default(0), // in cents/paise (e.g., 999 for 9.99)
+    originalPrice: integer("original_price"),
+    currency: text("currency").default("USD"),
+    
+    // Stats/Metadata
+    pdfCount: integer("pdf_count").default(0), // Track number of PDFs
+    tags: jsonb("tags").$type<string[]>().notNull(),
+    
     featured: boolean("featured").default(false).notNull(),
     popular: boolean("popular").default(false).notNull(),
+    
+    dateCreated: text("date_created").notNull(),
+    lastUpdated: text("last_updated").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()
-      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .$onUpdate(() => new Date())
       .notNull(),
   },
   (table) => [
     index("note_slug_idx").on(table.slug),
     index("note_featured_idx").on(table.featured),
-    index("note_popular_idx").on(table.popular),
-  ],
+  ]
 );
+
+// New Table for PDF Files
+export const noteFiles = pgTable("note_files", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  noteId: text("note_id").references(() => note.id, { onDelete: "cascade" }).notNull(),
+  url: text("url").notNull(), // S3/Uploadthing URL
+  fileName: text("file_name").notNull(),
+  fileSize: integer("file_size"), // size in bytes
+  pageCount: integer("page_count"),
+  order: integer("order").default(0), // To sort the PDFs
+});
 
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),

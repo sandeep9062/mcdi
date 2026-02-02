@@ -44,86 +44,100 @@ export default function CartPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
               <div className="space-y-4">
-                {items.map((item, index) => (
-                  <motion.div
-                    key={item.course.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="bg-white rounded-xl shadow-md p-6"
-                  >
-                    <div className="flex gap-6">
-                      <Link href={`/courses/${item.course.slug}`} className="flex-shrink-0">
-                        <img
-                          src={item.course.thumbnails?.[0] || '/placeholder-image.jpg'}
-                          alt={item.course.title}
-                          className="w-32 h-24 object-cover rounded-lg"
-                        />
-                      </Link>
+                {items.map((item, index) => {
+                  const getItemData = () => {
+                    if (item.course) return { ...item.course, type: 'course', href: `/courses/${item.course.slug}` };
+                    if (item.dentistRegistration) return { ...item.dentistRegistration, type: 'dentist-registration', href: `/dentist-registration/${item.dentistRegistration.slug}` };
+                    if (item.note) return { ...item.note, type: 'note', href: `/notes/${item.note.slug}` };
+                    return null;
+                  };
 
-                      <div className="flex-1">
-                        <Link href={`/courses/${item.course.slug}`}>
-                          <h3 className="font-semibold text-lg text-gray-900 hover:text-teal-600 transition-colors mb-2">
-                            {item.course.title}
-                          </h3>
+                  const itemData = getItemData();
+                  if (!itemData) return null;
+
+                  return (
+                    <motion.div
+                      key={itemData.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="bg-white rounded-xl shadow-md p-6"
+                    >
+                      <div className="flex gap-6">
+                        <Link href={itemData.href} className="flex-shrink-0">
+                          <img
+                            src={itemData.thumbnails?.[0] || '/placeholder-image.jpg'}
+                            alt={itemData.title}
+                            className="w-32 h-24 object-cover rounded-lg"
+                          />
                         </Link>
-                        <p className="text-sm text-gray-600 mb-3">{item.course.category}</p>
 
-                        <div className="flex items-center justify-between flex-wrap gap-4">
-                          <div className="flex items-center gap-3">
-                            <Button
-                              size="icon"
-                              variant="outline"
-                              onClick={() => {
-                                updateQuantity(item.course.id, item.quantity - 1);
-                                toast.success('Quantity updated');
-                              }}
-                              disabled={item.quantity <= 1}
-                            >
-                              <Minus className="h-4 w-4" />
-                            </Button>
-                            <span className="font-semibold w-8 text-center">{item.quantity}</span>
-                            <Button
-                              size="icon"
-                              variant="outline"
-                              onClick={() => {
-                                updateQuantity(item.course.id, item.quantity + 1);
-                                toast.success('Quantity updated');
-                              }}
-                            >
-                              <Plus className="h-4 w-4" />
-                            </Button>
-                          </div>
+                        <div className="flex-1">
+                          <Link href={itemData.href}>
+                            <h3 className="font-semibold text-lg text-gray-900 hover:text-teal-600 transition-colors mb-2">
+                              {itemData.title}
+                            </h3>
+                          </Link>
+                          <p className="text-sm text-gray-600 mb-3">
+                            { (itemData as any).category || (itemData as any).tags?.[0] || 'Dental' }
+                          </p>
 
-                          <div className="flex items-center gap-4">
-                            <div className="text-right">
-                              <div className="text-2xl font-bold text-gray-900">
-                                ₹{(item.course.price * item.quantity).toLocaleString()}
-                              </div>
-                              {item.quantity > 1 && (
-                                <div className="text-sm text-gray-600">
-                                  ₹{item.course.price.toLocaleString()} each
-                                </div>
-                              )}
+                          <div className="flex items-center justify-between flex-wrap gap-4">
+                            <div className="flex items-center gap-3">
+                              <Button
+                                size="icon"
+                                variant="outline"
+                                onClick={() => {
+                                  updateQuantity(itemData.id, item.quantity - 1);
+                                  toast.success('Quantity updated');
+                                }}
+                                disabled={item.quantity <= 1}
+                              >
+                                <Minus className="h-4 w-4" />
+                              </Button>
+                              <span className="font-semibold w-8 text-center">{item.quantity}</span>
+                              <Button
+                                size="icon"
+                                variant="outline"
+                                onClick={() => {
+                                  updateQuantity(itemData.id, item.quantity + 1);
+                                  toast.success('Quantity updated');
+                                }}
+                              >
+                                <Plus className="h-4 w-4" />
+                              </Button>
                             </div>
 
-                            <Button
-                              size="icon"
-                              variant="ghost"
-                              onClick={() => {
-                                removeFromCart(item.course.id);
-                                toast.success(`${item.course.title} removed from cart`);
-                              }}
-                              className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                            >
-                              <Trash2 className="h-5 w-5" />
-                            </Button>
+                            <div className="flex items-center gap-4">
+                              <div className="text-right">
+                                <div className="text-2xl font-bold text-gray-900">
+                                  ₹{(itemData.price * item.quantity).toLocaleString()}
+                                </div>
+                                {item.quantity > 1 && (
+                                  <div className="text-sm text-gray-600">
+                                    ₹{itemData.price.toLocaleString()} each
+                                  </div>
+                                )}
+                              </div>
+
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                onClick={() => {
+                                  removeFromCart(itemData.id);
+                                  toast.success(`${itemData.title} removed from cart`);
+                                }}
+                                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                              >
+                                <Trash2 className="h-5 w-5" />
+                              </Button>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </motion.div>
-                ))}
+                    </motion.div>
+                  );
+                })}
               </div>
 
               <motion.div
