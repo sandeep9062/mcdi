@@ -22,25 +22,26 @@ import { toast } from "sonner";
 import FAQAccordion from "@/components/FAQAccordion";
 import { SocialProofStrip } from "@/components/SocialProofStrip";
 import { motion } from "framer-motion";
-import { Course } from "@/types/types";
-export default function CourseDetailPage({
+import { DentistRegistration } from "@/types/types";
+
+export default function DentistRegistrationDetailPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const [courses, setCourses] = useState<Course[]>([]);
+  const [dentistRegistrations, setDentistRegistrations] = useState<DentistRegistration[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchCourses = async () => {
+    const fetchDentistRegistrations = async () => {
       try {
-        const response = await fetch("/api/dentist-registration");
+        const response = await fetch("/api/dentist-registrations");
         if (!response.ok) {
-          throw new Error("Failed to fetch courses");
+          throw new Error("Failed to fetch dentist registrations");
         }
         const data = await response.json();
-        setCourses(data);
+        setDentistRegistrations(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : "An error occurred");
       } finally {
@@ -48,7 +49,7 @@ export default function CourseDetailPage({
       }
     };
 
-    fetchCourses();
+    fetchDentistRegistrations();
   }, []);
 
   const router = useRouter();
@@ -61,7 +62,7 @@ export default function CourseDetailPage({
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <Spinner className="h-8 w-8 mx-auto mb-4" />
-          <p className="text-gray-600">Loading course details...</p>
+          <p className="text-gray-600">Loading dentist details...</p>
         </div>
       </div>
     );
@@ -83,14 +84,14 @@ export default function CourseDetailPage({
               onClick={() => {
                 setLoading(true);
                 setError(null);
-                const fetchCourses = async () => {
+                const fetchDentistRegistrations = async () => {
                   try {
-                    const response = await fetch("/api/courses");
+                    const response = await fetch("/api/dentist-registrations");
                     if (!response.ok) {
-                      throw new Error("Failed to fetch courses");
+                      throw new Error("Failed to fetch dentist registrations");
                     }
                     const data = await response.json();
-                    setCourses(data);
+                    setDentistRegistrations(data);
                   } catch (err) {
                     setError(
                       err instanceof Error ? err.message : "An error occurred",
@@ -99,13 +100,13 @@ export default function CourseDetailPage({
                     setLoading(false);
                   }
                 };
-                fetchCourses();
+                fetchDentistRegistrations();
               }}
             >
               Try Again
             </Button>
-            <Link href="/courses">
-              <Button variant="outline">Browse All Courses</Button>
+            <Link href="/dentist-registration">
+              <Button variant="outline">Browse All Dentists</Button>
             </Link>
           </div>
         </div>
@@ -113,17 +114,17 @@ export default function CourseDetailPage({
     );
   }
 
-  const course = courses.find((c) => c.slug === slug);
+  const dentist = dentistRegistrations.find((d) => d.slug === slug);
 
-  if (!course) {
+  if (!dentist) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">
-            Course not found
+            Dentist not found
           </h1>
-          <Link href="/courses">
-            <Button>Browse All Courses</Button>
+          <Link href="/dentist-registration">
+            <Button>Browse All Dentists</Button>
           </Link>
         </div>
       </div>
@@ -131,18 +132,18 @@ export default function CourseDetailPage({
   }
 
   const handleAddToCart = () => {
-    addToCart(course);
-    toast.success(`${course.title} added to cart!`);
+    addToCart(dentist);
+    toast.success(`${dentist.title} added to cart!`);
   };
 
   const handleBuyNow = () => {
-    addToCart(course);
+    addToCart(dentist);
     router.push("/checkout");
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <section className="bg-gradient-to-br from-teal-600 to-teal-800 text-white py-12">
+      <section className="bg-gradient-to-br from-(--color-1) to-(--color-2) text-white py-12">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <motion.div
@@ -150,32 +151,32 @@ export default function CourseDetailPage({
               animate={{ opacity: 1, y: 0 }}
             >
               <div className="flex items-center gap-2 mb-4">
-                <Link href="/courses" className="hover:underline">
-                  Courses
+                <Link href="/dentist-registration" className="hover:underline">
+                  Dentist Registration
                 </Link>
                 <span>/</span>
-                <span>{course.category}</span>
+                <span>{dentist.category}</span>
               </div>
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-                {course.title}
+                {dentist.title}
               </h1>
               <p className="text-lg text-teal-50 mb-6">
-                {course.shortDescription}
+                {dentist.shortDescription}
               </p>
 
               <div className="flex flex-wrap items-center gap-6 text-sm">
                 <div className="flex items-center gap-2">
                   <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-                  <span className="font-semibold">{course.rating}</span>
+                  <span className="font-semibold">{dentist.rating}</span>
                   <span className="text-teal-100">
-                    ({course.reviewCount} reviews)
+                    ({dentist.reviewCount} reviews)
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Clock className="h-5 w-5" />
-                  <span>{course.duration}</span>
+                  <span>{dentist.duration}</span>
                 </div>
-                <Badge className="bg-white text-teal-700">{course.mode}</Badge>
+                <Badge className="bg-white text-(--color-1)">{dentist.mode}</Badge>
               </div>
             </motion.div>
           </div>
@@ -199,7 +200,7 @@ export default function CourseDetailPage({
                     Overview
                   </h2>
                   <p className="text-gray-700 leading-relaxed">
-                    {course.fullDescription}
+                    {dentist.fullDescription}
                   </p>
                 </motion.div>
 
@@ -213,9 +214,9 @@ export default function CourseDetailPage({
                     What You Will Learn
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {course.whatYouLearn.map((item, index) => (
+                    {dentist.whatYouLearn.map((item, index) => (
                       <div key={index} className="flex items-start gap-3">
-                        <CheckCircle className="h-5 w-5 text-teal-600 flex-shrink-0 mt-0.5" />
+                        <CheckCircle className="h-5 w-5 text-(--color-1) flex-shrink-0 mt-0.5" />
                         <span className="text-gray-700">{item}</span>
                       </div>
                     ))}
@@ -232,13 +233,13 @@ export default function CourseDetailPage({
                     Curriculum
                   </h2>
                   <div className="space-y-4">
-                    {course.curriculum.map((module, index) => (
+                    {dentist.curriculum.map((module, index) => (
                       <div
                         key={index}
                         className="border border-gray-200 rounded-lg"
                       >
                         <div className="bg-gray-50 px-6 py-4 font-semibold text-gray-900 flex items-center gap-3">
-                          <BookOpen className="h-5 w-5 text-teal-600" />
+                          <BookOpen className="h-5 w-5 text-(--color-1)" />
                           {module.module}
                         </div>
                         <div className="px-6 py-4">
@@ -248,7 +249,7 @@ export default function CourseDetailPage({
                                 key={topicIndex}
                                 className="flex items-start gap-2 text-gray-700"
                               >
-                                <span className="text-teal-600 mt-1">•</span>
+                                <span className="text-(--color-1) mt-1">•</span>
                                 <span>{topic}</span>
                               </li>
                             ))}
@@ -269,9 +270,9 @@ export default function CourseDetailPage({
                     Who This Course Is For
                   </h2>
                   <ul className="space-y-3">
-                    {course.whoIsThisFor.map((item, index) => (
+                    {dentist.whoIsThisFor.map((item, index) => (
                       <li key={index} className="flex items-start gap-3">
-                        <Users className="h-5 w-5 text-teal-600 flex-shrink-0 mt-0.5" />
+                        <Users className="h-5 w-5 text-(--color-1) flex-shrink-0 mt-0.5" />
                         <span className="text-gray-700">{item}</span>
                       </li>
                     ))}
@@ -288,7 +289,7 @@ export default function CourseDetailPage({
                     Meet Your Instructors
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {course.faculty.map((instructor, index) => (
+                    {dentist.faculty.map((instructor, index) => (
                       <div key={index} className="flex items-start gap-6">
                         <Image
                           src={instructor.image}
@@ -301,7 +302,7 @@ export default function CourseDetailPage({
                           <h3 className="text-xl font-semibold text-gray-900 mb-1">
                             {instructor.name}
                           </h3>
-                          <p className="text-teal-600 font-medium mb-3">
+                          <p className="text-(--color-1) font-medium mb-3">
                             {instructor.title}
                           </p>
                           <p className="text-gray-700 leading-relaxed">
@@ -323,11 +324,11 @@ export default function CourseDetailPage({
                     Frequently Asked Questions
                   </h2>
                   <FAQAccordion
-                    faqs={course.faqs.map((faq, idx) => ({
+                    faqs={dentist.faqs.map((faq, idx) => ({
                       id: `faq-${idx}`,
                       question: faq.question,
                       answer: faq.answer,
-                      category: "Course",
+                      category: "Dentist",
                     }))}
                   />
                 </motion.div>
@@ -342,8 +343,8 @@ export default function CourseDetailPage({
                 >
                   <div className="aspect-video bg-gray-200 rounded-lg mb-6 overflow-hidden">
                     <Image
-                      src={course.thumbnails?.[0] || '/placeholder-image.jpg'}
-                      alt={course.title}
+                      src={dentist.thumbnails?.[0] || '/placeholder-image.jpg'}
+                      alt={dentist.title}
                       width={400}
                       height={225}
                       className="w-full h-full object-cover"
@@ -353,25 +354,18 @@ export default function CourseDetailPage({
                   <div className="mb-6">
                     <div className="flex items-baseline gap-3 mb-2">
                       <span className="text-4xl font-bold text-gray-900">
-                        ₹{course.price.toLocaleString()}
+                        ₹{dentist.price.toLocaleString()}
                       </span>
-                      {course.originalPrice && (
+                      {dentist.originalPrice && (
                         <span className="text-xl text-gray-500 line-through">
-                          ₹{course.originalPrice.toLocaleString()}
+                          ₹{dentist.originalPrice.toLocaleString()}
                         </span>
                       )}
                     </div>
-                    {course.originalPrice && (
+                    {dentist.originalPrice && (
                       <div className="text-sm text-green-600 font-medium">
-                        Save ₹
-                        {(course.originalPrice - course.price).toLocaleString()}{" "}
-                        (
-                        {Math.round(
-                          ((course.originalPrice - course.price) /
-                            course.originalPrice) *
-                            100,
-                        )}
-                        % off)
+                        Save ₹{(dentist.originalPrice - dentist.price).toLocaleString()}
+                        ({Math.round(((dentist.originalPrice - dentist.price) / dentist.originalPrice) * 100)}% off)
                       </div>
                     )}
                   </div>
@@ -379,7 +373,7 @@ export default function CourseDetailPage({
                   <div className="space-y-3 mb-6">
                     <Button
                       size="lg"
-                      className="w-full bg-teal-600 hover:bg-teal-700"
+                      className="w-full bg-(--color-1) hover:bg-(--color-2)"
                       onClick={handleBuyNow}
                     >
                       <CreditCard className="mr-2 h-5 w-5" />
@@ -388,7 +382,7 @@ export default function CourseDetailPage({
                     <Button
                       size="lg"
                       variant="outline"
-                      className="w-full border-2 border-teal-600 text-teal-600 hover:bg-teal-50"
+                      className="w-full border-2 border-(--color-1) text-(--color-1) hover:bg-teal-50"
                       onClick={handleAddToCart}
                     >
                       <ShoppingCart className="mr-2 h-5 w-5" />
@@ -402,22 +396,22 @@ export default function CourseDetailPage({
                     </h3>
                     <ul className="space-y-3 text-sm text-gray-700">
                       <li className="flex items-center gap-2">
-                        <CheckCircle className="h-4 w-4 text-teal-600" />
-                        <span>{course.duration} of content</span>
+                        <CheckCircle className="h-4 w-4 text-(--color-1)" />
+                        <span>{dentist.duration} of content</span>
                       </li>
                       <li className="flex items-center gap-2">
-                        <CheckCircle className="h-4 w-4 text-teal-600" />
+                        <CheckCircle className="h-4 w-4 text-(--color-1)" />
                         <span>One-on-one mentoring sessions</span>
                       </li>
                       <li className="flex items-center gap-2">
-                        <CheckCircle className="h-4 w-4 text-teal-600" />
+                        <CheckCircle className="h-4 w-4 text-(--color-1)" />
                         <span>Certificate of completion</span>
                       </li>
                       <li className="flex items-center gap-2">
-                        <CheckCircle className="h-4 w-4 text-teal-600" />
+                        <CheckCircle className="h-4 w-4 text-(--color-1)" />
                         <span>Lifetime access to course materials</span>
                       </li>
-                      {course.mode === "Hybrid" && (
+                      {dentist.mode === "Hybrid" && (
                         <li className="flex items-center gap-2">
                           <CheckCircle className="h-4 w-4 text-teal-600" />
                           <span>Hands-on clinical training</span>
@@ -427,10 +421,10 @@ export default function CourseDetailPage({
                   </div>
                 </motion.div>
               </div>
-            </div>
+              </div>
           </div>
         </div>
       </section>
     </div>
   );
-}
+}     

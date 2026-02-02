@@ -7,6 +7,7 @@ import { exams } from "../data/exams";
 import { reviews } from "../data/reviews";
 import { testSeries } from "../data/testSeries";
 import { videos } from "../data/videos";
+import { dentistRegistrations } from "../data/denistRegistration";
 
 
 // Load environment variables from .env
@@ -26,6 +27,7 @@ async function main() {
         await db.delete(schema.testSeries);
         await db.delete(schema.review);
         await db.delete(schema.video);
+        await db.delete(schema.dentistRegistration);
       
         console.log("✅ Existing data cleared!");
 
@@ -54,7 +56,35 @@ async function main() {
         await db.insert(schema.video).values(videos);
         console.log("✅ Videos seeded successfully!");
 
-      
+        // Seed dentist registrations - only include fields defined in the database schema
+        console.log("🦷 Seeding dentist registrations...");
+        const filteredDentistRegistrations = dentistRegistrations.map(dentist => ({
+          id: dentist.id,
+          slug: dentist.slug,
+          title: dentist.title,
+          shortDescription: dentist.shortDescription,
+          fullDescription: dentist.fullDescription,
+          price: dentist.price,
+          originalPrice: dentist.originalPrice,
+          thumbnails: dentist.thumbnails,
+          category: dentist.category,
+          mode: dentist.mode,
+          duration: dentist.duration,
+          rating: dentist.rating,
+          reviewCount: dentist.reviewCount,
+          featured: dentist.featured,
+          popular: dentist.popular,
+          whatYouLearn: dentist.whatYouLearn,
+          curriculum: dentist.curriculum,
+          whoIsThisFor: dentist.whoIsThisFor,
+          faculty: dentist.faculty,
+          faqs: dentist.faqs,
+          createdAt: new Date(dentist.createdAt),
+          updatedAt: new Date(dentist.updatedAt)
+        }));
+        
+        await db.insert(schema.dentistRegistration).values(filteredDentistRegistrations);
+        console.log("✅ Dentist registrations seeded successfully!");
 
         console.log("🎉 All seeding completed successfully!");
     } catch (error) {

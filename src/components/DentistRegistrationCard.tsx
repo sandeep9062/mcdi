@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { DentistRegistration } from '@/types/types';
@@ -10,6 +10,7 @@ import { Badge } from './ui/badge';
 import { useCart } from '@/context/CartContext';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
+import { Carousel, CarouselContent, CarouselItem } from './ui/carousel';
 
 interface DentistRegistrationCardProps {
   registration: DentistRegistration;
@@ -17,6 +18,18 @@ interface DentistRegistrationCardProps {
 
 export default function DentistRegistrationCard({ registration }: DentistRegistrationCardProps) {
   const { addToCart } = useCart();
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Auto-swipe functionality
+  useEffect(() => {
+    if (registration.thumbnails.length <= 1) return;
+    
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % registration.thumbnails.length);
+    }, 3000); // Change slide every 3 seconds
+
+    return () => clearInterval(interval);
+  }, [registration.thumbnails.length]);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -32,17 +45,56 @@ export default function DentistRegistrationCard({ registration }: DentistRegistr
     >
       <Link href={`/dentist-registration/${registration.slug}`}>
         <div className="relative h-48 md:h-56 overflow-hidden bg-gray-200">
-          <Image
-            src={registration.thumbnails?.[0] || '/placeholder-image.jpg'}
-            alt={registration.title}
-            fill
-            className="object-cover hover:scale-105 transition-transform duration-300"
-          />
+          <Carousel 
+            opts={{
+              align: "start",
+              loop: true,
+              dragFree: false,
+            }}
+            className="w-full h-full"
+          >
+            <CarouselContent>
+              {registration.thumbnails.map((thumbnail, index) => (
+                <CarouselItem key={index} className="basis-full">
+                  <div className="relative w-full h-48 md:h-56">
+                    <Image
+                      src={thumbnail}
+                      alt={`${registration.title} - Image ${index + 1}`}
+                      fill
+                      className="object-cover hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          </Carousel>
+          
+          {/* Slide indicators */}
+          {registration.thumbnails.length > 1 && (
+            <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex space-x-2">
+              {registration.thumbnails.map((_, index) => (
+                <button
+                  key={index}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    index === currentSlide 
+                      ? 'bg-white scale-125' 
+                      : 'bg-white/50 hover:bg-white/75'
+                  }`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setCurrentSlide(index);
+                  }}
+                  aria-label={`View image ${index + 1}`}
+                />
+              ))}
+            </div>
+          )}
+
           {registration.featured && (
-            <Badge className="absolute top-3 left-3 bg-teal-600">Featured</Badge>
+            <Badge className="absolute top-3 left-3 bg-(--color-1)">Featured</Badge>
           )}
           {registration.popular && (
-            <Badge className="absolute top-3 right-3 bg-orange-500">Popular</Badge>
+            <Badge className="absolute top-3 right-3 bg-(--color-4)">Popular</Badge>
           )}
         </div>
       </Link>
@@ -53,7 +105,7 @@ export default function DentistRegistrationCard({ registration }: DentistRegistr
             <Badge variant="outline" className="mb-2">
               {registration.mode}
             </Badge>
-            <h3 className="font-semibold text-lg text-gray-900 line-clamp-2 hover:text-teal-600 transition-colors">
+            <h3 className="font-semibold text-lg text-gray-900 line-clamp-2 hover:text-(--color-1) transition-colors">
               {registration.title}
             </h3>
           </div>
@@ -89,12 +141,12 @@ export default function DentistRegistrationCard({ registration }: DentistRegistr
               variant="outline"
               size="icon"
               onClick={handleAddToCart}
-              className="hover:bg-teal-50 hover:text-teal-600 hover:border-teal-600"
+              className="hover:bg-teal-50 hover:text-(--color-1) hover:border-(--color-2)"
             >
               <ShoppingCart className="h-4 w-4" />
             </Button>
             <Link href={`/dentist-registration/${registration.slug}`}>
-              <Button size="sm" className="bg-teal-600 hover:bg-teal-700">
+              <Button size="sm" className=" bg-(--color-1) hover:bg-(--color-2)">
                 View Details
               </Button>
             </Link>

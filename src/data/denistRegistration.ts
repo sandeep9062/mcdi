@@ -9,7 +9,11 @@ export const dentistRegistrations: DentistRegistration[] = [
     fullDescription: 'Dr. Rajesh Kumar is a highly experienced prosthodontist with over 15 years of practice. He specializes in cosmetic dentistry and full mouth rehabilitation. Dr. Kumar is known for his gentle approach and attention to detail.',
     price: 1500,
     originalPrice: 2000,
-    thumbnails: ['https://images.pexels.com/photos/5215024/pexels-photo-5215024.jpeg'],
+    thumbnails: [
+      'https://images.pexels.com/photos/5215024/pexels-photo-5215024.jpeg',
+      'https://images.pexels.com/photos/5215109/pexels-photo-5215109.jpeg',
+      'https://images.pexels.com/photos/5327585/pexels-photo-5327585.jpeg'
+    ],
     category: 'Prosthodontics',
     mode: 'Offline',
     duration: '30 minutes consultation',
@@ -125,7 +129,11 @@ export const dentistRegistrations: DentistRegistration[] = [
     fullDescription: 'Dr. Priya Sharma is a leading implantologist and oral surgeon with extensive experience in complex dental implant procedures. She has successfully placed over 3000 implants and is known for her precision and patient care.',
     price: 2000,
     originalPrice: 2500,
-    thumbnails: ['https://images.pexels.com/photos/5215109/pexels-photo-5215109.jpeg'],
+    thumbnails: [
+      'https://images.pexels.com/photos/5215109/pexels-photo-5215109.jpeg',
+      'https://images.pexels.com/photos/5327585/pexels-photo-5327585.jpeg',
+      'https://images.pexels.com/photos/5452293/pexels-photo-5452293.jpeg'
+    ],
     category: 'Implant Dentistry',
     mode: 'Offline',
     duration: '45 minutes consultation',
@@ -241,7 +249,11 @@ export const dentistRegistrations: DentistRegistration[] = [
     fullDescription: 'Dr. Anil Verma is a specialist in endodontics with a focus on painless root canal treatments. He uses advanced technology including dental microscopes and rotary instruments to ensure the best outcomes for his patients.',
     price: 1200,
     originalPrice: 1500,
-    thumbnails: ['https://images.pexels.com/photos/5327585/pexels-photo-5327585.jpeg'],
+    thumbnails: [
+      'https://images.pexels.com/photos/5327585/pexels-photo-5327585.jpeg',
+      'https://images.pexels.com/photos/5452293/pexels-photo-5452293.jpeg',
+      'https://images.pexels.com/photos/5215024/pexels-photo-5215024.jpeg'
+    ],
     category: 'Endodontics',
     mode: 'Offline',
     duration: '45 minutes consultation',
@@ -284,6 +296,12 @@ export const dentistRegistrations: DentistRegistration[] = [
     faculty: [
       {
         name: 'Dr. Anil Verma',
+        title: 'MDS Endodontics',
+        image: 'https://images.pexels.com/photos/5327585/pexels-photo-5327585.jpeg',
+        bio: '10+ years of experience in painless root canal treatments'
+      },
+      {
+        name: 'Dr. Anila derma',
         title: 'MDS Endodontics',
         image: 'https://images.pexels.com/photos/5327585/pexels-photo-5327585.jpeg',
         bio: '10+ years of experience in painless root canal treatments'
@@ -357,7 +375,11 @@ export const dentistRegistrations: DentistRegistration[] = [
     fullDescription: 'Dr. Sunita Malhotra is a family dentist with extensive experience in general dentistry and oral medicine. She provides comprehensive dental care for patients of all ages with a focus on preventive dentistry.',
     price: 1000,
     originalPrice: 1200,
-    thumbnails: ['https://images.pexels.com/photos/5452293/pexels-photo-5452293.jpeg'],
+    thumbnails: [
+      'https://images.pexels.com/photos/5452293/pexels-photo-5452293.jpeg',
+      'https://images.pexels.com/photos/5215024/pexels-photo-5215024.jpeg',
+      'https://images.pexels.com/photos/5215109/pexels-photo-5215109.jpeg'
+    ],
     category: 'General Dentistry',
     mode: 'Offline',
     duration: '30 minutes consultation',
@@ -473,7 +495,11 @@ export const dentistRegistrations: DentistRegistration[] = [
     fullDescription: 'Dr. Vikram Singh is a renowned prosthodontist and implantologist with over 20 years of experience. He specializes in full mouth rehabilitation and complex implant cases. His clinic is equipped with the latest technology for optimal patient care.',
     price: 2500,
     originalPrice: 3000,
-    thumbnails: ['https://images.pexels.com/photos/5215024/pexels-photo-5215024.jpeg'],
+    thumbnails: [
+      'https://images.pexels.com/photos/5215024/pexels-photo-5215024.jpeg',
+      'https://images.pexels.com/photos/5327585/pexels-photo-5327585.jpeg',
+      'https://images.pexels.com/photos/5452293/pexels-photo-5452293.jpeg'
+    ],
     category: 'Prosthodontics',
     mode: 'Offline',
     duration: '60 minutes consultation',
@@ -590,7 +616,11 @@ export const dentistRegistrations: DentistRegistration[] = [
     fullDescription: 'Dr. Neha Gupta is a specialist in cosmetic and restorative dentistry. She is passionate about creating beautiful, natural-looking smiles using the latest techniques and materials. Her gentle approach makes even the most anxious patients feel comfortable.',
     price: 1800,
     originalPrice: 2200,
-    thumbnails: ['https://images.pexels.com/photos/5215109/pexels-photo-5215109.jpeg'],
+    thumbnails: [
+      'https://images.pexels.com/photos/5215109/pexels-photo-5215109.jpeg',
+      'https://images.pexels.com/photos/5452293/pexels-photo-5452293.jpeg',
+      'https://images.pexels.com/photos/5215024/pexels-photo-5215024.jpeg'
+    ],
     category: 'Cosmetic Dentistry',
     mode: 'Offline',
     duration: '45 minutes consultation',
@@ -706,7 +736,11 @@ export const dentistRegistrations: DentistRegistration[] = [
     fullDescription: 'Dr. Amit Khanna is a specialist orthodontist with expertise in traditional braces, clear aligners, and early orthodontic intervention. He believes in creating beautiful, healthy smiles that last a lifetime.',
     price: 1500,
     originalPrice: 1800,
-    thumbnails: ['https://images.pexels.com/photos/5327585/pexels-photo-5327585.jpeg'],
+    thumbnails: [
+      'https://images.pexels.com/photos/5327585/pexels-photo-5327585.jpeg',
+      'https://images.pexels.com/photos/5215024/pexels-photo-5215024.jpeg',
+      'https://images.pexels.com/photos/5215109/pexels-photo-5215109.jpeg'
+    ],
     category: 'Orthodontics',
     mode: 'Offline',
     duration: '45 minutes consultation',
@@ -822,7 +856,11 @@ export const dentistRegistrations: DentistRegistration[] = [
     fullDescription: 'Dr. Pooja Reddy is a pediatric dentist who creates a fun and friendly environment for children. She specializes in behavior management and provides comprehensive dental care for infants, children, and adolescents.',
     price: 800,
     originalPrice: 1000,
-    thumbnails: ['https://images.pexels.com/photos/5452293/pexels-photo-5452293.jpeg'],
+    thumbnails: [
+      'https://images.pexels.com/photos/5452293/pexels-photo-5452293.jpeg',
+      'https://images.pexels.com/photos/5215109/pexels-photo-5215109.jpeg',
+      'https://images.pexels.com/photos/5327585/pexels-photo-5327585.jpeg'
+    ],
     category: 'Pediatric Dentistry',
     mode: 'Offline',
     duration: '30 minutes consultation',
@@ -938,7 +976,11 @@ export const dentistRegistrations: DentistRegistration[] = [
     fullDescription: 'Dr. Sanjay Kapoor is a dentist with an MBA in Healthcare Management. He combines clinical excellence with business acumen to provide comprehensive dental care. His clinic is known for its state-of-the-art facilities and patient-centric approach.',
     price: 1200,
     originalPrice: 1500,
-    thumbnails: ['https://images.pexels.com/photos/5215024/pexels-photo-5215024.jpeg'],
+    thumbnails: [
+      'https://images.pexels.com/photos/5215024/pexels-photo-5215024.jpeg',
+      'https://images.pexels.com/photos/5215109/pexels-photo-5215109.jpeg',
+      'https://images.pexels.com/photos/5327585/pexels-photo-5327585.jpeg'
+    ],
     category: 'General Dentistry',
     mode: 'Offline',
     duration: '45 minutes consultation',
@@ -1054,7 +1096,11 @@ export const dentistRegistrations: DentistRegistration[] = [
     fullDescription: 'Dr. Rohit Malhotra is a cosmetic dentist and certified dental photographer. He specializes in creating perfect smiles and uses advanced photography techniques for treatment planning and documentation. His artistic approach ensures natural and beautiful results.',
     price: 1400,
     originalPrice: 1700,
-    thumbnails: ['https://images.pexels.com/photos/5327585/pexels-photo-5327585.jpeg'],
+    thumbnails: [
+      'https://images.pexels.com/photos/5327585/pexels-photo-5327585.jpeg',
+      'https://images.pexels.com/photos/5452293/pexels-photo-5452293.jpeg',
+      'https://images.pexels.com/photos/5215109/pexels-photo-5215109.jpeg'
+    ],
     category: 'Cosmetic Dentistry',
     mode: 'Offline',
     duration: '60 minutes consultation',
